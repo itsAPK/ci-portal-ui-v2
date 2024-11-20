@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { loginSchema, LoginSchema } from '@/schema/login';
+import UILayout from '@/components/ui-layout';
 
 export default function Login() {
   const form = useForm<LoginSchema>({
@@ -55,6 +56,7 @@ export default function Login() {
   });
 
   return (
+  <UILayout>
     <ContentLayout title={'Login'} tags={['authentication', 'login']}>
       <div className="shadow-form container relative mb-7 min-h-[120px] bg-white pt-10 shadow dark:bg-background">
         <Form {...form}>
@@ -102,6 +104,6 @@ export default function Login() {
           </form>
         </Form>
       </div>
-    </ContentLayout>
+    </ContentLayout></UILayout>
   );
 }
