@@ -4,63 +4,70 @@
 
 body {
   height: 100vh;
-   background: linear-gradient(90deg,#e52e71,#ff8a00);
-    font-family: 'Gudea', sans-serif;
+  font-family: 'Gudea', sans-serif;
 
 
 }
 
-.login-img{
+.login-img {
   position: absolute;
-	content: "";
-	left: 23%;
-	top: 15%;
+  content: "";
+  left: 23%;
+  top: 15%;
 }
-.text{
+
+.text {
   position: absolute;
-	left: 60%;
-	top: 50%;
-  font-size:"96px";
+  left: 60%;
+  top: 50%;
+  font-size: "96px";
 }
+
 .slider-thumb::before {
-	position: absolute;
-	content: "";
-	left: 9%;
-	top: 10%;
-	width: 530px;
-	height: 530px;
-	background: #17141d;
+  position: absolute;
+  content: "";
+  left: 9%;
+  top: 10%;
+  width: 530px;
+  height: 530px;
+  background: #17141d;
 
-	will-change: border-radius, transform, opacity;
-	animation: sliderShape 5s linear infinite;
-	display: block;
-	z-index: -1;
-	-webkit-animation: sliderShape 5s linear infinite;
+  will-change: border-radius, transform, opacity;
+  animation: sliderShape 5s linear infinite;
+  display: block;
+  z-index: -1;
+  -webkit-animation: sliderShape 5s linear infinite;
 }
-@keyframes sliderShape{
-  0%,100%{
-  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-    transform: translate3d(0,0,0) rotateZ(0.01deg);
+
+@keyframes sliderShape {
+
+  0%,
+  100% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: translate3d(0, 0, 0) rotateZ(0.01deg);
   }
-  34%{
-      border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%;
-    transform:  translate3d(0,5px,0) rotateZ(0.01deg);
+
+  34% {
+    border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%;
+    transform: translate3d(0, 5px, 0) rotateZ(0.01deg);
   }
-  50%{
-    transform: translate3d(0,0,0) rotateZ(0.01deg);
+
+  50% {
+    transform: translate3d(0, 0, 0) rotateZ(0.01deg);
   }
-  67%{
-    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60% ;
-    transform: translate3d(0,-3px,0) rotateZ(0.01deg);
+
+  67% {
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+    transform: translate3d(0, -3px, 0) rotateZ(0.01deg);
   }
 }
 
 
 @layer base {
 
- 
 
-  :root  {
+
+  :root {
     --background: 32 100% 99%;
     --foreground: 32 5% 10%;
     --card: 32 50% 99%;
@@ -82,7 +89,8 @@ body {
     --ring: 32 100% 50%;
     --radius: 1rem;
   }
-  .dark  {
+
+  .dark {
     --background: 32 50% 10%;
     --foreground: 32 5% 99%;
     --card: 32 50% 10%;
@@ -104,9 +112,9 @@ body {
     --ring: 32 100% 50%;
     --radius: 1rem;
   }
-  
 
-  
+
+
 }
 
 @layer base {
@@ -124,12 +132,15 @@ body {
     color: transparent;
   }
 }
+
 .loader__dot {
   animation: 1s blink infinite;
 }
+
 .loader__dot:nth-child(2) {
   animation-delay: 250ms;
 }
+
 .loader__dot:nth-child(3) {
   animation-delay: 500ms;
 }

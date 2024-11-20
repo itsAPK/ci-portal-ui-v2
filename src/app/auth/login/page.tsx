@@ -20,7 +20,7 @@ export default function Login() {
   };
 
   return (
-    <>
+    <div >
       <div className="slider-thumb">
         <img
           src="https://i.ibb.co/Qrc2tps/Screenshot-2024-11-06-at-1-50-22-AM-removebg-preview.png"
@@ -111,7 +111,7 @@ export default function Login() {
         className="absolute left-[50%] text-5xl bg-gradient-to-r from-[#ff8a00] via-[#e52e71] to-[#ff8a00] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent uppercase top-[40%]  font-bold tracking-[-0.02em] text-white dark:text-white  md:leading-[5rem]"
         words="Continuous Improvement Robust Tracking System"
       />{' '}
-    </>
+    </div>
   );
 }
 
