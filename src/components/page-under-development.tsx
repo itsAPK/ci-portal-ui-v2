@@ -32,6 +32,11 @@ export default function PageUnderDevelopment() {
               <ArrowLeft className="mr-2 h-4 w-4" /> Return to Opportunity Overview Section
             </Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link href="/auth/login">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Return to Login
+            </Link>
+          </Button>
         </CardFooter>
       </Card>
     </div>
