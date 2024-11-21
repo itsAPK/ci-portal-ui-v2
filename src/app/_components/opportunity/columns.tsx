@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowDown, EyeIcon, PencilIcon, Settings2Icon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 // import { DeleteDoctor } from "./delete-doctor";
 // import { EditDoctor } from "./edit-doctor";
 
@@ -135,6 +136,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
     {
       id: "actions",
       cell: function Cell({ row }) {
+        const router = useRouter();
         return (
           <div className="flex justify-end space-x-2 pl-2">
             <DropdownMenu>
@@ -149,8 +151,8 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
-                   <EyeIcon className="h-4 w-4" /> View
+                <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()} onClick={() => router.push(`/opportunity/1`)}>
+           <EyeIcon className="h-4 w-4"  /> View
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex gap-2"  onSelect={(e) => e.preventDefault()}>
                    <PencilIcon className="h-4 w-4" /> Edit

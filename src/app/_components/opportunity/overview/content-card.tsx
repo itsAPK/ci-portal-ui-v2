@@ -2,17 +2,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import {
     RiBox3Fill
 } from '@remixicon/react'
+import {cn} from '@/lib/utils'
 export const ContentCard = ({
     title,
     value,
     icon,
+    className
 } : {
     title: string,
     value: string,
     icon: any
+    className?: string
 }) => {
   return (
-    <Card className=''>
+    <Card className={cn(className)}>
         <CardContent className="p-4 flex flex-col">
             <div className="flex gap-2">
                 {icon}

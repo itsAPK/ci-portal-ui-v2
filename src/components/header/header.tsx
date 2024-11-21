@@ -31,8 +31,9 @@ export function Header() {
           <AnimatedGradientText>
         <span
           className={cn(
-            `inline animate-gradient text-[22px] font-extrabold bg-gradient-to-r from-[#ff8a00] via-[#e52e71] to-[#ff8a00] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`,
+            `inline animate-gradient text-[20px] font-extrabold bg-gradient-to-r from-[#ff8a00] via-[#e52e71] to-[#ff8a00] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`,
           )}
+          style={{fontFamily : '"Montserrat", sans-serif',}}
         >
           CI ROBUST TRACKING SYSTEM
         </span>

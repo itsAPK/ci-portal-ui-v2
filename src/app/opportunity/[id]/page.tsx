@@ -2,7 +2,12 @@ import { ContentLayout } from '@/components/content-layout';
 import UILayout from '@/components/ui-layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Overview } from '@/app/_components/opportunity/overview/overview';
-
+import { DefinePhase } from '@/app/_components/opportunity/define-phase/define-phase';
+import { SSVTools } from '@/app/_components/opportunity/ssv-tools';
+import { MeasureAnalysisPhase } from '@/app/_components/opportunity/measure-analysis-phase';
+import { ImprovementPhase } from '@/app/_components/opportunity/improvement-phase';
+import { ControlPhase } from '@/app/_components/opportunity/control-phase';
+import { ProjectClousre } from '@/app/_components/opportunity/project-clousre';
 export default function Opportunity() {
   return (
     <UILayout>
@@ -34,6 +39,12 @@ export default function Opportunity() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="1"><Overview /></TabsContent>
+            <TabsContent value="2"><DefinePhase /></TabsContent>
+            <TabsContent value="7"><SSVTools /></TabsContent>
+            <TabsContent value="3"><MeasureAnalysisPhase /></TabsContent>
+            <TabsContent value="4"><ImprovementPhase /></TabsContent>
+            <TabsContent value="5"><ControlPhase /></TabsContent>
+            <TabsContent value="6"><ProjectClousre /></TabsContent>
           </Tabs>
         </div>
       </ContentLayout>

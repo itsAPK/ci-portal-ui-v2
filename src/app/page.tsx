@@ -18,6 +18,7 @@ import {
 import { toast } from 'sonner';
 import { loginSchema, LoginSchema } from '@/schema/login';
 import UILayout from '@/components/ui-layout';
+import PageUnderDevelopment from '@/components/page-under-development';
 
 export default function Login() {
   const form = useForm<LoginSchema>({
@@ -58,52 +59,8 @@ export default function Login() {
   return (
   <UILayout>
     <ContentLayout title={'Login'} tags={['authentication', 'login']}>
-      <div className="shadow-form container relative mb-7 min-h-[120px] bg-white pt-10 shadow dark:bg-background">
-        <Form {...form}>
-          <form className="space-y-6" onSubmit={onSubmit}>
-            <div className="flex grid-cols-1 flex-col gap-6 md:grid md:grid-cols-1">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="email" placeholder="Enter your email" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" placeholder="Enter your password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex justify-center px-3 pb-10 lg:justify-end">
-              <Button
-                type="submit"
-                variant={'default'}
-                className="flex h-12 w-[250px] gap-2"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting && <Loader className="h-4 w-4 animate-spin" />}
-                <span>Login</span>
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
+      <div className="min-h-[80vh] flex items-center justify-center">
+         <PageUnderDevelopment  /></div>
     </ContentLayout></UILayout>
   );
 }

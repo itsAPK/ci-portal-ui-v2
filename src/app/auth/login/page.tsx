@@ -1,10 +1,12 @@
 'use client';
 import WordPullUp from '@/components/ui/word-pull-up';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import 'animate.css';
 
 export default function Login() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
-
+const router = useRouter()
   const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setCredentials({
@@ -17,6 +19,7 @@ export default function Login() {
     e.preventDefault();
     // Handle login logic here
     console.log('Logging in with', credentials);
+    router.push('/opportunity')
   };
 
   return (
@@ -55,6 +58,7 @@ export default function Login() {
             position: 'absolute',
             left: '20%',
             top: '37%',
+            outline: 'none',
           }}
         />
 
@@ -89,6 +93,7 @@ export default function Login() {
           }}
         />
         <button
+        onClick={handleSubmit}
           type="submit"
           style={{
             backgroundColor: 'transparent',
@@ -107,10 +112,19 @@ export default function Login() {
           Login
         </button>
       </div>
-      <WordPullUp
+      <div className='absolute left-[50%] font-extrabold top-[300px] text-5xl flex flex-col uppercase text-gray-100' style={{fontFamily : '"Montserrat", sans-serif',}}> 
+         <div className='animate__animated animate__backInUp'>Continuous </div> 
+        <div className="flex gap-2"> <div className='animate__animated animate__backInLeft'>Improvement </div>
+        <div className='animate__animated animate__backInRight'> Robust</div>
+        </div>
+          <div className="animate__animated animate__backInDown">
+          Tracking System
+          </div>
+      </div>
+      {/* <WordPullUp
         className="absolute left-[50%] text-5xl bg-gradient-to-r from-[#ff8a00] via-[#e52e71] to-[#ff8a00] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent uppercase top-[40%]  font-bold tracking-[-0.02em] text-white dark:text-white  md:leading-[5rem]"
         words="Continuous Improvement Robust Tracking System"
-      />{' '}
+      />{' '} */}
     </div>
   );
 }
