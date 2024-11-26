@@ -73,62 +73,13 @@ export function getMenuList(pathname: string): Group[] {
           icon: NotebookText,
           submenus: [],
         },
-        {
-          href: '/reports',
-          label: 'Reports',
-          active: pathname.includes('/reports'),
-          icon: BookMarked,
-          submenus: [
-            {
-              href: '/reports/table',
-              label: 'Table View',
-              active: pathname === '/reports/table',
-            },
-            {
-              href: '/reports/graphical',
-              label: 'Graphical View',
-              active: pathname === '/reports/graphical',
-            },
-            {
-              href: '/reports/year',
-              label: 'Year Report',
-              active: pathname === '/reports/year',
-            },
-
-          ],
-        },
+       
         {
           href: '/account-management',
           label: 'Account Management',
           active: pathname === '/account-management',
           icon: Bug,
-          submenus: [
-            {
-              href: '/account-management/changepassword',
-              label: 'Change Password',
-              active: pathname === '/account-management/changepassword',
-            },
-            {
-              href: '/account-management/toolsmanagement',
-              label: 'Tools Management',
-              active: pathname === '/account-management/toolsmanagement',
-            },
-            {
-              href: '/account-management/syncuserdatabase',
-              label: 'Sync User Database',
-              active: pathname === '/account-management/syncuserdatabase',
-            },
-            {
-              href: '/account-management/assignciheaduser',
-              label: 'Assign Ci Head User',
-              active: pathname === '/account-management/assignciheaduser',
-            },
-            {
-              href: '/account-management/requestplant',
-              label: 'Request Plant/Division',
-              active: pathname === '/account-management/requestplant',
-            },
-          ],
+          submenus: [],
         },
         
       ],

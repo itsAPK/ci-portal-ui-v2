@@ -1,0 +1,56 @@
+'use client';
+import { ContentLayout } from '@/components/content-layout';
+
+import PageUnderDevelopment from '@/components/page-under-development';
+import UILayout from '@/components/ui-layout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ControlPhase } from '../_components/opportunity/control-phase';
+import { DefinePhase } from '../_components/opportunity/define-phase/define-phase';
+import { ImprovementPhase } from '../_components/opportunity/improvement-phase';
+import { MeasureAnalysisPhase } from '../_components/opportunity/measure-analysis-phase';
+import { Overview } from '../_components/opportunity/overview/overview';
+import { ProjectClousre } from '../_components/opportunity/project-clousre';
+import { SSVTools } from '../_components/opportunity/ssv-tools';
+import { ChangePassword } from '../_components/account-management/change-password';
+import Tools from '../_components/account-management/tools/tools';
+import { AssignCIHead } from '../_components/account-management/assign-ci-head';
+import RequestPlant from '../_components/account-management/request-plant/request-plant';
+
+export default function AddItem() {
+  return (
+    <UILayout>
+      <ContentLayout title={'Login'} tags={['authentication', 'login']}>
+      <div className="min-h-[80vh]">
+          <div className="p-4 font-bold">Account Management</div>
+          <Tabs defaultValue="1" className="w-full px-4">
+            <TabsList className="flex justify-start h-12  bg-primary/10 px-3 shadow">
+              <TabsTrigger className="px-5" value="1">
+                Change Password
+              </TabsTrigger>
+              <TabsTrigger className="px-5" value="2">
+                Tools Management
+              </TabsTrigger>
+              <TabsTrigger className="px-5" value="7">
+                Assign CI Head User
+              </TabsTrigger>
+              <TabsTrigger className="px-5" value="3">
+                Request Plant/Divisions
+              </TabsTrigger>
+              <TabsTrigger className="px-5" value="4">
+                Employee Management
+              </TabsTrigger>
+              
+            </TabsList>
+            <TabsContent value="1"><ChangePassword /></TabsContent>
+            <TabsContent value="2"><Tools /></TabsContent>
+            <TabsContent value="7"><AssignCIHead /></TabsContent>
+            <TabsContent value="3"><RequestPlant /></TabsContent>
+            <TabsContent value="4"><ImprovementPhase /></TabsContent>
+            <TabsContent value="5"><ControlPhase /></TabsContent>
+            <TabsContent value="6"><ProjectClousre /></TabsContent>
+          </Tabs>
+        </div>
+      </ContentLayout>
+    </UILayout>
+  );
+}

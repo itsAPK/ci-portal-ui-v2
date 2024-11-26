@@ -44,7 +44,7 @@ export function DataTable<TData>({
     <div className={cn('w-full space-y-2.5 overflow-auto', className)} {...props}>
       {children}
       <div className={cn('rounded-md border ')}>
-        <Table style={{ width: table.getTotalSize() }}>
+        <Table style={{ width: '100%' }}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
