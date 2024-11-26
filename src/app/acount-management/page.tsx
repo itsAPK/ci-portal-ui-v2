@@ -8,7 +8,10 @@ export default function AddItem() {
   return (
     <UILayout>
       <ContentLayout title={'Login'} tags={['authentication', 'login']}>
-        <div className="min-h-[80vh] flex items-center justify-center">
-           <PageUnderDevelopment  /></div>
-      </ContentLayout></UILayout>)
+        <div className="flex min-h-[80vh] items-center justify-center">
+          <PageUnderDevelopment />
+        </div>
+      </ContentLayout>
+    </UILayout>
+  );
 }
