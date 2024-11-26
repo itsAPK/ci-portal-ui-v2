@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'ax
 import { redirect } from 'next/navigation';
 // import token from '@/lib/token';
 
-export const BASEURL = process.env.NEXT_PUBLIC_API_URL ?? 'https://ci-portal-api.imapk.xyz/';
+export const BASEURL = process.env.NEXT_PUBLIC_API_URL ?? 'https://ci-portal-api.imapk.xyz/api';
 
 const api = axios.create({
   baseURL: BASEURL,
