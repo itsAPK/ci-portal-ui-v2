@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import {
   Dispatch,
   SetStateAction,
@@ -12,13 +12,19 @@ import {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useDropzone, DropzoneState, FileRejection, DropzoneOptions } from 'react-dropzone';
-import { useToast } from '@/components/ui/use-toast';
-import { Trash2 as RemoveIcon } from 'lucide-react';
-import { ToastAction } from '@/components/ui/toast';
-import { Button } from '@/components/ui/button';
-type DirectionOptions = 'rtl' | 'ltr' | undefined;
+} from "react";
+import {
+  useDropzone,
+  DropzoneState,
+  FileRejection,
+  DropzoneOptions,
+} from "react-dropzone";
+import { useToast } from "@/components/ui/use-toast";
+import { Trash2 as RemoveIcon } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { RiUploadFill } from "@remixicon/react";
+type DirectionOptions = "rtl" | "ltr" | undefined;
 
 type FileUploaderContextType = {
   dropzoneState: DropzoneState;
@@ -27,7 +33,7 @@ type FileUploaderContextType = {
   removeFileFromSet: (index: number) => void;
   activeIndex: number;
   setActiveIndex: Dispatch<SetStateAction<number>>;
-  orientation: 'horizontal' | 'vertical';
+  orientation: "horizontal" | "vertical";
   direction: DirectionOptions;
 };
 
@@ -36,7 +42,7 @@ const FileUploaderContext = createContext<FileUploaderContextType | null>(null);
 export const useFileUpload = () => {
   const context = useContext(FileUploaderContext);
   if (!context) {
-    throw new Error('useFileUpload must be used within a FileUploaderProvider');
+    throw new Error("useFileUpload must be used within a FileUploaderProvider");
   }
   return context;
 };
@@ -46,7 +52,7 @@ type FileUploaderProps = {
   reSelect?: boolean;
   onValueChange: (value: File[] | null) => void;
   dropzoneOptions: DropzoneOptions;
-  orientation?: 'horizontal' | 'vertical';
+  orientation?: "horizontal" | "vertical";
 };
 
 export const FileUploader = forwardRef<
@@ -60,12 +66,12 @@ export const FileUploader = forwardRef<
       value,
       onValueChange,
       reSelect,
-      orientation = 'vertical',
+      orientation = "vertical",
       children,
       dir,
       ...props
     },
-    ref,
+    ref
   ) => {
     const { toast } = useToast();
     const [isFileTooBig, setIsFileTooBig] = useState(false);
@@ -73,7 +79,7 @@ export const FileUploader = forwardRef<
     const [activeIndex, setActiveIndex] = useState(-1);
     const {
       accept = {
-        'image/*': ['.jpg', '.jpeg', '.png', '.gif'],
+        "image/*": [".jpg", ".jpeg", ".png", ".gif"],
       },
       maxFiles = 1,
       maxSize = 4 * 1024 * 1024,
@@ -81,7 +87,7 @@ export const FileUploader = forwardRef<
     } = dropzoneOptions;
 
     const reSelectAll = maxFiles === 1 ? true : reSelect;
-    const direction: DirectionOptions = dir === 'rtl' ? 'rtl' : 'ltr';
+    const direction: DirectionOptions = dir === "rtl" ? "rtl" : "ltr";
 
     const removeFileFromSet = useCallback(
       (i: number) => {
@@ -89,7 +95,7 @@ export const FileUploader = forwardRef<
         const newFiles = value.filter((_, index) => index !== i);
         onValueChange(newFiles);
       },
-      [value, onValueChange],
+      [value, onValueChange]
     );
 
     const handleKeyDown = useCallback(
@@ -110,28 +116,28 @@ export const FileUploader = forwardRef<
         };
 
         const prevKey =
-          orientation === 'horizontal'
-            ? direction === 'ltr'
-              ? 'ArrowLeft'
-              : 'ArrowRight'
-            : 'ArrowUp';
+          orientation === "horizontal"
+            ? direction === "ltr"
+              ? "ArrowLeft"
+              : "ArrowRight"
+            : "ArrowUp";
 
         const nextKey =
-          orientation === 'horizontal'
-            ? direction === 'ltr'
-              ? 'ArrowRight'
-              : 'ArrowLeft'
-            : 'ArrowDown';
+          orientation === "horizontal"
+            ? direction === "ltr"
+              ? "ArrowRight"
+              : "ArrowLeft"
+            : "ArrowDown";
 
         if (e.key === nextKey) {
           moveNext();
         } else if (e.key === prevKey) {
           movePrev();
-        } else if (e.key === 'Enter' || e.key === 'Space') {
+        } else if (e.key === "Enter" || e.key === "Space") {
           if (activeIndex === -1) {
             dropzoneState.inputRef.current?.click();
           }
-        } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        } else if (e.key === "Delete" || e.key === "Backspace") {
           if (activeIndex !== -1) {
             removeFileFromSet(activeIndex);
             if (value.length - 1 === 0) {
@@ -140,11 +146,11 @@ export const FileUploader = forwardRef<
             }
             movePrev();
           }
-        } else if (e.key === 'Escape') {
+        } else if (e.key === "Escape") {
           setActiveIndex(-1);
         }
       },
-      [value, activeIndex, removeFileFromSet],
+      [value, activeIndex, removeFileFromSet]
     );
 
     const onDrop = useCallback(
@@ -153,8 +159,8 @@ export const FileUploader = forwardRef<
 
         if (!files) {
           toast({
-            title: 'Uh oh! Something went wrong.',
-            description: 'File error , Probably too big',
+            title: "Uh oh! Something went wrong.",
+            description: "File error , Probably too big",
             action: <ToastAction altText="Try again">Try again</ToastAction>,
           });
 
@@ -177,20 +183,24 @@ export const FileUploader = forwardRef<
 
         if (rejectedFiles.length > 0) {
           for (let i = 0; i < rejectedFiles.length; i++) {
-            if (rejectedFiles[i].errors[0]?.code === 'file-too-large') {
+            if (rejectedFiles[i].errors[0]?.code === "file-too-large") {
               toast({
-                title: 'Uh oh! Something went wrong.',
+                title: "Uh oh! Something went wrong.",
                 description: `File is too large. Max size is ${maxSize / 1024 / 1024}MB`,
-                action: <ToastAction altText="Try again">Try again</ToastAction>,
+                action: (
+                  <ToastAction altText="Try again">Try again</ToastAction>
+                ),
               });
 
               break;
             }
             if (rejectedFiles[i].errors[0]?.message) {
               toast({
-                title: 'Uh oh! Something went wrong.',
+                title: "Uh oh! Something went wrong.",
                 description: rejectedFiles[i].errors[0].message,
-                action: <ToastAction altText="Try again">Try again</ToastAction>,
+                action: (
+                  <ToastAction altText="Try again">Try again</ToastAction>
+                ),
               });
 
               break;
@@ -198,7 +208,7 @@ export const FileUploader = forwardRef<
           }
         }
       },
-      [reSelectAll, value],
+      [reSelectAll, value]
     );
 
     useEffect(() => {
@@ -210,7 +220,9 @@ export const FileUploader = forwardRef<
       setIsLOF(false);
     }, [value, maxFiles]);
 
-    const opts = dropzoneOptions ? dropzoneOptions : { accept, maxFiles, maxSize, multiple };
+    const opts = dropzoneOptions
+      ? dropzoneOptions
+      : { accept, maxFiles, maxSize, multiple };
 
     const dropzoneState = useDropzone({
       ...opts,
@@ -236,9 +248,13 @@ export const FileUploader = forwardRef<
           ref={ref}
           tabIndex={0}
           onKeyDownCapture={handleKeyDown}
-          className={cn('grid w-full overflow-hidden focus:outline-none', className, {
-            'gap-2': value && value.length > 0,
-          })}
+          className={cn(
+            "grid w-full focus:outline-none overflow-hidden ",
+            className,
+            {
+              "gap-2": value && value.length > 0,
+            }
+          )}
           dir={dir}
           {...props}
         >
@@ -246,35 +262,40 @@ export const FileUploader = forwardRef<
         </div>
       </FileUploaderContext.Provider>
     );
-  },
+  }
 );
 
-FileUploader.displayName = 'FileUploader';
+FileUploader.displayName = "FileUploader";
 
-export const FileUploaderContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ children, className, ...props }, ref) => {
-    const { orientation } = useFileUpload();
-    const containerRef = useRef<HTMLDivElement>(null);
+export const FileUploaderContent = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ children, className, ...props }, ref) => {
+  const { orientation } = useFileUpload();
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    return (
-      <div className={cn('w-full px-1')} ref={containerRef} aria-description="content file holder">
-        <div
-          {...props}
-          ref={ref}
-          className={cn(
-            'flex gap-1 rounded-xl',
-            orientation === 'horizontal' ? 'flex-raw flex-wrap' : 'flex-col',
-            className,
-          )}
-        >
-          {children}
-        </div>
+  return (
+    <div
+      className={cn("w-full px-1")}
+      ref={containerRef}
+      aria-description="content file holder"
+    >
+      <div
+        {...props}
+        ref={ref}
+        className={cn(
+          "flex rounded-xl gap-1",
+          orientation === "horizontal" ? "flex-raw flex-wrap" : "flex-col",
+          className
+        )}
+      >
+        {children}
       </div>
-    );
-  },
-);
+    </div>
+  );
+});
 
-FileUploaderContent.displayName = 'FileUploaderContent';
+FileUploaderContent.displayName = "FileUploaderContent";
 
 export const FileUploaderItem = forwardRef<
   HTMLDivElement,
@@ -286,109 +307,97 @@ export const FileUploaderItem = forwardRef<
     <div
       ref={ref}
       className={cn(
-        'relative h-6 cursor-pointer justify-between rounded p-1 hover:bg-yellow-400/20',
+        "h-6 p-1 justify-between cursor-pointer relative hover:bg-yellow-400/20 rounded",
         className,
-        isSelected ? 'bg-white' : '',
+        isSelected ? "bg-white" : ""
       )}
       {...props}
     >
-      <div className="flex h-full w-full items-center gap-1.5 font-medium leading-none tracking-tight">
+      <div className="font-medium leading-none tracking-tight flex items-center gap-1.5 h-full w-full">
         {children}
       </div>
       <button
         type="button"
-        className={cn('absolute', direction === 'rtl' ? 'left-1 top-1' : 'right-1 top-1')}
+        className={cn(
+          "absolute",
+          direction === "rtl" ? "top-1 left-1" : "top-1 right-1"
+        )}
         onClick={() => removeFileFromSet(index)}
       >
         <span className="sr-only">remove item {index}</span>
-        <RemoveIcon className="h-4 w-4 duration-200 ease-in-out hover:stroke-destructive" />
+        <RemoveIcon className="w-4 h-4 hover:stroke-destructive duration-200 ease-in-out" />
       </button>
     </div>
   );
 });
 
-FileUploaderItem.displayName = 'FileUploaderItem';
+FileUploaderItem.displayName = "FileUploaderItem";
 
-export const FileInput = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, children, ...props }, ref) => {
-    const { dropzoneState, isFileTooBig, isLOF } = useFileUpload();
-    const rootProps = isLOF ? {} : dropzoneState.getRootProps();
-    return (
+export const FileInput = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children,...props }, ref) => {
+  const { dropzoneState, isFileTooBig, isLOF } = useFileUpload();
+  const rootProps = isLOF ? {} : dropzoneState.getRootProps();
+  return (
+    <div
+      ref={ref}
+      {...props}
+      className={`relative w-full ${
+        isLOF ? "opacity-50 cursor-not-allowed " : "cursor-pointer "
+      }`}
+    >
       <div
-        ref={ref}
-        {...props}
-        className={`relative w-full${isLOF ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        className={cn(
+          `w-full rounded-lg duration-300 ease-in-out
+         ${
+           dropzoneState.isDragAccept
+             ? "border-green-500"
+             : dropzoneState.isDragReject || isFileTooBig
+               ? "border-red-500"
+               : "border-gray-300"
+         }`,
+          className
+        )}
+        {...rootProps}
       >
-        <div
-          className={cn(
-            `w-full rounded-lg border border-dashed bg-primary/10 duration-300 ease-in-out ${
-              dropzoneState.isDragAccept
-                ? 'border-green-500'
-                : dropzoneState.isDragReject || isFileTooBig
-                  ? 'border-red-500'
-                  : 'border-blue-500'
-            }`,
-            className,
-          )}
-          {...rootProps}
-        >
-          {children}
-        </div>
-        <Input
-          ref={dropzoneState.inputRef}
-          disabled={isLOF}
-          {...dropzoneState.getInputProps()}
-          className={`${isLOF ? 'cursor-not-allowed' : ''}`}
-        />
+        {children}
       </div>
-    );
-  },
-);
+      <Input
+        ref={dropzoneState.inputRef}
+        disabled={isLOF  }
+        {...dropzoneState.getInputProps()}
+        className={`${isLOF ? "cursor-not-allowed" : ""}`}
+      />
+    </div>
+  );
+});
 
-FileInput.displayName = 'FileInput';
+FileInput.displayName = "FileInput";
 
 interface FileUploadTextProps {
   label: string;
   description: string;
-  className?: string;
+  className?:string
 }
 
-export const FileUploadText = ({ label, description, className }: FileUploadTextProps) => {
+export const FileUploadText = ({ label, description,className }: FileUploadTextProps) => {
   return (
-    <div className="relative flex flex-col items-center justify-center px-4 pb-2.5 pt-2">
-      {' '}
-      <div className="uploading-outer relative w-full flex-col items-center justify-center pb-2 pt-10 lg:flex">
-        <div className="uploadButton relative flex flex-col items-center justify-center">
+    <div className=" px-7 pb-2.5 pt-2">
+      {" "}
+      <div className="uploading-outer relative lg:flex w-full pb-2 mb-4 items-center">
+        <div className="uploadButton relative flex justify-center items-center">
           <div>
             <label
               htmlFor="upload"
-              className="ripple-effect m-0 flex h-[80px] w-[200px] cursor-pointer flex-col items-center justify-center rounded text-lg text-gray-700 transition duration-300 hover:border-secondary dark:text-gray-300"
+              className=" ripple-effect flex flex-col text-gray-700 items-center justify-center cursor-pointer h-[120px] w-[200px] rounded transition duration-300 m-0 text-lg border-2 border-dashed border-gray-300 hover:border-secondary"
             >
-              <svg
-                className="mb-3 h-8 w-8 text-primary dark:text-primary"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>{' '}
-              Drag and Drop
+             <RiUploadFill className="mb-3 h-8 w-8 text-primary dark:text-primary" />
             </label>
           </div>
-
-          <span className="relative flex min-h-[56px] items-center overflow-hidden bg-transparent px-2.5 pl-4 leading-[22px] text-gray-700 dark:text-gray-300">
-            OR
-          </span>
-          <Button type="button">{label}</Button>
+          <span className="flex items-center  px-2.5 pl-4 min-h-[56px] top-[1px] relative text-gray-900 bg-transparent overflow-hidden leading-[22px]"></span>
         </div>
-        <div className="m-0 flex flex-col items-center justify-center pt-10 text-center text-[15px] font-normal leading-6 text-gray-500 dark:text-gray-200 lg:pt-6">
+        <div className="text-[15px] text-gray-600 leading-6 font-normal m-0 lg:pt-0 pt-2 ">
           {description}
         </div>
       </div>

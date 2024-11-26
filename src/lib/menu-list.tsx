@@ -73,53 +73,15 @@ export function getMenuList(pathname: string): Group[] {
           icon: NotebookText,
           submenus: [],
         },
+       
         {
-          href: '/reports',
-          label: 'Reports',
-          active: pathname === '/reports',
-          icon: BookMarked,
-          submenus: [],
-        },
-        {
-          href: '/acount-management',
-          label: 'Account Managemet',
-          active: pathname === '/acount-management',
+          href: '/account-management',
+          label: 'Account Management',
+          active: pathname === '/account-management',
           icon: Bug,
           submenus: [],
         },
-        // {
-        //   href: '',
-        //   label: 'Products',
-        //   active: pathname.includes('/product'),
-        //   icon: PackageOpenIcon,
-        //   submenus: [
-        //     {
-        //       href: '/product/new',
-        //       label: 'Add Products',
-        //       active: pathname === '/product/new',
-        //     },
-        //     {
-        //       href: '/product',
-        //       label: 'Product List',
-        //       active: pathname === '/product',
-        //     },
-        //     {
-        //       href: '/product/category',
-        //       label: 'Category',
-        //       active: pathname === '/product/category',
-        //     },
-        //     {
-        //       href: '/product/brand',
-        //       label: 'Brand',
-        //       active: pathname === '/product/brand',
-        //     },
-        //     {
-        //       href: '/product/product-types',
-        //       label: 'Product Types',
-        //       active: pathname === '/product/product-types',
-        //     },
-        //   ],
-        // },
+        
       ],
     },
   ];
