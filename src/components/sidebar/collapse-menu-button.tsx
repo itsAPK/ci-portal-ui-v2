@@ -58,14 +58,14 @@ export function CollapseMenuButton({
       className="w-full text-white"
     >
       <CollapsibleTrigger
-        className="mb-1 [&[data-state=open]>div>div>svg]:rotate-90 text-white hover:text-[#089bab]"
+        className="mb-1 [&[data-state=open]>div>div>svg]:rotate-90 text-white hover:text-primary"
         asChild
       >
         <Button
           variant={"ghost"}
           className={cn(
             "w-full rounded-full my-2",
-            active ? "bg-white text-[#089bab] h-[53px]" : "h-14",
+            active ? "bg-white text-primary h-[53px]" : "h-14",
           )}
         >
           <div className="flex w-full items-center justify-between ">
@@ -113,8 +113,8 @@ export function CollapseMenuButton({
               key={index}
               variant={"ghost"}
               className={cn(
-                active ? "bg-[#d1ecf0]" : "bg-transparent",
-                "h-[50px] w-full px-4 py-2 hover:bg-[#d1ecf0] text-[#777d74] hover:text-[#089bab] flex justify-start items-center my-1",
+                active ? "bg-primary/20" : "bg-transparent",
+                "h-[50px] w-full px-4 py-2 hover:bg-primary/20 text-[#777d74] hover:text-primary flex justify-start items-center my-1",
               )}
               asChild
             >
@@ -136,6 +136,7 @@ export function CollapseMenuButton({
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button
+              //@ts-ignore
                 variant={"tool"}
                 size={"icon"}
                 className={cn("ml-4 h-[53px] w-full")}
@@ -168,7 +169,7 @@ export function CollapseMenuButton({
             side="right"
             align="start"
             alignOffset={2}
-            className="bg-white text-[#089bab]"
+            className="bg-white text-primary"
           >
             {label}
           </TooltipContent>
@@ -178,14 +179,14 @@ export function CollapseMenuButton({
         side="right"
         sideOffset={25}
         align="start"
-        className="bg-white text-[#089bab]" // White background
+        className="bg-white text-primary" // White background
       >
         <DropdownMenuLabel className="max-w-[190px] truncate">
           {label}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {submenus.map(({ href, label }, index) => (
-          <DropdownMenuItem key={index} asChild className="hover:bg-[#d1ecf0]">
+          <DropdownMenuItem key={index} asChild className="hover:bg-primary/20">
             <Link className="cursor-pointer" href={href}>
               <p className="max-w-[180px] truncate">{label}</p>
             </Link>
