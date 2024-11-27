@@ -46,7 +46,7 @@ export const AssignCIHead = () => {
     <div className="py-4">
       <Card className="border-gray-500/20 bg-background">
         <div className="flex justify-between p-4">
-          <div className="pt-2 text-base font-semibold">Change Password</div>
+          <div className="pt-2 text-base font-semibold">Assign CI Head</div>
         </div>
         <CardContent className="overflow-y-auto p-4 pt-0">
           <FormWrapper form={form} onSubmit={() => {}}>

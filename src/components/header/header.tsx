@@ -41,9 +41,8 @@ export function Header() {
         </div>
       </div>
       <div className="flex flex-1 items-center justify-end space-x-5 text-primary">
-        <Bell size={18} />
-        <ThemeToggle />
-        <MailOpen size={18} />
+       
+    
         <UserNav />
 
       </div>
