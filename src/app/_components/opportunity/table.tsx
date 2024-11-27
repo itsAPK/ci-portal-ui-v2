@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { AddOpportunity } from './add';
+import { Button } from '@/components/ui/button';
+import { DownloadIcon } from 'lucide-react';
 
 export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
   const filterFields: DataTableFilterField<any>[] = [
@@ -144,6 +146,10 @@ export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: 
             className="h-8"
           />
              <AddOpportunity/>  
+             <Button variant={'ghost-1'} size={'sm'} className="text-xs">
+          <DownloadIcon className="mr-2 h-4 w-4" />
+          Export 
+          </Button>
         </DataTableAdvancedToolbar>
      
       </DataTable>
