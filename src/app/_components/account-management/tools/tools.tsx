@@ -20,7 +20,7 @@ export default function Tools() {
       }
     >
       <div className="py-4">
-        <Card className="border-gray-500/20 bg-white">
+        <Card className="border-gray-500/20 bg-background">
           <div className="flex justify-between p-4">
             <div className="pt-2 text-base font-semibold">Tools</div>
           </div>

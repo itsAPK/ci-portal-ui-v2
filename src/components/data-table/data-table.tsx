@@ -37,14 +37,14 @@ export function DataTable<TData>({
   children,
   className,
   pagination = true,
-  size = 'w-[100%]',
+  size = '100%',
   ...props
 }: DataTableProps<TData>) {
   return (
     <div className={cn('w-full space-y-2.5 overflow-auto', className)} {...props}>
       {children}
       <div className={cn('rounded-md border ')}>
-        <Table style={{ width: '100%' }}>
+        <Table style={{ width: size ?? '100%' }}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
