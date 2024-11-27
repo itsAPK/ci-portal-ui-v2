@@ -1,33 +1,32 @@
-'use client';
-import WordPullUp from '@/components/ui/word-pull-up';
-
 import { ContentLayout } from '@/components/content-layout';
+import { DataTableSkeleton } from '@/components/data-table/skeleton';
+import { opportunities, trainingData } from '@/lib/data';
 import React from 'react';
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i);
+import { OpportunityTable } from '../_components/opportunity/table';
+import UILayout from '@/components/ui-layout';
+import { TrainingTable } from '../_components/training/table';
 
 export default function Training() {
   return (
+    <UILayout>
     <ContentLayout>
-      <div className="h-screen">
-        <h1>Training</h1>
-        <div className="sticky1">I am sticky!</div>
-      </div>
-    </ContentLayout>
+      <React.Suspense
+          fallback={
+            <DataTableSkeleton
+              columnCount={5}
+              searchableColumnCount={1}
+              filterableColumnCount={2}
+              cellWidths={["10rem", "20rem", "12rem", "12rem", "8rem"]}
+              shrinkZero
+            />
+          }
+        >
+          <div className="font-semibold  p-3 text-xl text-gray-800 dark:text-white">
+            Certified Belts Details
+
+          </div>
+          <TrainingTable data={trainingData} pageCount={1} />
+        </React.Suspense>
+    </ContentLayout></UILayout>
   );
 }

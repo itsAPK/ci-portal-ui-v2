@@ -45,9 +45,8 @@ export default function AddItem() {
             <TabsContent value="2"><Tools /></TabsContent>
             <TabsContent value="7"><AssignCIHead /></TabsContent>
             <TabsContent value="3"><RequestPlant /></TabsContent>
-            <TabsContent value="4"><ImprovementPhase /></TabsContent>
-            <TabsContent value="5"><ControlPhase /></TabsContent>
-            <TabsContent value="6"><ProjectClousre /></TabsContent>
+            <TabsContent value="4"></TabsContent>
+        
           </Tabs>
         </div>
       </ContentLayout>
