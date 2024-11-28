@@ -11,6 +11,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 import { ScrollArea } from '../ui/scroll-area';
 import { getMenuList } from '@/lib/menu-list';
 import { CollapseMenuButton } from './collapse-menu-button';
+import { useRouter } from 'next/navigation';
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -19,7 +20,7 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
-
+const router = useRouter()
   return (
     <ScrollArea className="[&>div>div[style]]:!block scrollbar-none ">
       <nav className="mt-8 h-full w-full scrollbar-none ">
@@ -110,7 +111,7 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={() => {router.push('/auth/login')}}
                     variant="outline"
                     className="mt-5 h-10 w-full justify-center"
                   >
