@@ -117,8 +117,8 @@ const router = useRouter()
       {/* <div className='absolute left-[50%]  top-[180px] text-7xl text-center flex flex-col uppercase text-gray-100 tracking-widest' style={{fontFamily : '"Monoton", sans-serif',}}> 
         CIRTS
 </div> */}
-<div className='absolute left-[50%] font-extrabold top-[260px] bg-gray-200 text-7xl text-center flex flex-col w-[263px] h-[1px] uppercase text-green-300' style={{fontFamily : '"Montserrat", sans-serif',}}> 
-</div>
+{/* <div className='absolute left-[50%] font-extrabold top-[260px] bg-gray-200 text-7xl text-center flex flex-col w-[263px] h-[1px] uppercase text-green-300' style={{fontFamily : '"Montserrat", sans-serif',}}> 
+</div> */}
       <div className='absolute left-[50%] font-extrabold top-[300px] text-5xl flex flex-col uppercase text-gray-100' style={{fontFamily : '"Montserrat", sans-serif',}}> 
          <div className='animate__animated animate__backInUp'>Continuous </div> 
         <div className="flex gap-2"> <div className='animate__animated animate__backInLeft'>Improvement </div>
