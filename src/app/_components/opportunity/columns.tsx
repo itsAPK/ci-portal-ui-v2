@@ -8,6 +8,7 @@ import {
 import { ArrowDown, EyeIcon, PencilIcon, Settings2Icon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 // import { DeleteDoctor } from "./delete-doctor";
 // import { EditDoctor } from "./edit-doctor";
 
@@ -20,6 +21,10 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
           Project ID
         </div>
       ),
+      cell: ({ cell }) => {
+        return <Link href='/opportunity/1' className="text-xs text-center underline text-gray-500 font-bold">{cell.getValue() as any}</Link>;
+      }
+
     },
     {
         accessorKey: "company",

@@ -55,7 +55,7 @@ const multiSelectVariants = cva(
         ghost: 'hover:bg-accent hover:text-accent-foreground text-background',
         link: ' underline-offset-4 hover:underline text-background',
         calender:
-          'bg-[hsl(var(--chart-2))]  shadow hover:bg-primary/20',
+          'bg-[hsl(var(--chart-2))] text-white  shadow hover:bg-primary/20',
       },
     },
     defaultVariants: {
