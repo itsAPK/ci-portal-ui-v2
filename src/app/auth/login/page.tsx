@@ -35,8 +35,8 @@ export default function Login() {
           throw err;
         });
     },
-    onError: (error) => {
-      toast.error(error.message, {
+    onError: (error : any) => {
+      toast.error(error.response.data.detail.message, {
         icon: <AlertTriangle className="h-4 w-4" />,
       });
     },
