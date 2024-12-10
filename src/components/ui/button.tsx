@@ -21,6 +21,9 @@ const buttonVariants = cva(
         leaf: 'hover:bg-sky-500/40 border border-sky-500/70 bg-sky-500/20 hover:text-accent-foreground',
         calender:
           'bg-[hsl(var(--chart-2))] text-primary-foreground shadow hover:bg-[hsl(var(--chart-2))]/90',
+        edit : 'hover:bg-blue-500/40 border border-blue-500/70 bg-blue-500/20 hover:text-accent-foreground',
+        'destructive-ghost':
+          'hover:bg-destructive/40 border border-destructive/70 bg-destructive/20 hover:text-accent-foreground',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -29,6 +32,7 @@ const buttonVariants = cva(
         icon: 'h-9 w-9',
         xs: 'h-6 rounded-sm px-3 text-xs',
         none: '',
+        xxs : 'h-4 rounded-sm p-1 text-xs',
       },
     },
     defaultVariants: {

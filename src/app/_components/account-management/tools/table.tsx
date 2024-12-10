@@ -4,28 +4,36 @@ import { toolsColumns } from './columns';
 import React from 'react';
 import { DataTable } from '@/components/data-table/data-table';
 import { Shell } from '@/components/ui/shell';
-
 import { DataTableFilterField } from '@/types';
 import { DataTableAdvancedToolbar } from '@/components/data-table/toolbar';
-
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
-import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { AddTools } from './add-tools';
-// import { AddOpportunity } from './add';
+import { getCookie } from 'cookies-next';
+import { categories } from '@/lib/data';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { Tools } from '@/schema/tools';
 
-export const ToolsTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
+export const ToolsTable = ({
+  data,
+  pageCount,
+  refetch,
+}: {
+  data: Tools[];
+  pageCount: number;
+  refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
+}) => {
   const filterFields: DataTableFilterField<any>[] = [
     {
-      value: 'tools',
+      value: 'name',
       label: 'Tools',
     },
 
     {
       label: 'Category',
       value: 'category',
-      options: ['Black Belt', 'Green Belt', 'SITG'].map((i: any) => ({
+      options: categories.map((i: any) => ({
         value: i,
         label: i,
       })),
@@ -50,20 +58,14 @@ export const ToolsTable = ({ data, pageCount }: { data: any[]; pageCount: number
     defaultPerPage: 50,
   });
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  const role = getCookie('ci-portal.role');
 
-  const [date, setDate] = React.useState<DateRange>({
-    from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-    to: new Date(),
-  });
 
   return (
-    <Shell className="gap-2 w-full">
-      <DataTable table={table} size={'w-full'} pagination={true}>
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
-          <AddTools />
+    <Shell className="w-full gap-2">
+      <DataTable table={table} size={'w-full'} pagination={true} isServer refetchFn={refetch}>
+        <DataTableAdvancedToolbar table={table} filterFields={filterFields} isServer refetchFn={refetch}>
+          {role === 'admin' && <AddTools />}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

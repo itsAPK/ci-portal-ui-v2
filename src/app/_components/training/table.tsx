@@ -1,6 +1,6 @@
 'use client';
 import { useDataTable } from '@/hooks/use-data-table';
-import {  trainingColumns } from './columns';
+import { trainingColumns } from './columns';
 import React from 'react';
 import { DataTable } from '@/components/data-table/data-table';
 import { Shell } from '@/components/ui/shell';
@@ -13,58 +13,100 @@ import { useRouter } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { Button } from '@/components/ui/button';
-import { DownloadIcon, UploadIcon } from 'lucide-react';
+import { AlertTriangle, CheckCircle, DownloadIcon, UploadIcon } from 'lucide-react';
+import {
+  RefetchOptions,
+  QueryObserverResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 // import { AddOpportunity } from './add';
-
-export const TrainingTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
+import { AddTraining } from './add';
+import { categories } from '@/lib/data';
+import { ExportTraining } from './export';
+import api from '@/lib/api';
+import { toast } from 'sonner';
+import { FileUploadDialog } from '@/components/file-upload-dialog';
+export const TrainingTable = ({
+  data,
+  pageCount,
+  refetchFn,
+}: {
+  data: any[];
+  pageCount: number;
+  refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
+}) => {
   const filterFields: DataTableFilterField<any>[] = [
     {
-        label : 'Employee ID',
-        value: "employee_id",
+      label: 'Employee ID',
+      value: 'employee_id',
     },
     {
-        label : "Employee Name",
-        value: "employee_name",
+      label: 'Employee Name',
+      value: 'employee_name',
     },
     {
-        label : "Department",
-        value: "department",
+      label: 'Department',
+      value: 'department',
     },
-  
+
     {
-      label : 'Category',
+      label: 'Category',
       value: 'category',
-      options: ['Black Belt', 'Green Belt', 'SITG'].map((i: any) => ({
+      options: categories.map((i: any) => ({
         value: i,
         label: i,
       })),
     },
     {
-     label : "Bussiness Unit",
-     value: "bussiness_unit",
+      label: 'Bussiness Unit',
+      value: 'bussiness_unit',
     },
     {
-        label : "Division",
-        value: "division",
+      label: 'Plant',
+      value: 'plant',
     },
     {
-        label : "Company",
-        value: "company",
+      label: 'Company',
+      value: 'company',
     },
     {
-        label : "Batch",
-        value: "batch",
+      label: 'Department',
+      value: 'department',
     },
     {
-        label : "Year",
-        value: "year",
+      label: 'Grade',
+      value: 'grade',
     },
     {
-        label : "Trainer",
-        value: "trainer",
-    }
-
-    
+      label: 'Working Location',
+      value: 'working_location',
+    },
+    {
+      label: 'Batch',
+      value: 'batch',
+      options: Array.from({ length: 20 }, (_, i) => `${new Date().getFullYear() - i}}`).map(
+        (i: any) => ({
+          value: i,
+          label: i,
+        }),
+      ),
+    },
+    {
+      label: 'Year',
+      value: 'year',
+      options: Array.from(
+        { length: 20 },
+        (_, i) => `${new Date().getFullYear() - i}-${new Date().getFullYear() - i + 1}`,
+      ).map((i: any) => ({
+        value: i,
+        label: i,
+      })),
+    },
+    {
+      label: 'Trainer',
+      value: 'trainer',
+    },
   ];
   const columns = React.useMemo(() => trainingColumns(), []);
   const { table } = useDataTable({
@@ -85,18 +127,67 @@ export const TrainingTable = ({ data, pageCount }: { data: any[]; pageCount: num
     to: new Date(),
   });
 
+  const queryClient = useQueryClient();
+  const params = useSearchParams();
+
+  const upload = useMutation({
+    mutationKey: ['upload-employee'],
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await api.post('/training/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.detail.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {
+      toast.success('Uploading', {
+        icon: <CheckCircle className="h-4 w-4" />,
+      });
+      queryClient.refetchQueries({
+        queryKey: ['get-training'],
+      });
+      router.push(`${pathname}?${params.toString()}`);
+      router.refresh();
+    },
+  });
+
+  const onUpload = async (file: File) => {
+    const { data } = await upload.mutateAsync(file);
+    console.log(data);
+  };
+
+  const onDownloadSample = () => {
+    router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/employee.xlsx`);
+  };
+
   return (
-    <Shell className="gap-2 w-full">
-      <DataTable table={table} size={'140%'} pagination={true}>
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
-          <Button  size={'sm'} className=" text-xs">
-          <UploadIcon className="mr-2 h-4 w-4" />
-          Upload 
-          </Button>
-          <Button variant={'ghost-1'} size={'sm'} className="text-xs">
-          <DownloadIcon className="mr-2 h-4 w-4" />
-          Export 
-          </Button>
+    <Shell className="w-full gap-2">
+      <DataTable table={table} size={'140%'} pagination={true} isServer refetchFn={refetchFn}>
+        <DataTableAdvancedToolbar
+          table={table}
+          filterFields={filterFields}
+          isServer
+          refetchFn={refetchFn}
+        >
+          <AddTraining />
+
+          <FileUploadDialog
+            onUpload={onUpload}
+            onDownloadSample={onDownloadSample}
+            triggerButtonText="Upload Certified Belts"
+            dialogTitle="Upload Certified Belts"
+            allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          />
+
+          <ExportTraining />
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

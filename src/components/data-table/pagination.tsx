@@ -14,16 +14,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
+import {
+  usePathname,useSearchParams,useRouter
+} from 'next/navigation'
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
   pageSizeOptions?: number[];
+  isServer?: boolean;
+  refetchFn?: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }
 
 export function DataTablePagination<TData>({
   table,
-  pageSizeOptions = [10, 20, 30, 40, 50],
+  pageSizeOptions = [10, 20, 30, 40, 50, 100],
+  isServer = true,
+  refetchFn,
 }: DataTablePaginationProps<TData>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const newSearchParams = useSearchParams();
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
       <div className="flex items-center space-x-2">
@@ -32,6 +42,13 @@ export function DataTablePagination<TData>({
           value={`${table.getState().pagination.pageSize}`}
           onValueChange={(value) => {
             table.setPageSize(Number(value));
+            if (isServer) {
+              router.push(`${pathname}?${newSearchParams}`);
+              router.refresh();
+              setTimeout(() => {
+                refetchFn?.();
+              }, 1000);
+            }
           }}
         >
           <SelectTrigger className="h-8 w-[4.5rem]">
@@ -55,7 +72,16 @@ export function DataTablePagination<TData>({
             aria-label="Go to first page"
             variant="outline"
             className="hidden size-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
+            onClick={() => {
+              table.setPageIndex(0);
+              if (isServer) {
+                router.push(`${pathname}?${newSearchParams}`);
+                router.refresh();
+                setTimeout(() => {
+                  refetchFn?.();
+                }, 1000);
+              }
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <DoubleArrowLeftIcon className="size-4" aria-hidden="true" />
@@ -65,7 +91,16 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => table.previousPage()}
+            onClick={() => {
+              table.previousPage();
+              if (isServer) {
+                router.push(`${pathname}?${newSearchParams}`);
+                router.refresh();
+                setTimeout(() => {
+                  refetchFn?.();
+                }, 1000);
+              }
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeftIcon className="size-4" aria-hidden="true" />
@@ -75,7 +110,16 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => table.nextPage()}
+            onClick={() => {
+              table.nextPage();
+              if (isServer) {
+                router.push(`${pathname}?${newSearchParams}`);
+                router.refresh();
+                setTimeout(() => {
+                  refetchFn?.();
+                }, 1000);
+              }
+            }}
             disabled={!table.getCanNextPage()}
           >
             <ChevronRightIcon className="size-4" aria-hidden="true" />
@@ -85,7 +129,17 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            onClick={() => {
+              table.setPageIndex(table.getPageCount() - 1);
+            
+              if (isServer) {
+                router.push(`${pathname}?${newSearchParams}`);
+                router.refresh();
+                setTimeout(() => {
+                  refetchFn?.();
+                }, 1000);
+              }
+            }}
             disabled={!table.getCanNextPage()}
           >
             <DoubleArrowRightIcon className="size-4" aria-hidden="true" />

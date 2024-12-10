@@ -1,33 +1,64 @@
 import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
+import { toolsSchema, ToolsSchema } from '@/schema/tools';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { SelectField } from '@/components/select-field-wrapper';
+import { categories } from '@/lib/data';
 
 interface ToolsFormProps {
-  defaultValues?: Partial<any>;
-  onSubmit: (data: any) => void;
+  defaultValues?: Partial<ToolsSchema>;
+  onSubmit: (data: ToolsSchema) => void;
+  mode?: 'add' | 'edit'
 }
 
-export const ToolsForm = ({ defaultValues, onSubmit }: ToolsFormProps) => {
+export const ToolsForm = ({ defaultValues, onSubmit , mode = 'add'}: ToolsFormProps) => {
   const form = useForm<any>({
     defaultValues,
+    resolver: zodResolver(toolsSchema),
   });
   return (
     <FormWrapper form={form} onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid h-full grid-cols-1 md:grid-cols-4">
         <div className="col-span-4 px-2 py-1 md:px-7">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-1">
             <FormFieldInput
               control={form.control}
               name="name"
               label="Name"
               className="col-span-1"
             />
-            <FormFieldInput
+            <SelectField
               control={form.control}
               name="category"
               label="Category"
-              className="col-span-1"
+              options={categories.map(
+                (i: any) => ({
+                  value: i,
+                  label: i,
+                }),
+              )}
             />
+            {
+              mode === 'edit' &&  <SelectField
+              control={form.control}
+              name="status"
+              label="Status"
+              options={['Active', 'Inactive'].map(
+                (i: any) => ({
+                  value: i,
+                  label: i,
+                }),
+              )}
+            />
+            }
+          </div>
+          <div className="flex justify-center py-10">
+            <Button type="submit" size="lg" className="w-[200px] gap-2">
+              {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />} Submit
+            </Button>
           </div>
         </div>
       </div>

@@ -1,0 +1,22 @@
+import { z } from "zod";
+import { Employee } from "./employee";
+
+export const archiveSchema = z.object({
+  company: z.string({required_error: 'Company is required'}),
+  department: z.string({required_error: 'Department is required'}),
+  category: z.string({required_error: 'Category is required'}),
+  year: z.string({required_error: 'Year is required'}),
+  project_title: z.string({required_error: 'Project title is required'}),
+  baseline: z.string({required_error: 'Baseline is required'}),
+  target: z.string({required_error: 'Target is required'}),
+  result: z.string({required_error: 'Result is required'}),
+ 
+});
+
+export type ArchiveSchema = z.infer<typeof archiveSchema>;
+
+export interface Archive extends ArchiveSchema {
+  _id: {$oid: string};
+  file_path     : string;
+  uploaded_by   : Employee;
+}

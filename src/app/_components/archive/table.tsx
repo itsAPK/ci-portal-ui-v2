@@ -14,9 +14,39 @@ import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 // import { AddOpportunity } from './add';
 import { AddArchive } from './add';
+import { categories } from '@/lib/data';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 
-export const ArchiveTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
+export const ArchiveTable = ({ data, pageCount,refetchFn }: { data: any[]; pageCount: number,refetchFn:  (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>; }) => {
   const filterFields: DataTableFilterField<any>[] = [
+    {
+      value: "company",
+      label: "Company",
+    },
+    {
+      value: "department",
+      label: "Department",
+    },
+    {
+      value: "category",
+      label: "Category",
+      options: categories.map((i: any) => ({
+        value: i,
+        label: i,
+      })),
+    },
+    {
+      value: "year",
+      label: "Year",
+      options: Array.from(
+        { length: 20 },
+        (_, i) => `${new Date().getFullYear() - i}-${new Date().getFullYear() - i + 1}`,
+      ).map((i: any) => ({
+        value: i,
+        label: i,
+      }))
+    },
     {
         value: "project_title",
         label: "Project Title",
@@ -24,10 +54,12 @@ export const ArchiveTable = ({ data, pageCount }: { data: any[]; pageCount: numb
     {
       label: 'Baseline',
       value: 'baseline',
+      dtype : 'int'
     },
     {
       label: 'Target',
       value: 'target',
+      dtype : 'int'
     },
     {
       label: 'Result',
@@ -53,11 +85,12 @@ export const ArchiveTable = ({ data, pageCount }: { data: any[]; pageCount: numb
     to: new Date(),
   });
 
+  const role = getCookie('ci-portal.role');
   return (
     <Shell className="gap-2 w-full">
-      <DataTable table={table} size={'w-full'} pagination={true}>
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
-        <AddArchive />
+      <DataTable table={table} size={'w-full'} pagination={true} refetchFn={refetchFn} isServer>
+        <DataTableAdvancedToolbar table={table} filterFields={filterFields} refetchFn={refetchFn} isServer>
+        {role === 'admin' && <AddArchive />}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>
