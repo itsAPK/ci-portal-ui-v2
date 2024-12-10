@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 
 import { DataTableFacetedFilter } from './faceted-filter';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 
 interface DataTableFilterItemProps<TData> {
   table: Table<TData>;
@@ -27,6 +28,8 @@ interface DataTableFilterItemProps<TData> {
   selectedOptions: DataTableFilterOption<TData>[];
   setSelectedOptions: React.Dispatch<React.SetStateAction<DataTableFilterOption<TData>[]>>;
   defaultOpen: boolean;
+  isServer?: boolean;
+  refetchFn?: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }
 
 export function DataTableFilterItem<TData>({
@@ -35,6 +38,8 @@ export function DataTableFilterItem<TData>({
   selectedOptions,
   setSelectedOptions,
   defaultOpen,
+  isServer = true,
+  refetchFn,
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -89,14 +94,33 @@ export function DataTableFilterItem<TData>({
         [String(selectedOption.value)]:
           filterValues.length > 0 ? `${filterValues.join('.')}~${selectedOperator?.value}` : null,
       });
-      router.push(`${pathname}?${newSearchParams}`);
+      if (isServer) {
+        router.push(`${pathname}?${newSearchParams}`);
+        router.refresh();
+
+        setTimeout(() => {
+          refetchFn?.();
+        }, 1000);
+      } else {
+        router.push(`${pathname}?${newSearchParams}`);
+      }
     } else {
       // key=value~operator
       const newSearchParams = createQueryString({
         [String(selectedOption.value)]:
           debounceValue.length > 0 ? `${debounceValue}~${selectedOperator?.value}` : null,
       });
-      router.push(`${pathname}?${newSearchParams}`);
+      if (isServer) {
+        router.push(`${pathname}?${newSearchParams}`);
+        router.refresh();
+        setTimeout(() => {
+          refetchFn?.();
+        }, 1000);
+        
+      } else {
+        router.push(`${pathname}?${newSearchParams}`);
+
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,7 +196,16 @@ export function DataTableFilterItem<TData>({
               const newSearchParams = createQueryString({
                 [String(selectedOption.value)]: null,
               });
-              router.push(`${pathname}?${newSearchParams}`);
+              if (isServer) {
+                router.push(`${pathname}?${newSearchParams}`);
+                router.refresh();
+                setTimeout(() => {
+          refetchFn?.();
+        }, 1000);
+              } else {
+                router.push(`${pathname}?${newSearchParams}`);
+
+              }
             }}
           >
             <TrashIcon className="size-4" aria-hidden="true" />

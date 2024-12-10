@@ -14,16 +14,25 @@ import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 // import { AddOpportunity } from './add';
 import { AddTemplate } from './add';
+import { getCookie } from 'cookies-next';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 
-export const TemplateTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
- 
+export const DocumentTable = ({
+  data,
+  pageCount,
+  refetchFn,
+}: {
+  data: any[];
+  pageCount: number;
+  refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
+}) => {
   const columns = React.useMemo(() => templateColumns(), []);
   const { table } = useDataTable({
     data,
     columns,
     pageCount,
-    filterFields : [],
     enableAdvancedFilter: false,
+    
     defaultPerPage: 50,
   });
 
@@ -35,13 +44,13 @@ export const TemplateTable = ({ data, pageCount }: { data: any[]; pageCount: num
     from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
     to: new Date(),
   });
+  const role = getCookie('ci-portal.role');
 
   return (
-    <Shell className="gap-2 w-full">
-      <DataTable table={table} size={'w-full'} pagination={false}>
-        <DataTableAdvancedToolbar table={table} >
-        {/* <AddArchive /> */}
-        <AddTemplate/>
+    <Shell className="w-full gap-2">
+      <DataTable table={table} size={'w-full'} pagination={false} isServer refetchFn={refetchFn}>
+        <DataTableAdvancedToolbar table={table }  isServer refetchFn={refetchFn}>
+          {role === 'admin' && <AddTemplate />}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

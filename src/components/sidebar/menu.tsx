@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { ScrollArea } from '../ui/scroll-area';
-import { getMenuList } from '@/lib/menu-list';
+import { getAdminMenuList } from '@/lib/menu-list';
 import { CollapseMenuButton } from './collapse-menu-button';
 import { useRouter } from 'next/navigation';
+import { getCookie } from 'cookies-next';
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -19,7 +20,8 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
-  const menuList = getMenuList(pathname);
+  const role = getCookie('ci-portal.role');
+  const menuList = getAdminMenuList(pathname);
 const router = useRouter()
   return (
     <ScrollArea className="[&>div>div[style]]:!block scrollbar-none ">

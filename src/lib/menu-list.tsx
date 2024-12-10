@@ -12,6 +12,7 @@ import {
   BookMarked,
   FolderGit,
   Bug,
+  Settings,
 } from 'lucide-react';
 
 type Submenu = {
@@ -33,7 +34,7 @@ type Group = {
   menus: Menu[];
 };
 
-export function getMenuList(pathname: string): Group[] {
+export function getAdminMenuList(pathname: string): Group[] {
   return [
     {
       groupLabel: '',
@@ -73,15 +74,21 @@ export function getMenuList(pathname: string): Group[] {
           icon: NotebookText,
           submenus: [],
         },
-       
+
         {
           href: '/account-management',
           label: 'Account Management',
           active: pathname === '/account-management',
-          icon: Bug,
+          icon: BookMarked,
           submenus: [],
         },
-        
+        {
+          href: '/portal-management',
+          label: 'Portal Management',
+          active: pathname === '/portal-management',
+          icon: Settings,
+          submenus: [],
+        },
       ],
     },
   ];

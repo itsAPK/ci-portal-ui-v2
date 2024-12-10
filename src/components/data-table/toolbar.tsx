@@ -13,10 +13,13 @@ import { DataTableViewOptions } from '@/components/data-table/view-options';
 
 import { DataTableFilterItem } from '@/components/data-table/filter-item';
 import { DataTableMultiFilter } from '@/components/data-table/multi-filter';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 
 interface DataTableAdvancedToolbarProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
   filterFields?: DataTableFilterField<TData>[];
+  isServer? : boolean;
+  refetchFn?: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }
 
 export function DataTableAdvancedToolbar<TData>({
@@ -24,6 +27,8 @@ export function DataTableAdvancedToolbar<TData>({
   filterFields = [],
   children,
   className,
+  isServer = true,
+  refetchFn,
   ...props
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams();
@@ -104,6 +109,8 @@ export function DataTableAdvancedToolbar<TData>({
               selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
               defaultOpen={openCombobox}
+              isServer={isServer}
+              refetchFn={refetchFn}
             />
           ))}
         {/* {selectedOptions.some((option) => option.isMulti) ? (

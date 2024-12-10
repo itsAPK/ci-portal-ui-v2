@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Hash, SigmaIcon } from 'lucide-react';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 
 interface DataTableFilterComboboxProps<TData> {
   options: DataTableFilterOption<TData>[];
@@ -23,6 +24,8 @@ interface DataTableFilterComboboxProps<TData> {
   setSelectedOptions: React.Dispatch<React.SetStateAction<DataTableFilterOption<TData>[]>>;
   onSelect: () => void;
   children?: React.ReactNode;
+  isServer?: boolean;
+  refetchFn?: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }
 
 export function DataTableFilterCombobox<TData>({
@@ -31,6 +34,8 @@ export function DataTableFilterCombobox<TData>({
   setSelectedOptions,
   onSelect,
   children,
+  isServer = true,
+  refetchFn,
 }: DataTableFilterComboboxProps<TData>) {
   const [value, setValue] = React.useState('');
   const [open, setOpen] = React.useState(false);

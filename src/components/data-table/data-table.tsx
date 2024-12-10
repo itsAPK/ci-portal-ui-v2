@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/table';
 import { DataTablePagination } from '@/components/data-table/pagination';
 import { ColumnResizer } from './column-resizer';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -29,6 +30,8 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   floatingBar?: React.ReactNode | null;
   size?: string;
   pagination?: boolean;
+  isServer?: boolean;
+  refetchFn?: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }
 
 export function DataTable<TData>({
@@ -38,6 +41,8 @@ export function DataTable<TData>({
   className,
   pagination = true,
   size = '100%',
+  isServer = true,
+  refetchFn,
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -90,7 +95,7 @@ export function DataTable<TData>({
       </div>
       {pagination && (
         <div className="flex flex-col gap-2.5">
-          <DataTablePagination table={table} />
+          <DataTablePagination isServer={isServer} refetchFn={refetchFn} table={table} />
           {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
         </div>
       )}

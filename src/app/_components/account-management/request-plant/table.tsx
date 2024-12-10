@@ -12,27 +12,43 @@ import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
+import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 // import { AddOpportunity } from './add';
 
-export const RequestPlantTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
+export const RequestPlantTable = ({
+  data,
+  pageCount,
+  refetchFn,
+}: {
+  data: any[];
+  pageCount: number;
+  refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
+}) => {
   const filterFields: DataTableFilterField<any>[] = [
     {
-      value: 'id',
+      value: 'employee_id',
       label: 'Employee ID',
     },
     {
-        value: "name",
-        label: "Employee Name",
+      value: 'employee_name',
+      label: 'Employee Name',
     },
     {
       value: 'current_plant',
       label: 'Current Plant/Division',
     },
     {
-      value: 'new_plant',
+      value: 'requested_plant',
       label: 'New Plant/Division',
+    },
+    {
+      value: 'status',
+      label: 'Status',
+      options: ['Pending', 'Approved', 'Rejected'].map((i: string) => ({
+        value: i.toLowerCase(),
+        label: i,
+      })),
     }
-
   ];
   const columns = React.useMemo(() => requestPlantColumns(), []);
   const { table } = useDataTable({
@@ -54,10 +70,14 @@ export const RequestPlantTable = ({ data, pageCount }: { data: any[]; pageCount:
   });
 
   return (
-    <Shell className="gap-2 w-full">
-      <DataTable table={table} size={'w-full'} pagination={true}>
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
-        </DataTableAdvancedToolbar>
+    <Shell className="w-full gap-2">
+      <DataTable table={table} size={'w-full'} pagination={true} isServer refetchFn={refetchFn}>
+        <DataTableAdvancedToolbar
+          table={table}
+          isServer
+          refetchFn={refetchFn}
+          filterFields={filterFields}
+        ></DataTableAdvancedToolbar>
       </DataTable>
     </Shell>
   );

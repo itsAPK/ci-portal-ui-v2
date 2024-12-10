@@ -14,10 +14,42 @@ export const trainingColumns = (): ColumnDef<any>[] => {
         ),
       },
       {
-          accessorKey: "employee_name",
+          accessorKey: "name",
           header: ({ column }) => (
             <div className="text-xs flex justify-center font-medium text-center ">
               Employee Name
+            </div>
+          ),
+        },
+        {
+          accessorKey: "category",
+          header: ({ column }) => (
+            <div className="text-xs flex  justify-center font-medium text-center ">
+              Category
+            </div>
+          ),
+        },
+        {
+          accessorKey: "company",
+          header: ({ column }) => (
+            <div className="text-xs flex  justify-center font-medium text-center ">
+              Company
+            </div>
+          ),
+        },
+        {
+          accessorKey: "bussiness_unit",
+          header: ({ column }) => (
+            <div className="text-xs flex  justify-center font-medium text-center ">
+              Bussiness Unit
+            </div>
+          ),
+        },
+        {
+          accessorKey: "plant",
+          header: ({ column }) => (
+            <div className="text-xs flex  justify-center font-medium text-center ">
+              Plant
             </div>
           ),
         },
@@ -29,6 +61,7 @@ export const trainingColumns = (): ColumnDef<any>[] => {
             </div>
           ),
         },
+        
         {
             accessorKey: "grade",
             header: ({ column }) => (
@@ -38,37 +71,15 @@ export const trainingColumns = (): ColumnDef<any>[] => {
             ),
           },
           {
-            accessorKey: "work_location",
+            accessorKey: "working_location",
             header: ({ column }) => (
               <div className="text-xs flex  justify-center font-medium text-center ">
                 Work Location
               </div>
             ),
           },
-          {
-            accessorKey: "bussiness_unit",
-            header: ({ column }) => (
-              <div className="text-xs flex  justify-center font-medium text-center ">
-                Bussiness Unit
-              </div>
-            ),
-          },
-          {
-            accessorKey: "division",
-            header: ({ column }) => (
-              <div className="text-xs flex  justify-center font-medium text-center ">
-                Division
-              </div>
-            ),
-          },
-          {
-            accessorKey: "company",
-            header: ({ column }) => (
-              <div className="text-xs flex  justify-center font-medium text-center ">
-                Company
-              </div>
-            ),
-          },
+         
+         
           {
             accessorKey: "batch",
             header: ({ column }) => (

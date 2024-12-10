@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { Template } from "@/schema/template";
 import { ColumnDef } from "@tanstack/react-table";
-
-export const templateColumns = (): ColumnDef<any>[] => {
+import { RiDeleteBin6Fill, RiDownload2Fill } from '@remixicon/react';
+import { useRouter } from "next/navigation";
+import { DeleteTemplate } from "./delete";
+export const templateColumns = (): ColumnDef<Template>[] => {
     return [
       {
-        accessorKey: "title",
+        accessorKey: "name",
         header: ({ column }) => (
           <div className="text-xs flex justify-center  font-medium text-center ">
            Template Title
@@ -20,12 +23,15 @@ export const templateColumns = (): ColumnDef<any>[] => {
           ),
         },
         {
-          accessorKey: "date",
+          accessorKey: "created_at",
           header: ({ column }) => (
             <div className="text-xs flex  justify-center font-medium text-center ">
               Date of Upload
             </div>
           ),
+          cell: ({ row }) => {
+            return new Date(row.original.created_at).toDateString();
+          }
         },
         
    
@@ -35,15 +41,13 @@ export const templateColumns = (): ColumnDef<any>[] => {
         
           return (
             <div className="flex justify-center space-x-2 pl-2">
-               <Button variant="outline" size={"sm"} className="rounded-[4px] text-xs">
-                Download
+               <Button variant="edit" size={"sm"} className="gap-2 text-xs">
+         <RiDownload2Fill className="mr-2 h-4 w-4" /> Download
                </Button>
-               <Button variant="outline" size={"sm"} className="rounded-[4px] text-xs">
-                Delete
-               </Button>
+               <DeleteTemplate id={row.original._id} />
             </div>
           );
         },
-      },
+      }, 
     ];
   };

@@ -756,3 +756,7 @@ export const trainingData = [
     trainer: 'Ram Kishore',
   },
 ];
+
+
+
+export const categories = ['Black Belt', 'Green Belt', 'SITG', 'Kaizen', 'Poka-Yoke', '3M']
