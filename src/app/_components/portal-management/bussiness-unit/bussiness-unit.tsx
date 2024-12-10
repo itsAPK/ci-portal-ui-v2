@@ -12,9 +12,12 @@ import { Badge } from '@/components/ui/badge';
 import { AddBussinessUnit } from './add-bussiness-unit';
 import { EditBussinessUnit } from './edit-bussiness-unit';
 import { DeleteBussinessUnit } from './delete-bussiness-unit';
+import { getCookie } from 'cookies-next';
 
 export function BussinessUnit() {
   const queryClient = useQueryClient();
+  const role = getCookie('ci-portal.role');
+
   const bussinessUnit = useQuery({
     queryKey: ['get-bussiness-unit'],
     queryFn: async (): Promise<any> => {
@@ -72,28 +75,32 @@ export function BussinessUnit() {
       <Card className="min-h-[60vh] border-gray-500/20 bg-background pb-4">
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Business Unit</div>
-          <div className="flex gap-2 pt-1">
-          <AddBussinessUnit />
-            <FileUploadDialog
-              onUpload={onUpload}
-              onDownloadSample={onDownloadSample}
-              triggerButtonText="Upload"
-              dialogTitle="Upload Employee"
-              allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            />
-          </div>
+          {role === 'admin' && (
+            <div className="flex gap-2 pt-1">
+              <AddBussinessUnit />
+              <FileUploadDialog
+                onUpload={onUpload}
+                onDownloadSample={onDownloadSample}
+                triggerButtonText="Upload"
+                dialogTitle="Upload Employee"
+                allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              />
+            </div>
+          )}
         </div>
         {!bussinessUnit.isLoading ? (
           <>
             {bussinessUnit.data && bussinessUnit.data.length > 0 ? (
               <div className="flex flex-wrap gap-2 px-4 pt-3">
                 {bussinessUnit.data.map((bu: any) => (
-                  <Badge key={bu._id} variant={'secondary'} className="flex flex-col py-2 gap-2">
+                  <Badge key={bu._id} variant={'secondary'} className="flex flex-col gap-2 py-2">
                     <div className="text-xs font-semibold">{bu.name}</div>
-                      <EditBussinessUnit data={bu} />
-                      <DeleteBussinessUnit bussinessUnitId={bu._id} />
-               
-                    
+                    {role === 'admin' && (
+                      <>
+                        <EditBussinessUnit data={bu} />
+                        <DeleteBussinessUnit bussinessUnitId={bu._id} />
+                      </>
+                    )}
                   </Badge>
                 ))}
               </div>

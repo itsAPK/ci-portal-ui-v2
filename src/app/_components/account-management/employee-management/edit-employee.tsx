@@ -64,13 +64,30 @@ export const EditEmployee = ({ employee }: { employee: Employee }) => {
         <DialogHeader>
           <DialogTitle>Edit Employee</DialogTitle>
         </DialogHeader>
-        <EmployeeForm onSubmit={handleSubmit} defaultValues={{
+        <EmployeeForm
+          onSubmit={handleSubmit}
+          defaultValues={{
             ...employee,
             //@ts-ignore
-            date_of_birth: employee.date_of_birth.$date,
+            date_of_birth:
             //@ts-ignore
-            date_of_joining: employee.date_of_joining.$date
-        }} />
+              employee.date_of_birth?.$date &&
+               //@ts-ignore
+              !isNaN(new Date(employee.date_of_birth.$date).getTime())
+               //@ts-ignore
+                ? employee.date_of_birth.$date
+                : new Date(),
+
+            //@ts-ignore
+            date_of_joining: //@ts-ignore
+            employee.date_of_joining?.$date &&
+             //@ts-ignore
+            !isNaN(new Date(employee.date_of_joining.$date).getTime())
+             //@ts-ignore
+              ? employee.date_of_joining.$date
+              : new Date(),
+          }}
+        />
       </DialogContent>
     </Dialog>
   );
