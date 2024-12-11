@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
+import { EditTraining } from "./edit";
+import { DeleteTraining } from "./delete";
 
 export const trainingColumns = (): ColumnDef<any>[] => {
     return [
@@ -112,12 +114,8 @@ export const trainingColumns = (): ColumnDef<any>[] => {
         
           return (
             <div className="flex justify-center space-x-2 pl-2">
-               <Button variant="outline" size={"sm"} className="rounded-[4px] text-xs">
-                Edit
-               </Button>
-               <Button variant="outline" size={"sm"} className="rounded-[4px] text-xs">
-                Delete
-               </Button>
+              <EditTraining training={row.original} />
+               <DeleteTraining id={row.original._id.$oid} />
             </div>
           );
         },

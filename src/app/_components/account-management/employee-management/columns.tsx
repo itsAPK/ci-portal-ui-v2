@@ -43,25 +43,25 @@ export const employeeColumns = (): ColumnDef<Employee>[] => {
     {
       accessorKey: 'company',
       header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium ">Company</div>
+        <div className="flex justify-center text-center text-xs font-medium  w-[100px]">Company</div>
       ),
     },
     {
       accessorKey: 'bussiness_unit',
       header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium ">Business Unit</div>
+        <div className="flex justify-center text-center text-xs font-medium  w-[100px]">Business Unit</div>
       ),
     },
     {
       accessorKey: 'plant',
       header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium ">Plant</div>
+        <div className="flex justify-center text-center text-xs font-medium  w-[100px]">Plant</div>
       ),
     },
     {
       accessorKey: 'department',
       header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium ">Department</div>
+        <div className="flex justify-center text-center text-xs font-medium  w-[100px]">Department</div>
       ),
     },
     {

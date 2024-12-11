@@ -196,23 +196,12 @@ export function Training() {
   });
 
   return (
-    <React.Suspense
-      fallback={
-        <DataTableSkeleton
-          columnCount={5}
-          searchableColumnCount={1}
-          filterableColumnCount={2}
-          cellWidths={['10rem', '20rem', '12rem', '12rem', '8rem']}
-          shrinkZero
-        />
-      }
-    >
-      <div className="py-4">
-        <Card className="border-gray-500/20 bg-background">
+   
+      <div className="">
           <div className="flex justify-between p-4">
             <div className="pt-2 text-base font-semibold">Certified Belts Details</div>
           </div>
-          <CardContent className="overflow-y-auto p-4 pt-0">
+         
             <div className="w-full">
               <TrainingTable
                 data={training.data ? training.data.data : []}
@@ -220,9 +209,8 @@ export function Training() {
                 refetchFn={training.refetch}
               />
             </div>
-          </CardContent>
-        </Card>
+        
       </div>
-    </React.Suspense>
+  
   );
 }
