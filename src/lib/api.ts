@@ -6,7 +6,7 @@ import axios, {
 import { redirect } from "next/navigation";
 import { getCookie } from "cookies-next";
 
-export const BASEURL = "https://ciportalapi.imapk.xyz";
+export const BASEURL = "https://ciportalapi.imapk.xyz/api";
 const isServer = typeof window === "undefined";
 
 
