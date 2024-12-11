@@ -70,7 +70,7 @@ export const TrainingForm = ({ onSubmit, defaultValues, mode = 'create' }: Train
   return (
     <FormWrapper form={form} onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 py-4">
-        <div className="col-span-1 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {mode === 'create' ? <div className="col-span-1 grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="col-span-2">
             <Label className="col-span-1">Employee ID</Label>
           <Input
@@ -89,7 +89,17 @@ export const TrainingForm = ({ onSubmit, defaultValues, mode = 'create' }: Train
             )}
           </Button>
         </div>
-        </div>
+        </div> :  <div className="col-span-1">
+          <FormFieldInput
+            control={form.control}
+            name="employee_id"
+            label="Employee ID"
+            placeholder="Enter Employee ID"
+            type="text"
+            
+            disabled
+          />
+        </div>}
       
 
         <div className="col-span-1">
