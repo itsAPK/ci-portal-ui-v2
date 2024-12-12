@@ -22,6 +22,7 @@ import {
     placeholder,
     className,
     disabled,
+    onChange,
   }: {
     control: any;
     name: string;
@@ -30,6 +31,7 @@ import {
     placeholder?: string;
     className?: string;
     disabled?: any;
+    onChange?: (value: any) => void;
   }) => (
     <FormItem className={className}>
       <FormLabel>{label}</FormLabel>
@@ -39,7 +41,10 @@ import {
           control={control}
           render={({ field }) => (
             <Select
-              onValueChange={field.onChange}
+              onValueChange={(e) => {
+                onChange && onChange(e);
+                field.onChange(e);
+              }}
               value={field.value}
               disabled={disabled}
             >
