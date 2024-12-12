@@ -16,37 +16,49 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { OpportunityForm } from "./form";
+import { OpportunitySchema } from "@/schema/opportunity";
 
 export const AddOpportunity = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const params = useSearchParams();
-//   const addSchedule = useMutation({
-//     mutationKey: ["add-schedule"],
-//     mutationFn: async (data: ScheduleSchema) => {
-//       return await api.post("/schedule", data).then((res) => {
-//         if (!res.data.success) throw new Error(res.data.message);
-//         return res.data;
-//       });
-//     },
-//     onError: (error) => {
-//       toast.error(error.message, {
-//         icon: <AlertTriangle className="h-4 w-4" />,
-//       });
-//     },
-//     onSuccess: () => {
+  const queryClient = useQueryClient();
+  const [impactScore, setImpactScore] = useState<number>(0);
+  const addOpportunity = useMutation({
+    mutationKey: ["add-opportunity"],
+    mutationFn: async (data: OpportunitySchema) => {
+      return await api.post("/opportunity", {
+        ...data,
+        project_score : impactScore,
+        project_impact : impactScore < 50 ? 'Low' : impactScore < 80 ? 'Medium' : 'High',
+      }).then((res) => {
+        if (!res.data.success) throw new Error(res.data.message);
+        return res.data;
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {
 
-//     setOpen(false);
-//     toast.success("Schedule added successfully", {
-//         icon: <AlertTriangle className="h-4 w-4" />,
-//       });
-//     router.push(`${pathname}?${params.toString()}`);
-//     setOpen(false);
-//     },
-//   });
+    setOpen(false);
+    toast.success("Opportunity Created successfully", {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    setOpen(false);
+    queryClient.refetchQueries(
+      {
+        queryKey: ["get-opportunities"],
+      }
+    );
+    },
+  });
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: OpportunitySchema) => {    
+    await addOpportunity.mutateAsync(data);
     
   };
 
@@ -59,7 +71,7 @@ export const AddOpportunity = () => {
         <DialogHeader>
           <DialogTitle>Add Opportunity</DialogTitle>
         </DialogHeader>
-        <OpportunityForm onSubmit={handleSubmit} />
+        <OpportunityForm onSubmit={handleSubmit} setImpactScore={setImpactScore} />
       </DialogContent>
     </Dialog>
   );

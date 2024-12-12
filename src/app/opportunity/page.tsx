@@ -1,8 +1,9 @@
+'use client'
 import { ContentLayout } from '@/components/content-layout';
 import { DataTableSkeleton } from '@/components/data-table/skeleton';
 import { opportunities } from '@/lib/data';
 import React from 'react';
-import { OpportunityTable } from '../_components/opportunity/table';
+import  Opportunities  from '../_components/opportunity/opportunity';
 import UILayout from '@/components/ui-layout';
 
 export default function Opportunity() {
@@ -20,11 +21,7 @@ export default function Opportunity() {
             />
           }
         >
-          <div className="font-semibold  p-3 text-xl text-gray-800 dark:text-white">
-            Opportunities
-
-          </div>
-          <OpportunityTable data={opportunities} pageCount={1} />
+         <Opportunities/>
         </React.Suspense>
     </ContentLayout></UILayout>
   );

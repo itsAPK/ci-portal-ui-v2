@@ -15,12 +15,23 @@ import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { AddOpportunity } from './add';
 import { Button } from '@/components/ui/button';
 import { DownloadIcon } from 'lucide-react';
-
-export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: number }) => {
+import { opportunityCategories } from '@/lib/utils';
+import { categories } from '@/lib/data';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
+export const OpportunityTable = ({
+  data,
+  pageCount,
+  refetchFn,
+}: {
+  data: any[];
+  pageCount: number;
+  refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
+}) => {
   const filterFields: DataTableFilterField<any>[] = [
     {
-        value: "project_id",
-        label: "Project ID",
+      value: 'opportunity_id',
+      label: 'Project ID',
     },
     {
       value: 'company',
@@ -41,33 +52,42 @@ export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: 
     {
       label: 'Category',
       value: 'category',
-      options: ['Black Belt', 'Green Belt', 'SITG'].map((i: any) => ({
+      options: categories.map((i: any) => ({
         value: i,
         label: i,
       })),
     },
     {
       label: 'Type',
-      value: 'type',
-      options: ['Type-1', 'Type-2', 'Type-3'].map((i: any) => ({
-        value: i,
-        label: i,
+      value: 'project_type',
+      options: opportunityCategories.project_type.map((i: any) => ({
+        value: i.name,
+        label: i.name,
       })),
     },
     {
       label: 'Savings Type',
       value: 'savings_type',
-      dtype: 'int',
+      options: ['Soft', 'Hard'].map((i: any) => ({
+        value: i,
+        label: i,
+      })),
     },
     {
       label: 'Estimated Savings',
       value: 'estimated_savings',
       dtype: 'int',
     },
+
+    {
+      label: 'Impact Score',
+      value: 'project_score',
+      dtype: 'int',
+    },
     {
       label: 'Problem Impact',
-      value: 'problem_impact',
-      options: ['Low', 'Medium', 'High', 'Very High', 'Extremely High'].map((i: any) => ({
+      value: 'project_impact',
+      options: ['Low', 'Medium', 'High'].map((i: any) => ({
         value: i,
         label: i,
       })),
@@ -114,7 +134,7 @@ export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: 
     pageCount,
     filterFields,
     enableAdvancedFilter: true,
-    defaultPerPage: 50,
+    defaultPerPage: 100,
   });
 
   const searchParams = useSearchParams();
@@ -125,11 +145,16 @@ export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: 
     from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
     to: new Date(),
   });
-
+  const role = getCookie('ci-portal.role');
   return (
     <Shell className="gap-2">
-      <DataTable table={table} size={'w-full'} pagination={true}>
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
+      <DataTable table={table} size={'w-full'} pagination={true} isServer refetchFn={refetchFn}>
+        <DataTableAdvancedToolbar
+          table={table}
+          filterFields={filterFields}
+          isServer
+          refetchFn={refetchFn}
+        >
           <CalendarDatePicker
             date={date}
             onDateSelect={({ from, to }) => {
@@ -142,16 +167,20 @@ export const OpportunityTable = ({ data, pageCount }: { data: any[]; pageCount: 
               router.push(`${pathname}?${params.toString()}`, {
                 scroll: false,
               });
+              refetchFn();
             }}
             className="h-8"
           />
-             <AddOpportunity/>  
-             <Button variant={'ghost-1'} size={'sm'} className="text-xs">
-          <DownloadIcon className="mr-2 h-4 w-4" />
-          Export 
-          </Button>
+          {role === 'admin' && (
+            <>
+              <AddOpportunity />
+              <Button variant={'ghost-1'} size={'sm'} className="text-xs">
+                <DownloadIcon className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+            </>
+          )}
         </DataTableAdvancedToolbar>
-     
       </DataTable>
     </Shell>
   );

@@ -51,6 +51,7 @@ export default function Login() {
       setCookie('ci-portal.company', data.user.company);
       setCookie('ci-portal.department', data.user.department);
       setCookie('ci-portal.bussiness_unit', data.user.bussiness_unit);
+      setCookie('ci-portal.user_id', data.user.id);
       form.reset();
       toast.success('Login successful!');
       router.push('/');
