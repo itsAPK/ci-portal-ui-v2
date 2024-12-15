@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 const data = [
   {
@@ -40,14 +41,12 @@ const data = [
   },
 ];
 
-export const TeamMemebrs = () => {
+export const TeamMemebrs = ({teamMember,isReport = false} : {teamMember: any,isReport?: boolean}) => {
   return (
-    <Card className="mt-3 border-gray-500/20 bg-white">
+    <Card className={cn('mt-3 bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
       <div className="flex justify-between p-4">
         <div className="pt-2 text-base font-semibold">Team Members</div>
-        <Button variant="ghost-1" size={'sm'} className="gap-1">
-          <RiAddCircleFill className="h-3 w-3" /> Add Team Member
-        </Button>
+      
       </div>
       <CardContent className="overflow-y-auto p-4 pt-0">
         <Table className="w-full ">
@@ -57,29 +56,18 @@ export const TeamMemebrs = () => {
               <TableHead className='text-center text-xs'>Employee Name</TableHead>
               <TableHead className='text-center text-xs'>Department</TableHead>
               <TableHead className='text-center text-xs'>Role</TableHead>
-              <TableHead></TableHead>
+              
             </TableRow>
           </TableHeader>
           <TableBody>
             {
-                data.map((item) => (
+                teamMember.map((item : any) => (
                   <TableRow key={item.id}>
-                    <TableCell className='text-center text-xs'>{item.id}</TableCell>
-                    <TableCell className='text-center text-xs'>{item.name}</TableCell>
-                    <TableCell className='text-center text-xs'>{item.department}</TableCell>
+                    <TableCell className='text-center text-xs'>{item.employee.employee_id}</TableCell>
+                    <TableCell className='text-center text-xs'>{item.employee.name}</TableCell>
+                    <TableCell className='text-center text-xs'>{item.employee.department}</TableCell>
                     <TableCell className='text-center text-xs'>{item.role}</TableCell>
-                    <TableCell className='flex gap-2 mt-1  justify-end'>
-                      <Button variant="ghost-1" className="h-6 flex gap-2" size={'sm'}>
-                        <PencilIcon className="h-3 w-3" /> Edit
-                      </Button>
-                      
-                      <Button variant="ghost-1" size={'sm'} className='h-6 flex gap-2 bg-green-500/40 border-green-500 hover:bg-green-500/60'>
-                        <RiEyeFill className="h-3 w-3" /> View
-                      </Button>
-                      <Button variant="ghost-1" size={'sm'} className="h-6 flex gap-2 bg-red-500/40 border-red-500 hover:bg-red-500/60">
-                        <RiDeleteBin2Fill className="h-3 w-3" /> Delete
-                      </Button>
-                    </TableCell>
+                    
                   </TableRow>
                 ))
             }

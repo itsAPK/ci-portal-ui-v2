@@ -1,16 +1,8 @@
 'use client';
 import { ContentLayout } from '@/components/content-layout';
 
-import PageUnderDevelopment from '@/components/page-under-development';
 import UILayout from '@/components/ui-layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ControlPhase } from '../_components/opportunity/control-phase';
-import { DefinePhase } from '../_components/opportunity/define-phase/define-phase';
-import { ImprovementPhase } from '../_components/opportunity/improvement-phase';
-import { MeasureAnalysisPhase } from '../_components/opportunity/measure-analysis-phase';
-import { Overview } from '../_components/opportunity/overview/overview';
-import { ProjectClousre } from '../_components/opportunity/project-clousre';
-import { SSVTools } from '../_components/opportunity/ssv-tools';
 import { ChangePassword } from '../_components/account-management/change-password';
 import Tools from '../_components/account-management/tools/tools';
 import { AssignCIHead } from '../_components/account-management/assign-ci-head';

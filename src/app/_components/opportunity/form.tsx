@@ -10,6 +10,7 @@ import { calculateImpactScore, cn, opportunityCategories } from '@/lib/utils';
 import { opportunitySchema, OpportunitySchema } from '@/schema/opportunity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueries } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -18,19 +19,21 @@ interface OpportunityFormProps {
   defaultValues?: Partial<OpportunitySchema>;
   onSubmit: (data: OpportunitySchema) => void;
   setImpactScore: React.Dispatch<React.SetStateAction<number>>;
+  mode?: 'create' | 'update';
 }
 
 export const OpportunityForm = ({
   defaultValues,
   onSubmit,
   setImpactScore,
+  mode = 'create',
 }: OpportunityFormProps) => {
   const form = useForm<OpportunitySchema>({
     defaultValues,
     resolver: zodResolver(opportunitySchema),
   });
   const [category, setCategory] = useState<string>(defaultValues?.category ?? 'Black Belt');
-console.log(form.formState.errors);
+  console.log(form.formState.errors);
   // Watch relevant form fields
   const [
     baseline,
@@ -146,6 +149,8 @@ console.log(form.formState.errors);
     ],
   });
 
+  const role = getCookie('ci-portal.role');
+
   return (
     <FormWrapper
       form={form}
@@ -161,6 +166,7 @@ console.log(form.formState.errors);
               control={form.control}
               name="company"
               label="Company"
+              disabled={mode === 'update' || role !== 'admin'}
               options={
                 company.data
                   ? company.data.map((i: any) => ({
@@ -175,6 +181,7 @@ console.log(form.formState.errors);
               control={form.control}
               name="bussiness_unit"
               label="Business Unit"
+              disabled={mode === 'update' ||  role !== 'admin'}
               options={
                 bussinessUnit.data
                   ? bussinessUnit.data.map((i: any) => ({
@@ -189,6 +196,7 @@ console.log(form.formState.errors);
               name="plant"
               label="Plant"
               placeholder="Select Plant"
+              disabled={mode === 'update' ||  role !== 'admin'}
               options={
                 plant.data
                   ? plant.data.map((i: any) => ({
@@ -202,6 +210,7 @@ console.log(form.formState.errors);
               control={form.control}
               name="department"
               label="Department"
+              disabled={mode === 'update' ||  role !== 'admin'}
               options={
                 department.data
                   ? department.data.map((i: any) => ({
@@ -216,6 +225,7 @@ console.log(form.formState.errors);
               control={form.control}
               name="category"
               label="Project Category"
+              disabled={mode === 'update'}
               onChange={(e) => {
                 setCategory(e);
               }}
@@ -227,6 +237,7 @@ console.log(form.formState.errors);
             <FormFieldInput
               control={form.control}
               name="statement"
+              disabled={mode === 'update'}
               label="Problem Statement"
               className="col-span-1"
             />
@@ -235,6 +246,7 @@ console.log(form.formState.errors);
                 <SelectField
                   control={form.control}
                   name="project_type"
+                  disabled={mode === 'update'}
                   label="Project Type"
                   options={opportunityCategories.project_type.map((i: any) => ({
                     value: i.name,
@@ -246,6 +258,7 @@ console.log(form.formState.errors);
                   control={form.control}
                   name="project_nature"
                   label="Nature of Project"
+                  disabled={mode === 'update'}
                   options={opportunityCategories.project_nature.map((i: any) => ({
                     value: i.name,
                     label: i.name,
@@ -254,6 +267,7 @@ console.log(form.formState.errors);
                 <SelectField
                   control={form.control}
                   name="internal_customer_impact"
+                  disabled={mode === 'update'}
                   label="Impact on Internal Customer"
                   options={opportunityCategories.internal_customer.map((i: any) => ({
                     value: i.name,
@@ -263,6 +277,7 @@ console.log(form.formState.errors);
                 <SelectField
                   control={form.control}
                   name="external_customer_impact"
+                  disabled={mode === 'update'}
                   label="Impact on External Customer"
                   options={opportunityCategories.external_customer.map((i: any) => ({
                     value: i.name,
@@ -272,6 +287,7 @@ console.log(form.formState.errors);
                 <SelectField
                   control={form.control}
                   name="data_analysis"
+                  disabled={mode === 'update'}
                   label="Data Oriented Analysis"
                   options={opportunityCategories.data_analysis.map((i: any) => ({
                     value: i.name,
@@ -281,6 +297,7 @@ console.log(form.formState.errors);
                 <SelectField
                   control={form.control}
                   name="cross_ratio"
+                  disabled={mode === 'update'}
                   label="Cross Functional Rating"
                   options={opportunityCategories.cross_function_rating.map((i: any) => ({
                     value: i.name,
@@ -292,6 +309,7 @@ console.log(form.formState.errors);
             <SelectField
               control={form.control}
               name="expected_savings"
+              disabled={mode === 'update'}
               label="Expected Savings (in Lakh)"
               options={opportunityCategories.expected_savings.map((i: any) => ({
                 value: i.name,
@@ -302,12 +320,32 @@ console.log(form.formState.errors);
               <SelectField
                 control={form.control}
                 name="baseline"
+                disabled={mode === 'update'}
                 label="Baseline"
                 options={opportunityCategories.baseline.map((i: any) => ({
                   value: i.name,
                   label: i.name,
                 }))}
               />
+            )}
+            {mode === 'update' && (
+              <>
+                <SelectField
+                  control={form.control}
+                  name="savings_type"
+                  label="Savings Type"
+                  options={['Soft', 'Hard'].map((i: any) => ({
+                    value: i,
+                    label: i,
+                  }))}
+                />
+                <FormFieldInput
+                  control={form.control}
+                  name="estimated_savings"
+                  label="Estimated Savings (in Lakh)"
+                  className="col-span-1"
+                />
+              </>
             )}
             {
               <div
@@ -337,7 +375,7 @@ console.log(form.formState.errors);
           </div>
           <div className="flex justify-end pt-5">
             <Button type="submit" size="lg" className="w-[200px] gap-3">
-         {form.formState.isSubmitting && <Loader2 className=" h-4 w-4" />}  Submit
+              {form.formState.isSubmitting && <Loader2 className="h-4 w-4" />} Submit
             </Button>
           </div>
         </div>

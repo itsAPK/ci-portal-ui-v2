@@ -7,18 +7,20 @@ export const ContentCard = ({
     title,
     value,
     icon,
-    className
+    className,
+    isReport = false
 } : {
     title: string,
     value: string,
-    icon: any
+    icon?: any
     className?: string
+    isReport?: boolean
 }) => {
   return (
-    <Card className={cn(className)}>
+    <Card className={cn(className,isReport && 'shadow-none border-gray-200 bg-white')}>
         <CardContent className="p-4 flex flex-col">
             <div className="flex gap-2">
-                {icon}
+                {icon && icon}
                  <div className='font-semibold text-gray-800 text-sm -mt-[2px]'>
                     {title}
                  </div>

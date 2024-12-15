@@ -19,7 +19,8 @@ const badgeVariants = cva(
         outline: "text-foreground",
         'ghost':
         'hover:bg-primary/40 border border-primary/70 bg-primary/20 hover:text-accent-foreground',
-     
+        leaf: 'hover:bg-sky-500/40 border border-sky-500/70 bg-sky-500/20 hover:text-accent-foreground',
+
       },
     },
     defaultVariants: {

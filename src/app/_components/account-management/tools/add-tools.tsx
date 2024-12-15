@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
-import { usePathname, useSearchParams , useRouter} from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { RiAddCircleFill } from '@remixicon/react';
@@ -21,25 +21,26 @@ export const AddTools = () => {
   const params = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
-    const addTools = useMutation({
-      mutationKey: ["add-tools"],
-      mutationFn: async (data: ToolsSchema) => {
-        return await api.post("/tools", data).then((res) => {
+  const addTools = useMutation({
+    mutationKey: ['add-tools'],
+    mutationFn: async (data: ToolsSchema) => {
+      return await api
+        .post('/tools', { ...data, status: data.status === 'Active' ? true : false })
+        .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
           return res.data;
         });
-      },
-      onError: (error : any) => {
-        toast.error(error.response.data.detail.message,  {
-          icon: <AlertTriangle className="h-4 w-4" />,
-        });
-      },
-      onSuccess: () => {
-
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.detail.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {
       setOpen(false);
-      toast.success("Tool added successfully", {
-          icon: <CheckCircle className="h-4 w-4" />,
-        });
+      toast.success('Tool added successfully', {
+        icon: <CheckCircle className="h-4 w-4" />,
+      });
       queryClient.refetchQueries({
         queryKey: ['get-tools'],
       });
@@ -47,8 +48,8 @@ export const AddTools = () => {
       router.refresh();
 
       setOpen(false);
-      },
-    });
+    },
+  });
 
   const handleSubmit = async (data: ToolsSchema) => {
     await addTools.mutateAsync(data);

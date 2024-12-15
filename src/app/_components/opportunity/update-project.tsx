@@ -17,8 +17,9 @@ import { Button } from '@/components/ui/button';
 import { processValues } from '@/lib/utils';
 import { OpportunityForm } from './form';
 import { OpportunitySchema } from '@/schema/opportunity';
+import { RiEditBoxFill } from '@remixicon/react';
 
-export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
+export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -31,9 +32,8 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
       return await api
         .patch(`/opportunity/${opportunity._id.$oid}`, {
           ...data,
-          project_socre: impactScore,
-          project_impact: impactScore < 50 ? 'Low' : impactScore < 80 ? 'Medium' : 'High',
-        })
+          status: 'Details Updated'
+            })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
           return res.data;
@@ -64,7 +64,7 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div  className="gap-2 flex">
-          <PencilIcon className="h-4 w-4" /> <span className='-mt-[1px] '>Edit</span>
+          <RiEditBoxFill className="h-4 w-4" /> <span className='-mt-[1px] '>Update Project</span>
         </div>
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
@@ -75,6 +75,7 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
           onSubmit={handleSubmit}
           setImpactScore={setImpactScore}
           defaultValues={processValues(opportunity)}
+          mode='update'
         />
       </DialogContent>
     </Dialog>
