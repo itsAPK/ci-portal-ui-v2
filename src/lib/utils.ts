@@ -163,3 +163,29 @@ export function calculateImpactScore(
 
   return totalWeightage > 0 ? totalScore : 0;
 }
+
+
+
+
+export function processValues(opportunity: Record<string, unknown>): Record<string, string | undefined> {
+  const processedOpportunity: Record<string, string | undefined> = {};
+
+  for (const [key, value] of Object.entries(opportunity)) {
+    if (typeof value === 'number') {
+      processedOpportunity[key] = value.toString(); // Convert number to string
+    } else if (value === null) {
+      processedOpportunity[key] = undefined; // Convert null to undefined
+    } else {
+      processedOpportunity[key] = value as string | undefined; // Keep other types unchanged
+    }
+  }
+
+  return processedOpportunity;
+}
+
+
+
+export const getRandomColor = () => {
+  const randomHex = Math.floor(Math.random() * 16777215).toString(16); // Generate a random number and convert to hex
+  return `#${randomHex.padStart(6, '0')}`; // Ensure it is a valid 6-character hex code
+};

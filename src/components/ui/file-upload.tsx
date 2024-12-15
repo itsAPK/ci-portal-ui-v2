@@ -357,12 +357,12 @@ export const FileUploadText = ({ label, description, className }: FileUploadText
   return (
     <div className="relative flex flex-col items-center justify-center px-4 pb-2.5 pt-2">
       {' '}
-      <div className="uploading-outer relative w-full flex-col items-center justify-center pb-2 pt-10 lg:flex">
+      <div className="uploading-outer relative w-full flex-col items-center justify-center pb-2 pt-4 lg:flex">
         <div className="uploadButton relative flex flex-col items-center justify-center">
           <div>
             <label
               htmlFor="upload"
-              className="ripple-effect m-0 flex h-[80px] w-[200px] cursor-pointer flex-col items-center justify-center rounded text-lg text-gray-700 transition duration-300 hover:border-secondary dark:text-gray-300"
+              className="ripple-effect text-sm m-0 flex h-[80px] w-[300px] cursor-pointer flex-col items-center justify-center rounded text-gray-700 transition duration-300 hover:border-secondary dark:text-gray-300"
             >
               <svg
                 className="mb-3 h-8 w-8 text-primary dark:text-primary"
@@ -379,16 +379,13 @@ export const FileUploadText = ({ label, description, className }: FileUploadText
                   d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                 />
               </svg>{' '}
-              Drag and Drop
+              Drag 'n' drop files here, or click to select files
             </label>
           </div>
 
-          <span className="relative flex min-h-[56px] items-center overflow-hidden bg-transparent px-2.5 pl-4 leading-[22px] text-gray-700 dark:text-gray-300">
-            OR
-          </span>
-          <Button type="button">{label}</Button>
+        
         </div>
-        <div className="m-0 flex flex-col items-center justify-center pt-10 text-center text-[15px] font-normal leading-6 text-gray-500 dark:text-gray-200 lg:pt-6">
+        <div className="m-0 flex flex-col items-center justify-center pt-4 text-center text-[15px] font-normal leading-6 text-gray-500 dark:text-gray-200 lg:pt-2">
           {description}
         </div>
       </div>

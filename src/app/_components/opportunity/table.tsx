@@ -171,7 +171,7 @@ export const OpportunityTable = ({
             }}
             className="h-8"
           />
-          {role === 'admin' && (
+          {(role === 'admin' || role === 'ci_head') && (
             <>
               <AddOpportunity />
               <Button variant={'ghost-1'} size={'sm'} className="text-xs">

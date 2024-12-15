@@ -51,9 +51,9 @@ api.interceptors.response.use(
     }
     return response;
   },
-  async (error) => {
+  async (error : any) => {
     const { message } = error;
-    const { status, data } = error.response;
+    const { status, data } = error.response ? error.response : error;
     const { method, url } = error.config;
 
     log(

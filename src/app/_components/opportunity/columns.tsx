@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { ArrowDown, EyeIcon, PencilIcon, Settings2Icon, TrashIcon } from 'lucide-react';
+import { ArrowDown, EyeIcon, PencilIcon, Settings2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -13,6 +13,16 @@ import { DeleteOpportunity } from './delete';
 import { getCookie } from 'cookies-next';
 import { EditOpportunity } from './edit';
 import { SelfAssignOpportunity } from './self-assign';
+import { AssignProjectLeader } from './assign-project-leader';
+import { ActionPlan } from './action-plan/action-plan';
+import { UpdateProject } from './update-project';
+import { AddTeamMembers } from './team-members/add-team-members';
+import { AddDefinePhase } from './define-phase/add';
+import { SSVTools } from './ssv-tools/ssv-tools';
+import { MeasureAnalysis } from './measure-analysis/measure-analysis';
+import { Improvement } from './improvement/improvement';
+import { Control } from './control-phase/control-phase';
+import { ProjectClosure } from './project-closure/project-closure';
 export const opportunityColumns = (): ColumnDef<any>[] => {
   return [
     {
@@ -157,6 +167,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
         const router = useRouter();
         const role = getCookie('ci-portal.role');
         const plant = getCookie('ci-portal.plant');
+        const userId = getCookie('ci-portal.user_id');
         return (
           <div className="flex justify-end space-x-2 pl-2">
             <DropdownMenu>
@@ -185,16 +196,86 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                     <DeleteOpportunity id={row.original._id.$oid} />
                   </DropdownMenuItem>
                 )}
-                {role !== 'admin' &&
-                  role !== 'employee' &&
-                  plant === row.original.plant &&
+                {role !== 'employee' &&
+                  (role === 'admin' || plant === row.original.plant) &&
                   row.original.status === 'Open for Assigning' && (
                     <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
                       <SelfAssignOpportunity opportunityId={row.original._id.$oid} />
                     </DropdownMenuItem>
                   )}
+                {role !== 'employee' &&
+                  role !== 'project_leader' &&
+                  (role === 'admin' || plant === row.original.plant) &&
+                  row.original.status === 'Open for Assigning' && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <AssignProjectLeader opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.status === 'Project Assigned' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <UpdateProject opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.status === 'Details Updated' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <AddTeamMembers opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
+
+                {row.original.status === 'Teams Updated' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <AddDefinePhase opportunityId={row.original._id.$oid} />
+                    </DropdownMenuItem>
+                  )}
+                {/* {} */}
+                {row.original.status === 'Define Phase Completed' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <SSVTools opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {(row.original.status === "SSV's Tools Updated" ||
+                  row.original.status === 'Measure & Analyze Phase Pending') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <MeasureAnalysis opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                  {(row.original.status === "Measure & Analyze Phase Completed" ||
+                  row.original.status === 'Improvement Phase Pending') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <Improvement opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                   {(row.original.status === "Improvement Phase Completed" ||
+                  row.original.status === 'Control Phase Pending') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <Control opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                  {(
+                  row.original.status === 'Control Phase Completed') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                      <ProjectClosure opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                  
                 <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
-                  <Settings2Icon className="h-4 w-4" /> Action Plan
+                  <ActionPlan opportunities={row.original} />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

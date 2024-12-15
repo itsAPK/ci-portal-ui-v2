@@ -3,18 +3,18 @@ import { Button } from '@/components/ui/button';
 import { ChartAreaIcon, PencilIcon, TrendingUpIcon } from 'lucide-react';
 import { RiLockFill,RiStackFill } from '@remixicon/react';
 import { ProjectScheduleCard } from './project-schedule-card';
-export const ProjectSchedule = () => {
+import { cn } from '@/lib/utils';
+export const ProjectSchedule = ({isReport = false} : {isReport?: boolean}) => {
   return (
-    <Card className="mt-3 border-gray-500/20 bg-white">
+    <Card className={cn('mt-3  bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
       <div className="flex justify-between p-4">
         <div className="pt-2 text-base font-semibold">Project Schedule</div>
-        <Button variant="ghost-1" size={'sm'} className="gap-1">
-          <PencilIcon className="h-3 w-3" /> Edit
-        </Button>
+       
       </div>
       <CardContent className="overflow-y-auto p-4 pt-0">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <ProjectScheduleCard
+            isReport={isReport}
               title={'Define Phase'}
               data={{
                 planned_start_date: '2023-01-01',
@@ -25,6 +25,7 @@ export const ProjectSchedule = () => {
               icon={<RiLockFill className="h-4 w-4 mt-1" />}
             />
             <ProjectScheduleCard
+            isReport={isReport}
               title={'Measure & Analysis Phase'}
               data={{
                 planned_start_date: '2023-01-01',
@@ -35,6 +36,7 @@ export const ProjectSchedule = () => {
               icon={<ChartAreaIcon className="h-4 w-4 mt-1" />}
             />
             <ProjectScheduleCard
+            isReport={isReport}
               title={'Improvement Phase'}
               data={{
                 planned_start_date: '2023-01-01',
@@ -45,6 +47,7 @@ export const ProjectSchedule = () => {
               icon={<TrendingUpIcon className="h-4 w-4 mt-1" />}
             />
             <ProjectScheduleCard
+            isReport={isReport}
               title={'Control Phase'}
               data={{
                 planned_start_date: '2023-01-01',

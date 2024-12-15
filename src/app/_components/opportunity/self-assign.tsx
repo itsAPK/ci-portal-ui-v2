@@ -33,13 +33,13 @@ export const SelfAssignOpportunity = ({ opportunityId }: { opportunityId: string
     },
   });
   return (
-    <div className="flex gap-2" onClick={async () => await assignProjectLeader.mutateAsync()}>
+    <div className="flex gap-2 cursor-pointer" onClick={async () => await assignProjectLeader.mutateAsync()}>
       {assignProjectLeader.isPending ? (
         <Loader2 className="h-3 w-3" />
       ) : (
         <UserCheck className="h-4 w-4" />
       )}
-      <span className="text-xs">Self Assign</span>
+      <span className="">Self Assign</span>
     </div>
   );
 };
