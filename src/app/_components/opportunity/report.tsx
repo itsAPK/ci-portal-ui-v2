@@ -42,7 +42,7 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
     savePDF(element, {
       paperSize: 'auto',
       margin: 40,
-      fileName: `Opportunity Report ${opportunity.data.opportunity_id}`,
+      fileName: `Opportunity-Report-${opportunity.data.opportunity_id}`,
     });
   };
 
@@ -58,12 +58,12 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
           <DialogTitle>Report</DialogTitle>
         </DialogHeader>
         <div className="flex justify-end gap-2">
-          <ManageView
+          {opportunity.data.category === 'Black Belt' && <ManageView
             items={items}
             selectedItems={selectedItems}
             onItemToggle={handleItemToggle}
             label="Toggle Views"
-          />
+          />}
           <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={exportPDFWithMethod}>
             <RiDownload2Fill className="h-4 w-4" /> Download
           </Button>
@@ -103,13 +103,13 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
                       Department: {opportunity.data.department}
                     </p>
                     <p className="text-sm font-semibold">
-                      Project Leader: {opportunity.data.project_leader.name}
+                      Project Leader: {opportunity.data.project_leader ? opportunity.data.project_leader.name : '---'}
                     </p>
                   </PDFLetterhead.RightData>
                 </div>
               </PDFLetterhead.Root>
             </div>
-            {selectedItems.includes('Opportunity Overview') && (
+         {opportunity.data.category === 'Black Belt' ? <>  {selectedItems.includes('Opportunity Overview') && (
               <Overview opportunity={opportunity.data} isReport />
             )}
 
@@ -135,7 +135,7 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
 
             {selectedItems.includes('Project Closure') && opportunity.data.project_closure && (
               <ProjectClousre projectClosure={opportunity.data.project_closure} isReport />
-            )}
+            )}  </> : <Overview opportunity={opportunity.data} isReport /> }
           </div>
         </PDFExport>
       </DialogContent>

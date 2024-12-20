@@ -67,7 +67,7 @@ export const AssignProjectLeader = ({ opportunity }: { opportunity: any }) => {
             filter: [
                 {
                   $match: {
-                    plant: { $eq: opportunity.plant },
+                    plant: { $eq: opportunity.plant.name },
                     role: { $ne: 'employee' }, 
                     employee_id: { $regex: search, $options: 'i' },
                   },

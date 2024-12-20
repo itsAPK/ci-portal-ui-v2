@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, EditIcon, UploadIcon } from "lucide-react";
+import { AlertTriangle, CheckCircle, EditIcon, UploadIcon } from "lucide-react";
 import api from "@/lib/api";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -25,17 +25,43 @@ export const AddOpportunity = () => {
   const params = useSearchParams();
   const queryClient = useQueryClient();
   const [impactScore, setImpactScore] = useState<number>(0);
+  const [file, setFile] = useState<File[] | null>([]);
   const addOpportunity = useMutation({
     mutationKey: ["add-opportunity"],
     mutationFn: async (data: OpportunitySchema) => {
-      return await api.post("/opportunity", {
+
+      if (data.category !== 'Black Belt' && (!file || file.length === 0)) {
+       throw new Error("Please upload a document for non-Black Belt categories.")
+      }
+      
+
+      const res = await api.post("/opportunity", {
         ...data,
-        project_score : impactScore,
+        project_score : impactScore.toFixed(3),
         project_impact : impactScore < 50 ? 'Low' : impactScore < 80 ? 'Medium' : 'High',
       }).then((res) => {
         if (!res.data.success) throw new Error(res.data.message);
         return res.data;
       });
+
+
+      if (file && file.length > 0) {
+        const formData = new FormData();
+        formData.append('file', file![0]);
+        await api
+          .post(`/opportunity/upload/${res.data._id}`, formData)
+          .then((res) => {
+            return res.data;
+          })
+          .then((res) => {
+            toast.success('Document uploaded successfully', {
+              icon: <CheckCircle className="h-4 w-4" />,
+            });
+            return res.data;
+          });
+      }
+
+      return res
     },
     onError: (error) => {
       toast.error(error.message, {
@@ -71,7 +97,7 @@ export const AddOpportunity = () => {
         <DialogHeader>
           <DialogTitle>Add Opportunity</DialogTitle>
         </DialogHeader>
-        <OpportunityForm onSubmit={handleSubmit} setImpactScore={setImpactScore} />
+        <OpportunityForm onSubmit={handleSubmit} file={file} setFile={setFile} setImpactScore={setImpactScore} />
       </DialogContent>
     </Dialog>
   );

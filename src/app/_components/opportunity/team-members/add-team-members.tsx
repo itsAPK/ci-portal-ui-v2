@@ -1,5 +1,5 @@
 import api from '@/lib/api';
-import { teamMemberSchema, TeamMemberSchema } from '@/schema/opportunity';
+import { TeamMember, teamMemberSchema, TeamMemberSchema } from '@/schema/opportunity';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -35,9 +35,11 @@ export const AddTeamMembers = ({
   const form = useForm<TeamMemberSchema>({
     resolver: zodResolver(teamMemberSchema),
   });
+  console.log(opportunity)
   const [employeeId, setEmployeeId] = useState<Option>();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+  const [teamMember,setTeamMember] = useState<TeamMemberSchema[]>([]);
   const addTeamMember = useMutation({
     mutationKey: ['add-team-member'],
     mutationFn: async (data: TeamMemberSchema) => {
@@ -71,7 +73,7 @@ export const AddTeamMembers = ({
           filter: [
             {
               $match: {
-                plant: { $eq: opportunity.plant },
+                plant: { $eq: opportunity.plant.name },
                 employee_id: { $regex: search, $options: 'i' },
               },
             },
@@ -88,6 +90,36 @@ export const AddTeamMembers = ({
       });
     },
     onSuccess: () => {},
+  });
+
+  const updateOpportunity = useMutation({
+    mutationKey: ['update-opportunity'],
+    mutationFn: async () => {
+      return await api
+        .patch(`/opportunity/${opportunity._id.$oid}`, {
+       
+          status: 'Teams Updated'
+            })
+        .then((res) => {
+          if (!res.data.success) throw new Error(res.data.message);
+          return res.data;
+        });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {
+      setOpen(false);
+      toast.success('Opportunity Updated successfully', {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+      setOpen(false);
+      queryClient.refetchQueries({
+        queryKey: ['get-opportunities'],
+      });
+    },
   });
 
   const handleSubmit = async (data: TeamMemberSchema) => {
@@ -175,6 +207,13 @@ export const AddTeamMembers = ({
         </FormWrapper>
         {mode === 'dialog' ||
           (opportunity.team_members.length > 0 && <ViewTeamMembers opportunity={opportunity} />)}
+
+          <div className="flex justify-end pt-5">
+            <Button onClick={async() => updateOpportunity.mutateAsync()} size="lg" className="w-[200px] gap-3">
+              {updateOpportunity.isPending && <Loader2 className="h-4 w-3" />} Submit
+            </Button>
+
+          </div>
       </DialogContent>
     </Dialog>
   );
