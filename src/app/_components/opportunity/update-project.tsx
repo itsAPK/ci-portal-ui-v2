@@ -74,7 +74,7 @@ export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
         <OpportunityForm
           onSubmit={handleSubmit}
           setImpactScore={setImpactScore}
-          defaultValues={processValues(opportunity)}
+          defaultValues={processValues({...opportunity, plant : opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant})}
           mode='update'
         />
       </DialogContent>

@@ -25,6 +25,7 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
   const params = useSearchParams();
   const queryClient = useQueryClient();
   const [impactScore, setImpactScore] = useState<number>(0);
+  
   const editOpportunity = useMutation({
     mutationKey: ['edit-opportunity'],
     mutationFn: async (data: OpportunitySchema) => {
@@ -74,7 +75,7 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
         <OpportunityForm
           onSubmit={handleSubmit}
           setImpactScore={setImpactScore}
-          defaultValues={processValues(opportunity)}
+          defaultValues={processValues({...opportunity, plant : opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant})}
         />
       </DialogContent>
     </Dialog>

@@ -44,7 +44,7 @@ export default function Opportunities() {
                 : undefined;
             })()
           : undefined,
-        params.get('plant')
+        params.get('plant.name')
           ? (() => {
               const parsed = parseFilterInput(params.get('plant') as string);
               return parsed

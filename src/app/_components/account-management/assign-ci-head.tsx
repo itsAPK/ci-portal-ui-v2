@@ -1,29 +1,21 @@
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { PencilIcon } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { FormWrapper } from '@/components/form-wrapper';
-import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
 import api from '@/lib/api';
-import { useQueries } from '@tanstack/react-query';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { MultiSelector, MultiSelectorTrigger, MultiSelectorInput, MultiSelectorContent, MultiSelectorList, MultiSelectorItem } from '@/components/ui/multi-select';
+import { useMutation, useQueries } from '@tanstack/react-query';
+import { AssignCIHeadSchema, assignCIHeadSchema, Employee } from '@/schema/employee';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 export const AssignCIHead = () => {
-  const form = useForm({
-    defaultValues: {
-      plant: '',
-      ci_head: '',
-      hod: '',
-      lof: '',
-      cs_head: '',
-     
-    },
+  const form = useForm<AssignCIHeadSchema>({
+    resolver: zodResolver(assignCIHeadSchema),
   });
-  const [ plant] = useQueries({
+  const [plant, employee] = useQueries({
     queries: [
-     
       {
         queryKey: ['get-plant'],
         queryFn: async (): Promise<any> => {
@@ -40,8 +32,56 @@ export const AssignCIHead = () => {
             });
         },
       },
+      {
+        queryKey: ['get-employee-by-role'],
+        queryFn: async (): Promise<any> => {
+          return await api
+            .post('/employee/export', {
+              filter: [
+                {
+                  $match: {
+                    role: {
+                      $in: ['hod', 'ci_head', 'ci_team', 'cs_head', 'lof'],
+                    },
+                  },
+                },
+              ],
+            })
+            .then((res) => {
+              if (!res.data.success) {
+                throw new Error(res.data.message);
+              }
+              return res.data.data.data;
+            })
+            .catch((err) => {
+              throw err;
+            });
+        },
+      },
     ],
   });
+
+  
+
+  const assignCIHead = useMutation({
+    mutationKey: ['assign-ci-head'],
+    mutationFn: async (data: AssignCIHeadSchema) => {
+      return await api.post('/plant/assign-ci-head', data);
+    },
+    onSuccess: (data) => {
+      toast.success('CI Roles Assigned Successfully');
+      plant.refetch();
+    },
+    onError: (err: any) => {
+      toast.error(err.response.data.detail.message);
+    },
+  });
+
+  const onSubmit = async (data: AssignCIHeadSchema) => {
+    await assignCIHead.mutateAsync(data);
+    console.log(data)
+  };
+
   return (
     <div className="py-4">
       <Card className="border-gray-500/20 bg-background">
@@ -49,171 +89,135 @@ export const AssignCIHead = () => {
           <div className="pt-2 text-base font-semibold">Assign CI Head</div>
         </div>
         <CardContent className="overflow-y-auto p-4 pt-0">
-          <FormWrapper form={form} onSubmit={() => {}}>
+          <FormWrapper form={form} onSubmit={() => form.handleSubmit(onSubmit)}>
             <div className="grid h-full grid-cols-1">
               <div className="col-span-4 px-2 py-1 md:px-7">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <SelectField
-              control={form.control}
-              name="plant"
-              label="Plant"
-              className='col-span-2'
-              placeholder="Select Plant"
-              options={
-                plant.data
-                  ? plant.data.map((i: any) => ({
-                      value: i._id,
-                      label: i.name,
-                    }))
-                  : []
-              }
-            />
-              <FormField
-                  control={form.control}
-                  name="ci_head"
-                  render={({ field }) => (
-                    <FormItem className="w-full pt-2">
-                      <div className="flex flex-col ">
-                        <FormLabel>
-                          CI HEAD
-                          {" "}
-                        </FormLabel>
-                        <FormControl>
-                          <MultiSelector
-                            onValuesChange={field.onChange}
-                            values={field.value ? [...field.value] : []}
-                          >
-                            <MultiSelectorTrigger>
-                              <MultiSelectorInput placeholder="Select CI HEAD" />
-                            </MultiSelectorTrigger>
-                            <MultiSelectorContent>
-                              <MultiSelectorList>
-                                {['Arun Kumar', 'Dileep Kumar', 'Rahul Kumar'].map((i, index) => (
-                                  <MultiSelectorItem key={i} value={i}>
-                                    {i}
-                                  </MultiSelectorItem>
-                                ))}
-                              </MultiSelectorList>
-                            </MultiSelectorContent>
-                          </MultiSelector>
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              <FormField
-                  control={form.control}
-                  name="hod"
-                  render={({ field }) => (
-                    <FormItem className="w-full pt-2">
-                      <div className="flex flex-col ">
-                        <FormLabel>
-                        HOD
-                          {" "}
-                        </FormLabel>
-                        <FormControl>
-                          <MultiSelector
-                            onValuesChange={field.onChange}
-                            values={field.value ? [...field.value] : []}
-                          >
-                            <MultiSelectorTrigger>
-                              <MultiSelectorInput placeholder="Select HOD" />
-                            </MultiSelectorTrigger>
-                            <MultiSelectorContent>
-                              <MultiSelectorList>
-                                {['Arun Kumar', 'Dileep Kumar', 'Rahul Kumar'].map((i, index) => (
-                                  <MultiSelectorItem key={i} value={i}>
-                                    {i}
-                                  </MultiSelectorItem>
-                                ))}
-                              </MultiSelectorList>
-                            </MultiSelectorContent>
-                          </MultiSelector>
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              <FormField
-                  control={form.control}
-                  name="lof"
-                  render={({ field }) => (
-                    <FormItem className="w-full pt-2">
-                      <div className="flex flex-col ">
-                        <FormLabel>
-LOF                          {" "}
-                        </FormLabel>
-                        <FormControl>
-                          <MultiSelector
-                            onValuesChange={field.onChange}
-                            values={field.value ? [...field.value] : []}
-                          >
-                            <MultiSelectorTrigger>
-                              <MultiSelectorInput placeholder="Select LOF" />
-                            </MultiSelectorTrigger>
-                            <MultiSelectorContent>
-                              <MultiSelectorList>
-                                {['Arun Kumar', 'Dileep Kumar', 'Rahul Kumar'].map((i, index) => (
-                                  <MultiSelectorItem key={i} value={i}>
-                                    {i}
-                                  </MultiSelectorItem>
-                                ))}
-                              </MultiSelectorList>
-                            </MultiSelectorContent>
-                          </MultiSelector>
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                  <FormField
-                  control={form.control}
-                  name="cs_head"
-                  render={({ field }) => (
-                    <FormItem className="w-full pt-2">
-                      <div className="flex flex-col ">
-                        <FormLabel>
-                          CS HEAD
-                          {" "}
-                        </FormLabel>
-                        <FormControl>
-                          <MultiSelector
-                            onValuesChange={field.onChange}
-                            values={field.value ? [...field.value] : []}
-                          >
-                            <MultiSelectorTrigger>
-                              <MultiSelectorInput placeholder="Select CS Head" />
-                            </MultiSelectorTrigger>
-                            <MultiSelectorContent>
-                              <MultiSelectorList>
-                                {['Arun Kumar', 'Dileep Kumar', 'Rahul Kumar'].map((i, index) => (
-                                  <MultiSelectorItem key={i} value={i}>
-                                    {i}
-                                  </MultiSelectorItem>
-                                ))}
-                              </MultiSelectorList>
-                            </MultiSelectorContent>
-                          </MultiSelector>
-                        </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <SelectField
+                    control={form.control}
+                    name="plant_id"
+                    label="Plant"
+                    className="col-span-1"
+                    placeholder="Select Plant"
+                    onChange={async (e) => {
+                      const p = plant.data.find((i: any) => i._id === e);
+                      form.setValue('ci_head', p.ci_head ? p.ci_head._id : "");
+                      form.setValue('ci_team', p.ci_team ? p.ci_team._id : "");
+                      form.setValue('cs_head', p.cs_head ? p.cs_head._id : "");
+                      form.setValue('lof', p.lof ? p.lof._id : "");
+                      form.setValue('hod', p.hod ? p.hod._id : "");
+                    }}
+                    options={
+                      plant.data
+                        ? plant.data.map((i: any) => ({
+                            value: i._id,
+                            label: i.name,
+                          }))
+                        : []
+                    }
+                  />
+                  <SelectField
+                    control={form.control}
+                    name="ci_head"
+                    label="CI Head"
+                    className="col-span-1"
+                    placeholder="Select CI Head"
+                    options={
+                      employee.data && employee.data.length > 0
+                        ? employee.data
+                            .filter((k: Employee) => k.role === 'ci_head')
+                            .map((i: any) => ({
+                              value: i._id.$oid,
+                              label: `${i.employee_id} - ${i.name}`,
+                            }))
+                        : []
+                    }
+                  />
+                  <SelectField
+                    control={form.control}
+                    name="hod"
+                    label="HOD"
+                    className="col-span-1"
+                    placeholder="Select HOD"
+                    options={
+                      employee.data && employee.data.length > 0
+                        ? employee.data
+                            .filter((k: Employee) => k.role === 'hod')
+                            .map((i: any) => ({
+                              value:i._id.$oid,
+                              label: `${i.employee_id} - ${i.name}`,
+                            }))
+                        : []
+                    }
+                  />
+                  <SelectField
+                    control={form.control}
+                    name="lof"
+                    label="LOF"
+                    className="col-span-1"
+                    placeholder="Select LOF"
+                    options={
+                      employee.data && employee.data.length > 0
+                        ? employee.data
+                            .filter((k: Employee) => k.role === 'lof')
+                            .map((i: any) => ({
+                              value:i._id.$oid,
+                              label: `${i.employee_id} - ${i.name}`,
+                            }))
+                        : []
+                    }
+                  />
+                  <SelectField
+                    control={form.control}
+                    name="cs_head"
+                    label="CS Head"
+                    className="col-span-1"
+                    placeholder="Select CS Head"
+                    options={
+                      employee.data && employee.data.length > 0
+                        ? employee.data
+                            .filter((k: Employee) => k.role === 'cs_head')
+                            .map((i: any) => ({
+                              value: i._id.$oid,
+                              label: `${i.employee_id} - ${i.name}`,
+                            }))
+                        : []
+                    }
+                  />
+                  <SelectField
+                    control={form.control}
+                    name="ci_team"
+                    label="CI Team"
+                    className="col-span-1"
+                    placeholder="Select CI Team"
+                    options={
+                      employee.data && employee.data.length > 0
+                        ? employee.data
+                            .filter((k: Employee) => k.role === 'ci_team')
+                            .map((i: any) => ({
+                              value: i._id.$oid,
+                              label: `${i.employee_id} - ${i.name}`,
+                            }))
+                        : []
+                    }
+                  />
                 </div>
               </div>
             </div>
+            <CardFooter className="flex justify-end p-4">
+              <Button
+                type="button"
+                size="lg"
+                className="w-[200px]"
+                onClick={form.handleSubmit(onSubmit)}
+                disabled={assignCIHead.isPending}
+              >
+                {assignCIHead.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Submit
+              </Button>
+            </CardFooter>
           </FormWrapper>
         </CardContent>
-        <CardFooter className="p-4 flex justify-end">
-            <Button type="submit" size="lg" className='w-[200px]'>Submit</Button>
-          </CardFooter>
       </Card>
-             
-        
     </div>
   );
 };

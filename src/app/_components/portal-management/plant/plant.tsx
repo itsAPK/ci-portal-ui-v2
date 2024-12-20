@@ -2,7 +2,7 @@ import api from '@/lib/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
 import { Loading } from '@/components/ui/loading';
-import { RiDeleteBin6Fill, RiEditFill, RiGovernmentFill, RiIdCardFill } from '@remixicon/react';
+import { RiDeleteBin6Fill, RiEditFill, RiGovernmentFill, RiIdCardFill ,RiUser2Fill,RiUserFill,RiUser3Fill,RiUser4Fill,RiUser5Fill,RiUser6Fill } from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { DeletePlant } from './delete-plant';
 import { AddPlant } from './add-plant';
@@ -88,12 +88,12 @@ export function Plant() {
         {!plants.isLoading ? (
           <>
             {plants.data && plants.data.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4 px-4 pt-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 px-4 pt-6 md:grid-cols-2 lg:grid-cols-3">
                 {plants.data.map((plant: any) => (
-                  <Card className="grid grid-cols-3 border-gray-600/10 bg-gray-100 px-4">
-                    <div className="col-span-2">
-                      {' '}
-                      <div className="flex flex-col pt-2">
+                  <Card className="grid grid-cols-2 border-gray-600/10 bg-gray-100 px-4">
+                    <div className="col-span-1">
+                  
+                     
                         <div className="flex gap-1 pt-2 text-xs font-semibold text-gray-500">
                           <RiIdCardFill className="h-3 w-3" />{' '}
                           <span className="-mt-[2px]">Plant Code</span>
@@ -107,13 +107,47 @@ export function Plant() {
                         </div>
                         <div className="px-4 text-xs font-semibold">{plant.name}</div>
                       </div>
-                    </div>
-                    {role === 'admin' && (
-                      <div className="col-span-1 flex flex-col items-center justify-center gap-2 px-7 py-3 pb-2">
+                      <div className="flex flex-col pb-2">
+                        <div className="flex gap-1 pt-2 text-xs font-semibold text-gray-500">
+                          <RiUser2Fill className="h-3 w-3" />{' '}
+                          <span className="-mt-[2px]">CI Head</span>
+                        </div>
+                        <div className="px-4 text-xs font-semibold">{plant.ci_head? plant.ci_head.name : "---"}</div>
+                      </div>
+                      <div className="flex flex-col pb-2">
+                        <div className="flex gap-1 pt-2 text-xs font-semibold text-gray-500">
+                          <RiUser6Fill className="h-3 w-3" />{' '}
+                          <span className="-mt-[2px]">HOD</span>
+                        </div>
+                        <div className="px-4 text-xs font-semibold">{plant.hod? plant.hod.name : "---"}</div>
+                      </div>  <div className="flex flex-col pb-2">
+                        <div className="flex gap-1 pt-2 text-xs font-semibold text-gray-500">
+                          <RiUser5Fill className="h-3 w-3" />{' '}
+                          <span className="-mt-[2px]">CS Head</span>
+                        </div>
+                        <div className="px-4 text-xs font-semibold">{plant.cs_head? plant.cs_head.name : "---"}</div>
+                      </div>  <div className="flex flex-col pb-2">
+                        <div className="flex gap-1 pt-2 text-xs font-semibold text-gray-500">
+                          <RiUserFill className="h-3 w-3" />{' '}
+                          <span className="-mt-[2px]">LOF</span>
+                        </div>
+                        <div className="px-4 text-xs font-semibold">{plant.lof? plant.lof.name : "---"}</div>
+                      </div>
+                      <div className="flex flex-col pb-2">
+                        <div className="flex gap-1 pt-2 text-xs font-semibold text-gray-500">
+                          <RiUser3Fill className="h-3 w-3" />{' '}
+                          <span className="-mt-[2px]">CI Team</span>
+                        </div>
+                        <div className="px-4 text-xs font-semibold">{plant.ci_team? plant.ci_team.name : "---"}</div>
+                      </div>
+                      {role === 'admin' && (
+                      <div className="col-span-1 flex  items-center justify-center gap-2 px-7 py-3 pb-2">
                         <EditPlant data={plant} />
                         <DeletePlant plantId={plant._id} />
                       </div>
                     )}
+                    
+                  
                   </Card>
                 ))}
               </div>

@@ -23,6 +23,7 @@ import { MeasureAnalysis } from './measure-analysis/measure-analysis';
 import { Improvement } from './improvement/improvement';
 import { Control } from './control-phase/control-phase';
 import { ProjectClosure } from './project-closure/project-closure';
+import { ApproveOpportunity } from './approve-opportunity';
 export const opportunityColumns = (): ColumnDef<any>[] => {
   return [
     {
@@ -60,7 +61,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
       cell: ({ cell }) => ((cell.getValue() as any) ? cell.getValue() : '---'),
     },
     {
-      accessorKey: 'plant',
+      accessorKey: 'plant.name',
       header: ({ column }) => (
         <div className="flex w-[150px] justify-center text-center text-xs font-medium">Plant</div>
       ),
@@ -168,6 +169,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
         const role = getCookie('ci-portal.role');
         const plant = getCookie('ci-portal.plant');
         const userId = getCookie('ci-portal.user_id');
+        console.log(row.original.plant)
         return (
           <div className="flex justify-end space-x-2 pl-2">
             <DropdownMenu>
@@ -191,13 +193,13 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   </DropdownMenuItem>
                 )}
 
-                {role === 'admin' && row.original.status === 'Open for Assigning' && (
+                {role === 'admin' && (row.original.category === 'Black Belt' && row.original.status === 'Open for Assigning' || row.original.category !== 'Black Belt') && (
                   <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
                     <DeleteOpportunity id={row.original._id.$oid} />
                   </DropdownMenuItem>
                 )}
-                {role !== 'employee' &&
-                  (role === 'admin' || plant === row.original.plant) &&
+                {row.original.category === 'Black Belt' && <>{role !== 'employee' &&
+                  (role === 'admin' || row.original.plant && plant === row.original.plant.name) &&
                   row.original.status === 'Open for Assigning' && (
                     <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
                       <SelfAssignOpportunity opportunityId={row.original._id.$oid} />
@@ -205,7 +207,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   )}
                 {role !== 'employee' &&
                   role !== 'project_leader' &&
-                  (role === 'admin' || plant === row.original.plant) &&
+                  (role === 'admin' || row.original.plant && plant === row.original.plant.name) &&
                   row.original.status === 'Open for Assigning' && (
                     <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
                       <AssignProjectLeader opportunity={row.original} />
@@ -273,10 +275,36 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                       <ProjectClosure opportunities={row.original} />
                     </DropdownMenuItem>
                   )}
+                  {
+                    row.original.status === 'Project Closure Pending (CIHead)' &&
+                    userId === row.original.plant.ci_head._id.$oid && plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                     <ApproveOpportunity opportunity={row.original} role="ci_head" />
+                    </DropdownMenuItem>
+                  )}
+                  {row.original.status === 'Project Closure Pending (HOD)' &&
+                    userId === row.original.plant.hod._id.$oid && plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                     <ApproveOpportunity opportunity={row.original} role="hod" />
+                    </DropdownMenuItem>
+                  )}
+                  {row.original.status === 'Project Closure Pending (LOF)' &&
+                    userId === row.original.plant.lof._id.$oid && plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                     <ApproveOpportunity opportunity={row.original} role="lof" />
+                    </DropdownMenuItem>
+                  )}
+                  {row.original.status === 'Project Closure Pending (Costing Head)' &&
+                    userId === row.original.plant.cs_head._id.$oid && plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                     <ApproveOpportunity opportunity={row.original} role="cs_head" />
+                    </DropdownMenuItem>
+                  )}
+                  
                   
                 <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
                   <ActionPlan opportunities={row.original} />
-                </DropdownMenuItem>
+                </DropdownMenuItem></>}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

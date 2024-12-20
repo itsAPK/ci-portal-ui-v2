@@ -2,12 +2,12 @@ import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { EmployeeSchema, employeeSchema } from '@/schema/employee';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SelectField } from '@/components/select-field-wrapper';
 import api from '@/lib/api';
-import { useQueries } from '@tanstack/react-query';
+import { useMutation, useQueries } from '@tanstack/react-query';
 import { DatePickerWrapper } from '@/components/date-picker-wrapper';
 
 interface EmployeeFormProps {
@@ -91,6 +91,8 @@ export const EmployeeForm = ({ defaultValues, onSubmit, mode = 'add' }: Employee
     ],
   });
 
+ 
+
   return (
     <FormWrapper form={form} onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid h-full grid-cols-1 md:grid-cols-4">
@@ -130,6 +132,7 @@ export const EmployeeForm = ({ defaultValues, onSubmit, mode = 'add' }: Employee
                 'LOF',
                 'CS Head',
                 'CI Head',
+                "CI Team"
               ].map((i: any) => ({
                 value: i.replace(' ', '_').toLowerCase(),
                 label: i,
