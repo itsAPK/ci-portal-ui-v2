@@ -57,7 +57,7 @@ function generateCompleteCategoryData(inputData: CategoryData[]): CategoryData[]
 
 export function CategoryWiseOpportunity({dateRange}: { dateRange?: DateRange }) {
   const category = useQuery({
-    queryKey: ['total-opportunities---category-wise'],
+    queryKey: ['category-wise-opportunity', dateRange],
     queryFn: async () => {
       return await api
         .post(`/opportunity/export`, {

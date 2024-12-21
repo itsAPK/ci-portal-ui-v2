@@ -92,7 +92,7 @@ const chartConfig = {
 
 export function EstimatedSavingsOpportunities({ dateRange }: { dateRange?: DateRange }) {
   const estimatedSavings = useQuery({
-    queryKey: ['total-opportunities---estimated-savings'],
+    queryKey: ['estimated-savings', dateRange],
     queryFn: async () => {
       return await api
         .post(`/opportunity/export`, {
