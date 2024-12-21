@@ -64,7 +64,7 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
   ];
 
   const totalOpportunities = useQuery({
-    queryKey: ['total-opportunities'],
+    queryKey: ['total-opportunities', dateRange],
     queryFn: async () => {
       return await api
         .post(`/opportunity/export`, {

@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertTriangle,
   BoxesIcon,
@@ -30,8 +30,6 @@ import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 
 export default function Page() {
-
-
   const [date, setDate] = React.useState<DateRange>({
     from: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
     to: new Date(),
@@ -61,103 +59,102 @@ export default function Page() {
                 },
               },
             },
-            
-              {
-                $facet: {
-                  totalEstimatedSavings: [
-                    {
-                      $group: {
-                        _id: null,
-                        total_estimated: { $sum: '$estimated_savings' },
-                      },
-                    },
-                  ],
-                  totalOngoing: [
-                    {
-                      $match: {
-                        status: {
-                          $nin: [
-                            'Open For Assign',
-                            'Project Closure Pending (CIHead)',
-                            'Project Closure Pending (HOD)',
-                            'Project Closure Pending (Costing Head)',
-                            'Project Closure Pending (LOF)',
-                            'Opportunity Completed',
-                          ],
-                        },
-                      },
-                    },
-                    {
-                      $count: 'totalOngoing',
-                    },
-                  ],
-                  totalCompleted: [
-                    {
-                      $match: {
-                        status: 'Opportunity Completed',
-                      },
-                    },
-                    {
-                      $count: 'totalCompleted',
-                    },
-                  ],
-                  totalOpenForAssign: [
-                    {
-                      $match: {
-                        status: 'Open For Assign',
-                      },
-                    },
-                    {
-                      $count: 'totalOpenForAssign',
-                    },
-                  ],
 
-                  totalProjectClosure: [
-                    {
-                      $match: {
-                        status: {
-                          $in: [
-                            'Project Closure Pending (CIHead)',
-                            'Project Closure Pending (HOD)',
-                            'Project Closure Pending (Costing Head)',
-                            'Project Closure Pending (LOF)',
-                          ],
-                        },
+            {
+              $facet: {
+                totalEstimatedSavings: [
+                  {
+                    $group: {
+                      _id: null,
+                      total_estimated: { $sum: '$estimated_savings' },
+                    },
+                  },
+                ],
+                totalOngoing: [
+                  {
+                    $match: {
+                      status: {
+                        $nin: [
+                          'Open For Assign',
+                          'Project Closure Pending (CIHead)',
+                          'Project Closure Pending (HOD)',
+                          'Project Closure Pending (Costing Head)',
+                          'Project Closure Pending (LOF)',
+                          'Opportunity Completed',
+                        ],
                       },
                     },
-                    {
-                      $count: 'totalProjectClosure',
+                  },
+                  {
+                    $count: 'totalOngoing',
+                  },
+                ],
+                totalCompleted: [
+                  {
+                    $match: {
+                      status: 'Opportunity Completed',
                     },
-                  ],
+                  },
+                  {
+                    $count: 'totalCompleted',
+                  },
+                ],
+                totalOpenForAssign: [
+                  {
+                    $match: {
+                      status: 'Open For Assign',
+                    },
+                  },
+                  {
+                    $count: 'totalOpenForAssign',
+                  },
+                ],
+
+                totalProjectClosure: [
+                  {
+                    $match: {
+                      status: {
+                        $in: [
+                          'Project Closure Pending (CIHead)',
+                          'Project Closure Pending (HOD)',
+                          'Project Closure Pending (Costing Head)',
+                          'Project Closure Pending (LOF)',
+                        ],
+                      },
+                    },
+                  },
+                  {
+                    $count: 'totalProjectClosure',
+                  },
+                ],
+              },
+            },
+
+            {
+              $project: {
+                totalOngoing: { $arrayElemAt: ['$totalOngoing.totalOngoing', 0] },
+                totalCompleted: { $arrayElemAt: ['$totalCompleted.totalCompleted', 0] },
+                totalOpenForAssign: {
+                  $arrayElemAt: ['$totalOpenForAssign.totalOpenForAssign', 0],
+                },
+                totalProjectClosure: {
+                  $arrayElemAt: ['$totalProjectClosure.totalProjectClosure', 0],
+                },
+                totalEstimatedSavings: {
+                  $arrayElemAt: ['$totalEstimatedSavings.total_estimated', 0],
                 },
               },
+            },
 
-              {
-                $project: {
-                  totalOngoing: { $arrayElemAt: ['$totalOngoing.totalOngoing', 0] },
-                  totalCompleted: { $arrayElemAt: ['$totalCompleted.totalCompleted', 0] },
-                  totalOpenForAssign: {
-                    $arrayElemAt: ['$totalOpenForAssign.totalOpenForAssign', 0],
-                  },
-                  totalProjectClosure: {
-                    $arrayElemAt: ['$totalProjectClosure.totalProjectClosure', 0],
-                  },
-                  totalEstimatedSavings: {
-                    $arrayElemAt: ['$totalEstimatedSavings.total_estimated', 0],
-                  },
-                },
+            {
+              $addFields: {
+                totalOngoing: { $ifNull: ['$totalOngoing', 0] },
+                totalCompleted: { $ifNull: ['$totalCompleted', 0] },
+                totalOpenForAssign: { $ifNull: ['$totalOpenForAssign', 0] },
+                totalProjectClosure: { $ifNull: ['$totalProjectClosure', 0] },
+                totalEstimatedSavings: { $ifNull: ['$totalEstimatedSavings', 0] },
               },
-
-              {
-                $addFields: {
-                  totalOngoing: { $ifNull: ['$totalOngoing', 0] },
-                  totalCompleted: { $ifNull: ['$totalCompleted', 0] },
-                  totalOpenForAssign: { $ifNull: ['$totalOpenForAssign', 0] },
-                  totalProjectClosure: { $ifNull: ['$totalProjectClosure', 0] },
-                  totalEstimatedSavings: { $ifNull: ['$totalEstimatedSavings', 0] },
-                },
-              },
-          
+            },
           ],
         })
         .then((res) => {
@@ -172,22 +169,21 @@ export default function Page() {
   const totalEmployee = useQuery({
     queryKey: ['total-employees'],
     queryFn: async () => {
-      return await api
-        .get(`/employee/count/`, {
-        }).then((res) => {
-          if (!res.data.success) {
-            throw new Error(res.data.message);
-          }
-          return res.data.data;
-        });
+      return await api.get(`/employee/count/`, {}).then((res) => {
+        if (!res.data.success) {
+          throw new Error(res.data.message);
+        }
+        return res.data.data;
+      });
     },
   });
- 
+
+  const queryClient = useQueryClient();
 
   return (
     <UILayout>
       <ContentLayout title={'Login'} tags={['authentication', 'login']}>
-        <div className="p-3  pb-0 flex justify-between text-xl font-semibold text-gray-800 dark:text-white">
+        <div className="flex justify-between p-3 pb-0 text-xl font-semibold text-gray-800 dark:text-white">
           <div>Dashboard</div>
           <div className="flex gap-2">
             <div className="flex gap-2 px-4">
@@ -195,13 +191,25 @@ export default function Page() {
                 date={date}
                 onDateSelect={({ from, to }) => {
                   setDate({ from, to });
-
-                  
+                  setTimeout(() => {
+                    totalData.refetch();
+                    totalEmployee.refetch();
+                    queryClient.refetchQueries({
+                      queryKey: [
+                        'total-opportunities', date, 
+                        'top-estimated-savings', date,
+                        'category-wise-opportunity', date,
+                        'estimated-savings', date,
+                        'top-employees', date
+                      ],
+                    });
+                  }, 1000);
                 }}
                 className="h-8 w-[320px]"
               />
-          
-        </div></div></div>
+            </div>
+          </div>
+        </div>
         <div className="mt-4 flex min-h-[80vh] items-center justify-center">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-12 lg:px-0">
             <div className="col-span-12 flex justify-end pb-3 md:hidden"></div>
@@ -211,25 +219,39 @@ export default function Page() {
                   icon={<FileBoxIcon className="h-7 w-7 text-purple-500" />}
                   name={' Projects Completed'}
                   color="bg-purple-500/10"
-                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalCompleted : 0}
+                  count={
+                    totalData.data && totalData.data.length > 0
+                      ? totalData.data[0].totalCompleted
+                      : 0
+                  }
                 />
                 <CountCard
                   icon={<BoxIcon className="h-7 w-7 text-blue-600" />}
                   name={'Projects Opened'}
                   color="bg-blue-600/10"
-                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalOpenForAssign : 0}
+                  count={
+                    totalData.data && totalData.data.length > 0
+                      ? totalData.data[0].totalOpenForAssign
+                      : 0
+                  }
                 />
                 <CountCard
                   icon={<BoxesIcon className="h-7 w-7 text-orange-600" />}
                   name={'Project Wait for Closure'}
                   color="bg-orange-600/10"
-                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalProjectClosure : 0}
+                  count={
+                    totalData.data && totalData.data.length > 0
+                      ? totalData.data[0].totalProjectClosure
+                      : 0
+                  }
                 />
                 <CountCard
                   icon={<WalletCardsIcon className="h-7 w-7 text-amber-600" />}
                   name={'Ongoing Projects'}
                   color="bg-amber-600/10"
-                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalOngoing : 0}
+                  count={
+                    totalData.data && totalData.data.length > 0 ? totalData.data[0].totalOngoing : 0
+                  }
                 />
                 <CountCard
                   icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
@@ -241,34 +263,30 @@ export default function Page() {
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
                   name={'Total Employees'}
                   color="bg-indigo-600/10"
-                  count={totalEmployee.data  ? totalEmployee.data.employee : 0}
+                  count={totalEmployee.data ? totalEmployee.data.employee : 0}
                 />
               </div>
             </div>
             <div className="md:col-span-4">
-              <OverallReport  dateRange={date} />
+              <OverallReport dateRange={date} />
             </div>
             <div className="pl-3 md:col-span-6">
               <CompletedVsOpened />
             </div>
             <div className="md:col-span-6">
-              <TotalEstimatedSavings
-                dateRange={date}
-              />
+              <TotalEstimatedSavings dateRange={date} />
             </div>
             <div className="md:col-span-6">
               <CategoryWiseOpportunity dateRange={date} />
             </div>
             <div className="md:col-span-6">
-              <TotalEmployees  />
+              <TotalEmployees />
             </div>
             <div className="md:col-span-6">
               <EstimatedSavingsOpportunities dateRange={date} />
             </div>
             <div className="md:col-span-6">
-              <TopEmployees
-                dateRange={date}
-              />
+              <TopEmployees dateRange={date} />
             </div>
           </div>
         </div>

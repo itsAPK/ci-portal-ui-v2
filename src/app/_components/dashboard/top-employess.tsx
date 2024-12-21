@@ -13,7 +13,7 @@ import { DateRange } from 'react-day-picker';
 
 export const TopEmployees = ({ dateRange }: { dateRange?: DateRange }) => {
   const topEmployees = useQuery({
-    queryKey: ['total-opportunities---top-employees'],
+    queryKey: ['top-employees', dateRange],
     queryFn: async () => {
       return await api
         .post(`/opportunity/export`, {

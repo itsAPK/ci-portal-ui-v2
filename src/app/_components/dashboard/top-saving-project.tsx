@@ -13,7 +13,7 @@ import { DateRange } from 'react-day-picker';
 
 export const TotalEstimatedSavings = ({dateRange}: { dateRange?: DateRange }) => {
   const topEstimatedSavings = useQuery({
-    queryKey: ['total-opportunities---top-estimated-savings'],
+    queryKey: ['top-estimated-savings', dateRange],
     queryFn: async () => {
       return await api
         .post(`/opportunity/export`, {
