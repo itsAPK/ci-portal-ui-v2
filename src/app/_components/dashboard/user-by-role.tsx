@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import { TrendingUp } from "lucide-react"
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
-
+import { TrendingUp } from 'lucide-react';
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
+import { Loading } from '@/components/ui/loading';
 import {
   Card,
   CardContent,
@@ -10,57 +10,96 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from '@/components/ui/chart';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 const chartData = [
-  { month: "Project Leader", desktop: 186 },
-  { month: "CI Head", desktop: 285 },
-  { month: "CS Head", desktop: 237 },
-  { month: "LOF", desktop: 203 },
-  { month: "HOD", desktop: 209 },
-  { month: "Admin", desktop: 24 },
-]
+  { role: 'Project Leader', total: 186 },
+  { role: 'CI Head', total: 285 },
+  { role: 'CS Head', total: 237 },
+  { role: 'LOF', total: 203 },
+  { role: 'HOD', total: 209 },
+  { role: 'Admin', total: 24 },
+  { role: 'CI Team', total: 24 },
+  { role: 'Employee', total: 24 },
+];
 
 const chartConfig = {
-  desktop: {
-    label: "Employee",
-    color: "hsl(var(--destructive))",
+  total: {
+    label: 'Employees',
+    color: 'hsl(var(--destructive))',
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
+
+const roleMapping = {
+  hod: 'HOD',
+  project_leader: 'Project Leader',
+  admin: 'Admin',
+  cs_head: 'CS Head',
+  ci_head: 'CI Head',
+  lof: 'LOF',
+  ci_team: 'CI Team',
+};
 
 export function TotalEmployees() {
+  const getEmployeesByRole = useQuery({
+    queryKey: ['employees-count-by-role'],
+    queryFn: async () => {
+      return await api
+        .post(`/employee/export`, {
+          filter: [
+            {
+              $group: {
+                _id: '$role',
+                count: { $sum: 1 },
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data;
+        });
+    },
+  });
   return (
-    <Card className="rounded-xl shadow-none h-[350px] border-primary/50 overflow-y-auto">
-      <CardHeader className=" pb-4">
+    <Card className="h-[350px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
+      <CardHeader className="pb-4">
         <CardTitle>Total Employees</CardTitle>
-      
       </CardHeader>
       <CardContent className="pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[280px]"
-        >
-          <RadarChart data={chartData}>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <PolarGrid
-              className="fill-[--color-desktop] opacity-20"
-              gridType="circle"
-            />
-            <PolarAngleAxis dataKey="month" />
-            <Radar
-              dataKey="desktop"
-              fill="var(--color-desktop)"
-              fillOpacity={0.5}
-            />
-          </RadarChart>
-        </ChartContainer>
+        { !getEmployeesByRole.isLoading ? 
+          <ChartContainer config={chartConfig} className="mx-auto max-h-[280px]">
+            <RadarChart
+              data={
+                getEmployeesByRole.data &&
+                getEmployeesByRole.data.data.data
+                  .filter((i : any) => i._id !== 'employee')
+                  .map((item : any) => {
+                    return {
+                      //@ts-ignore
+                      role: roleMapping[item._id], // Map ID to full role name
+                      total: item.count, // Use the count as total
+                    };
+                  })
+              }
+            >
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <PolarGrid className="fill-[--color-total] opacity-20" gridType="circle" />
+              <PolarAngleAxis dataKey="role" />
+              <Radar dataKey="total" fill="var(--color-total)" fillOpacity={0.5} />
+            </RadarChart>
+          </ChartContainer> : <Loading />
+        }
       </CardContent>
-     
     </Card>
-  )
+  );
 }

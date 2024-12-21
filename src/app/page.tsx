@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   AlertTriangle,
   BoxesIcon,
@@ -25,53 +25,185 @@ import { CategoryWiseOpportunity } from './_components/dashboard/category-wise-o
 import { TotalEmployees } from './_components/dashboard/user-by-role';
 import { EstimatedSavingsOpportunities } from './_components/dashboard/estimated-savings';
 import { TopEmployees } from './_components/dashboard/top-employess';
+import React from 'react';
+import { DateRange } from 'react-day-picker';
+import { CalendarDatePicker } from '@/components/calender-date-picker';
 
-export default function Login() {
-  const form = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
+export default function Page() {
+
+
+  const [date, setDate] = React.useState<DateRange>({
+    from: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+    to: new Date(),
   });
 
-  const login = useMutation({
-    mutationKey: ['login'],
-    mutationFn: async (data: LoginSchema) => {
+  const totalData = useQuery({
+    queryKey: ['total-opportunities-dashboard'],
+    queryFn: async () => {
       return await api
-        .post(`/auth/login`, data)
+        .post(`/opportunity/export`, {
+          filter: [
+            {
+              $addFields: {
+                formatted_date: {
+                  $dateToString: {
+                    format: '%Y-%m-%d',
+                    date: '$created_at',
+                  },
+                },
+              },
+            },
+            {
+              $match: {
+                formatted_date: {
+                  $gte: date && date.from && new Date(date.from),
+                  $lte: date && date.to && new Date(date.to),
+                },
+              },
+            },
+            
+              {
+                $facet: {
+                  totalEstimatedSavings: [
+                    {
+                      $group: {
+                        _id: null,
+                        total_estimated: { $sum: '$estimated_savings' },
+                      },
+                    },
+                  ],
+                  totalOngoing: [
+                    {
+                      $match: {
+                        status: {
+                          $nin: [
+                            'Open For Assign',
+                            'Project Closure Pending (CIHead)',
+                            'Project Closure Pending (HOD)',
+                            'Project Closure Pending (Costing Head)',
+                            'Project Closure Pending (LOF)',
+                            'Opportunity Completed',
+                          ],
+                        },
+                      },
+                    },
+                    {
+                      $count: 'totalOngoing',
+                    },
+                  ],
+                  totalCompleted: [
+                    {
+                      $match: {
+                        status: 'Opportunity Completed',
+                      },
+                    },
+                    {
+                      $count: 'totalCompleted',
+                    },
+                  ],
+                  totalOpenForAssign: [
+                    {
+                      $match: {
+                        status: 'Open For Assign',
+                      },
+                    },
+                    {
+                      $count: 'totalOpenForAssign',
+                    },
+                  ],
+
+                  totalProjectClosure: [
+                    {
+                      $match: {
+                        status: {
+                          $in: [
+                            'Project Closure Pending (CIHead)',
+                            'Project Closure Pending (HOD)',
+                            'Project Closure Pending (Costing Head)',
+                            'Project Closure Pending (LOF)',
+                          ],
+                        },
+                      },
+                    },
+                    {
+                      $count: 'totalProjectClosure',
+                    },
+                  ],
+                },
+              },
+
+              {
+                $project: {
+                  totalOngoing: { $arrayElemAt: ['$totalOngoing.totalOngoing', 0] },
+                  totalCompleted: { $arrayElemAt: ['$totalCompleted.totalCompleted', 0] },
+                  totalOpenForAssign: {
+                    $arrayElemAt: ['$totalOpenForAssign.totalOpenForAssign', 0],
+                  },
+                  totalProjectClosure: {
+                    $arrayElemAt: ['$totalProjectClosure.totalProjectClosure', 0],
+                  },
+                  totalEstimatedSavings: {
+                    $arrayElemAt: ['$totalEstimatedSavings.total_estimated', 0],
+                  },
+                },
+              },
+
+              {
+                $addFields: {
+                  totalOngoing: { $ifNull: ['$totalOngoing', 0] },
+                  totalCompleted: { $ifNull: ['$totalCompleted', 0] },
+                  totalOpenForAssign: { $ifNull: ['$totalOpenForAssign', 0] },
+                  totalProjectClosure: { $ifNull: ['$totalProjectClosure', 0] },
+                  totalEstimatedSavings: { $ifNull: ['$totalEstimatedSavings', 0] },
+                },
+              },
+          
+          ],
+        })
         .then((res) => {
           if (!res.data.success) {
             throw new Error(res.data.message);
           }
-          return res.data;
-        })
-        .catch((err) => {
-          throw err;
+          return res.data.data.data;
         });
-    },
-    onError: (error) => {
-      toast.error(error.message, {
-        icon: <AlertTriangle className="h-4 w-4" />,
-      });
-    },
-    onSuccess: (data) => {
-      // Handle successful login, maybe redirect or store the token
-      form.reset();
-      toast.success('Login successful!');
     },
   });
 
-  const onSubmit = form.handleSubmit(async (data: LoginSchema) => {
-    await login.mutateAsync(data);
+  const totalEmployee = useQuery({
+    queryKey: ['total-employees'],
+    queryFn: async () => {
+      return await api
+        .get(`/employee/count/`, {
+        }).then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data;
+        });
+    },
   });
+ 
 
   return (
     <UILayout>
       <ContentLayout title={'Login'} tags={['authentication', 'login']}>
-      <div className="font-semibold  p-3 pb-0 text-xl text-gray-800 dark:text-white">
-            Dashboard
+        <div className="p-3  pb-0 flex justify-between text-xl font-semibold text-gray-800 dark:text-white">
+          <div>Dashboard</div>
+          <div className="flex gap-2">
+            <div className="flex gap-2 px-4">
+              <CalendarDatePicker
+                date={date}
+                onDateSelect={({ from, to }) => {
+                  setDate({ from, to });
 
-          </div>
-        <div className="flex min-h-[80vh] mt-4 items-center justify-center">
-         
-          <div className="grid grid-cols-1 gap-6  md:grid-cols-12 lg:px-0">
+                  
+                }}
+                className="h-8 w-[320px]"
+              />
+          
+        </div></div></div>
+        <div className="mt-4 flex min-h-[80vh] items-center justify-center">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-12 lg:px-0">
             <div className="col-span-12 flex justify-end pb-3 md:hidden"></div>
             <div className="col-span-12 md:col-span-8">
               <div className="flex w-full grid-cols-1 flex-col gap-5 px-4 md:grid md:grid-cols-2">
@@ -79,81 +211,65 @@ export default function Login() {
                   icon={<FileBoxIcon className="h-7 w-7 text-purple-500" />}
                   name={' Projects Completed'}
                   color="bg-purple-500/10"
-                  count={`${237}`}
+                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalCompleted : 0}
                 />
                 <CountCard
                   icon={<BoxIcon className="h-7 w-7 text-blue-600" />}
                   name={'Projects Opened'}
                   color="bg-blue-600/10"
-                  count={`100`}
+                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalOpenForAssign : 0}
                 />
                 <CountCard
                   icon={<BoxesIcon className="h-7 w-7 text-orange-600" />}
-                  name={'Project Expired'}
+                  name={'Project Wait for Closure'}
                   color="bg-orange-600/10"
-                  count={'122'}
+                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalProjectClosure : 0}
                 />
-                 <CountCard
+                <CountCard
                   icon={<WalletCardsIcon className="h-7 w-7 text-amber-600" />}
                   name={'Ongoing Projects'}
                   color="bg-amber-600/10"
-                  count={`210`}
+                  count={totalData.data && totalData.data.length > 0 ? totalData.data[0].totalOngoing : 0}
                 />
                 <CountCard
                   icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
                   name={'Total Savings'}
                   color="bg-red-600/10"
-                  count={`₹ ${1078790}`}
+                  count={`₹ ${totalData.data && totalData.data.length > 0 ? totalData.data[0].totalEstimatedSavings : 0}`}
                 />
                 <CountCard
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
                   name={'Total Employees'}
                   color="bg-indigo-600/10"
-                  count={`100
-                         
-                        `}
+                  count={totalEmployee.data  ? totalEmployee.data.employee : 0}
                 />
-               
               </div>
-             
             </div>
             <div className="md:col-span-4">
-              <OverallReport
-                expired={237}
-                opened={102}
-                completed={100}
-                ongoing={122}/>
-              </div>
-              <div className="md:col-span-6 pl-3">
-                 <CompletedVsOpened />
-              </div>
-              <div className="md:col-span-6">
-                   <TotalEstimatedSavings data={
-                    opportunities.map(i => ({
-                      opportunity_id : i.oppurtunity_id,
-                      total_savings : i.pl_id,
-                      category : i.category,
-                    }))
-                   } />
-              </div>
-              <div className="md:col-span-6">
-                   <CategoryWiseOpportunity  />
-              </div>
-              <div className="md:col-span-6">
-                   <TotalEmployees />
-              </div>
-              <div className="md:col-span-6">
-                <EstimatedSavingsOpportunities/>
-              </div>
-              <div className='md:col-span-6'>
-                <TopEmployees data={
-                  opportunities.map(i => ({
-                    employee_id : String(i.pl_id),
-                    employee_name : i.pl_name,
-                    total : String(i.impact_socre),
-                  }))
-                } />
-              </div>
+              <OverallReport  dateRange={date} />
+            </div>
+            <div className="pl-3 md:col-span-6">
+              <CompletedVsOpened />
+            </div>
+            <div className="md:col-span-6">
+              <TotalEstimatedSavings
+                dateRange={date}
+              />
+            </div>
+            <div className="md:col-span-6">
+              <CategoryWiseOpportunity dateRange={date} />
+            </div>
+            <div className="md:col-span-6">
+              <TotalEmployees  />
+            </div>
+            <div className="md:col-span-6">
+              <EstimatedSavingsOpportunities dateRange={date} />
+            </div>
+            <div className="md:col-span-6">
+              <TopEmployees
+                dateRange={date}
+              />
+            </div>
           </div>
         </div>
       </ContentLayout>

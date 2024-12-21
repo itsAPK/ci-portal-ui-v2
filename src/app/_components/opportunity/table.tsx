@@ -17,8 +17,9 @@ import { Button } from '@/components/ui/button';
 import { DownloadIcon } from 'lucide-react';
 import { opportunityCategories } from '@/lib/utils';
 import { categories } from '@/lib/data';
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
+import api from '@/lib/api';
 export const OpportunityTable = ({
   data,
   pageCount,
@@ -146,6 +147,8 @@ export const OpportunityTable = ({
     to: new Date(),
   });
   const role = getCookie('ci-portal.role');
+
+ 
   return (
     <Shell className="gap-2">
       <DataTable table={table} size={'w-full'} pagination={true} isServer refetchFn={refetchFn}>
@@ -167,7 +170,9 @@ export const OpportunityTable = ({
               router.push(`${pathname}?${params.toString()}`, {
                 scroll: false,
               });
-              refetchFn();
+              setTimeout(() => {
+                refetchFn();
+              }, 1000);
             }}
             className="h-8"
           />
