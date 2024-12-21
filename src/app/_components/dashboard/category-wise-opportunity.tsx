@@ -17,38 +17,138 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { month: "BB", desktop: 186, mobile: 80 },
-  { month: "GB", desktop: 305, mobile: 200 },
-  { month: "SMED", desktop: 237, mobile: 120 },
-  { month: "3M", desktop: 73, mobile: 190 },
-  { month: "SITG", desktop: 209, mobile: 130 },
-  { month: "Poka-Yoke", desktop: 214, mobile: 140 },
-]
+import api from "@/lib/api"
+import { useQuery } from "@tanstack/react-query"
+import { DateRange } from "react-day-picker"
+import { categories } from "@/lib/data"
+import { Loading } from "@/components/ui/loading"
+
 
 const chartConfig = {
-  desktop: {
-    label: "Opened",
+  ongoing: {
+    label: "Ongoing",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
+  completed: {
     label: "Completed",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
-export function CategoryWiseOpportunity() {
+interface CategoryData {
+  category: string;
+  ongoing: number;
+  completed: number;
+}
+function generateCompleteCategoryData(inputData: CategoryData[]): CategoryData[] {
+  
+
+  const dataMap: Record<string, CategoryData> = {};
+  inputData.forEach(item => {
+      dataMap[item.category] = { category: item.category, ongoing: item.ongoing, completed: item.completed };
+  });
+
+  return categories.map(category => {
+      const categoryData = dataMap[category] || { category, ongoing: 0, completed: 0 };
+      return categoryData;
+  });
+   
+}
+
+export function CategoryWiseOpportunity({dateRange}: { dateRange?: DateRange }) {
+  const category = useQuery({
+    queryKey: ['total-opportunities---category-wise'],
+    queryFn: async () => {
+      return await api
+        .post(`/opportunity/export`, {
+          filter: [
+            {
+              $addFields: {
+                formatted_date: {
+                  $dateToString: {
+                    format: '%Y-%m-%d',
+                    date: '$created_at',
+                  },
+                },
+              },
+            },
+            {
+              $match: {
+                formatted_date: {
+                  $gte: dateRange && dateRange.from && new Date(dateRange.from),
+                  $lte: dateRange && dateRange.to && new Date(dateRange.to),
+                },
+              },
+            },
+            {
+              "$group": {
+                "_id": {
+                  "category": "$category",
+                  "status": "$status"
+                },
+                "count": { "$sum": 1 }
+              }
+            },
+            {
+              "$project": {
+                "category": "$_id.category",
+                "status": "$_id.status",
+                "count": 1,
+                "_id": 0
+              }
+            },
+            {
+              "$group": {
+                "_id": "$category",
+                "completed": {
+                  "$sum": {
+                    "$cond": [
+                      { "$eq": ["$status", "Opportunity Completed"] },
+                      "$count",
+                      0
+                    ]
+                  }
+                },
+                "ongoing": {
+                  "$sum": {
+                    "$cond": [
+                      { "$ne": ["$status", "Opportunity Completed"] },
+                      "$count",
+                      0
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "$project": {
+                "category": "$_id",
+                "completed": 1,
+                "ongoing": 1,
+                "_id": 0
+              }
+            }
+        ],
+      }).then((res) => {
+        if (!res.data.success) {
+          throw new Error(res.data.message);
+        }
+        return res.data.data.data;
+      });
+    
+    },
+  });
   return (
     <Card className="border-primary/50">
       <CardHeader>
         <CardTitle>Category Wise Opportunities</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+        {!category.isLoading ? <ChartContainer config={chartConfig}>
+          <BarChart accessibilityLayer data={category.data ? generateCompleteCategoryData(category.data) : generateCompleteCategoryData([])}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="category"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -58,10 +158,10 @@ export function CategoryWiseOpportunity() {
               cursor={false}
               content={<ChartTooltipContent indicator="dashed" />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            <Bar dataKey="ongoing" fill="var(--color-ongoing)" radius={4} />
+            <Bar dataKey="completed" fill="var(--color-completed)" radius={4} />
           </BarChart>
-        </ChartContainer>
+        </ChartContainer> : <Loading />}
       </CardContent>
     
     </Card>

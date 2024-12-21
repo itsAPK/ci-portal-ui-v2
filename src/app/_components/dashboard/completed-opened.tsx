@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { TrendingUp } from 'lucide-react';
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
 
 import {
   Card,
@@ -10,49 +10,135 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-    { month: "July", desktop: 150, mobile: 100 },
-    { month: "August", desktop: 160, mobile: 110 },
-    { month: "September", desktop: 170, mobile: 120 },
-    { month: "October", desktop: 280, mobile: 180 },
-    { month: "November", desktop: 220, mobile: 230 },
-    { month: "December", desktop: 200, mobile: 180 },
+} from '@/components/ui/chart';
+import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
+import { Loading } from '@/components/ui/loading';
+interface MonthlyData {
+  month: string;
+  ongoing: number;
+  completed: number;
+}
+
+function generateCompleteMonthlyData(inputData: MonthlyData[]): MonthlyData[] {
+  const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
   ];
+
+  const dataMap: Record<string, MonthlyData> = {};
+  inputData.forEach(item => {
+      dataMap[item.month] = { month: item.month, ongoing: item.ongoing, completed: item.completed };
+  });
+
+  return months.map(month => {
+      const monthData = dataMap[month] || { month, ongoing: 0, completed: 0 };
+      return monthData;
+  });
+}
 const chartConfig = {
-  desktop: {
-    label: "Completed",
-    color: "hsl(var(--chart-1))",
+  ongoing: {
+    label: 'Ongoing',
+    color: 'hsl(var(--chart-1))',
   },
-  mobile: {
-    label: "Opened",
-    color: "hsl(var(--chart-2))",
+  completed: {
+    label: 'Completed',
+    color: 'hsl(var(--chart-2))',
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function CompletedVsOpened() {
+  const totalData = useQuery({
+    queryKey: ['total-opportunities---completed-vs-ongoing'],
+    queryFn: async () => {
+      return await api
+        .post(`/opportunity/export`, {
+          filter: [
+          
+  
+    {
+      "$group": {
+        "_id": { "$month": '$created_at' },
+        "ongoing": {
+          "$sum": {
+            "$cond": [{ "$ne": ["$status", "Opportunity Completed"] }, 1, 0]
+          }
+        },
+        "completed": {
+          "$sum": {
+            "$cond": [{ "$eq": ["$status", "Opportunity Completed"] }, 1, 0]
+          }
+        }
+      }
+    },
+    {
+            $addFields: {
+              month: {
+                $let: {
+                  vars: {
+                    monthsInString: [
+                      'January',
+                      'February',
+                      'March',
+                      'April',
+                      'May',
+                      'June',
+                      'July',
+                      'August',
+                      'September',
+                      'October',
+                      'November',
+                      'December',
+                    ],
+                  },
+                  in: {
+                    $arrayElemAt: ['$$monthsInString', { $subtract: ['$_id', 1] }],
+                  },
+                },
+              },
+            },
+          },    {
+            $project: {
+              _id: 0,
+              month: 1,
+              ongoing: 1,
+              completed : 1
+            },
+          },       {
+            $sort: { month: 1 },
+          },
+
+    
+  
+
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data.data;
+        });
+    },
+  });
+
+  console.log(totalData.data);
   return (
-    <Card className="border-primary/50"> 
+    <Card className="border-primary/50">
       <CardHeader>
-        <CardTitle>Total Project Completed vs Opened</CardTitle>
+        <CardTitle>Total Project Completed vs Ongoing</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+       {!totalData.isLoading ? <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={totalData.data ? generateCompleteMonthlyData(totalData.data) : generateCompleteMonthlyData([])}
             margin={{
               left: 12,
               right: 12,
@@ -68,23 +154,22 @@ export function CompletedVsOpened() {
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="desktop"
+              dataKey="ongoing"
               type="monotone"
-              stroke="var(--color-desktop)"
+              stroke="var(--color-ongoing)"
               strokeWidth={2}
               dot={false}
             />
             <Line
-              dataKey="mobile"
+              dataKey="completed"
               type="monotone"
-              stroke="var(--color-mobile)"
+              stroke="var(--color-completed)"
               strokeWidth={2}
               dot={false}
             />
           </LineChart>
-        </ChartContainer>
+        </ChartContainer> : <Loading />}
       </CardContent>
-     
     </Card>
-  )
+  );
 }
