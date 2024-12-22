@@ -17,7 +17,7 @@ const buttonVariants = cva(
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         'ghost-1':
           'hover:bg-primary/40 border border-primary/70 bg-primary/20 hover:text-accent-foreground',
-        link: 'text-primary',
+        link: '',
         leaf: 'hover:bg-sky-500/40 border border-sky-500/70 bg-sky-500/20 hover:text-accent-foreground',
         calender:
           'bg-[hsl(var(--chart-2))] text-primary-foreground shadow hover:bg-[hsl(var(--chart-2))]/90',

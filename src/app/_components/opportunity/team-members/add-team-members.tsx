@@ -35,11 +35,11 @@ export const AddTeamMembers = ({
   const form = useForm<TeamMemberSchema>({
     resolver: zodResolver(teamMemberSchema),
   });
-  console.log(opportunity)
+  console.log(opportunity);
   const [employeeId, setEmployeeId] = useState<Option>();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
-  const [teamMember,setTeamMember] = useState<TeamMemberSchema[]>([]);
+  const [teamMember, setTeamMember] = useState<TeamMemberSchema[]>([]);
   const addTeamMember = useMutation({
     mutationKey: ['add-team-member'],
     mutationFn: async (data: TeamMemberSchema) => {
@@ -97,9 +97,8 @@ export const AddTeamMembers = ({
     mutationFn: async () => {
       return await api
         .patch(`/opportunity/${opportunity._id.$oid}`, {
-       
-          status: 'Teams Updated'
-            })
+          status: 'Teams Updated',
+        })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
           return res.data;
@@ -129,9 +128,9 @@ export const AddTeamMembers = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex gap-2">
+        <Button variant="link" size={'sm'} className="gap-2">
           <RiGroup2Fill className="mr-2 h-4 w-4" /> Add Team Members
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl max-w-[925px] overflow-y-auto">
         <DialogHeader>
@@ -208,12 +207,15 @@ export const AddTeamMembers = ({
         {mode === 'dialog' ||
           (opportunity.team_members.length > 0 && <ViewTeamMembers opportunity={opportunity} />)}
 
-          <div className="flex justify-end pt-5">
-            <Button onClick={async() => updateOpportunity.mutateAsync()} size="lg" className="w-[200px] gap-3">
-              {updateOpportunity.isPending && <Loader2 className="h-4 w-3" />} Submit
-            </Button>
-
-          </div>
+        <div className="flex justify-end pt-5">
+          <Button
+            onClick={async () => updateOpportunity.mutateAsync()}
+            size="lg"
+            className="w-[200px] gap-3"
+          >
+            {updateOpportunity.isPending && <Loader2 className="h-4 w-3" />} Submit
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

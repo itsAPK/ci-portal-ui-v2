@@ -1,3 +1,4 @@
+'use client'
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import {
@@ -155,9 +156,10 @@ export const Improvement = ({ opportunities }: { opportunities: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex gap-2">
+      <Button variant="link" size={'sm'} className="gap-2">
+
           <RiFolderUploadFill className="mr-2 h-4 w-4" /> Improvement Phase
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl max-h-[90%] max-w-[1000px] overflow-y-auto">
         <DialogHeader>

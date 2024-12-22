@@ -205,10 +205,11 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex gap-2">
+      <Button variant="link" size={'sm'} className="gap-2">
+
           <RiPresentationFill className="h-4 w-4" />
           Proceed To Project Closure
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl max-h-[90%] max-w-[1200px] overflow-y-auto">
         <DialogHeader>
