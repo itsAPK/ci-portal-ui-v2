@@ -64,9 +64,9 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div  className="gap-2 flex">
+        <Button variant="link" size={'sm'} className="gap-2">
           <PencilIcon className="h-4 w-4" /> <span className='-mt-[1px] '>Edit</span>
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
         <DialogHeader>

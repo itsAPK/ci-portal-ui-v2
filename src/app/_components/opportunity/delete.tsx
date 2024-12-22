@@ -31,12 +31,12 @@ export const DeleteOpportunity = ({ id }: { id: string }) => {
     },
   });
   return (
-    <div onClick={() => deleteOpportunity.mutate()} className='cursor-pointer flex gap-2'>
+    <Button variant="link" size={'sm'} className="flex gap-2" onClick={() => deleteOpportunity.mutate()}>
       {deleteOpportunity.isPending ? (
         <Loader2 className="h-3 w-3" />
       ) : (
         <RiDeleteBin6Fill className="h-4 w-4 " /> 
       )} <span className='-mt-[1px] '>Delete</span>
-    </div>
+    </Button>
   );
 };
