@@ -1,3 +1,4 @@
+'use client'
 import { DialogHeader } from '@/components/ui/dialog';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useRef, useState } from 'react';
@@ -98,7 +99,7 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
                     </PDFLetterhead.Content>
                   </div>
                   <PDFLetterhead.RightData>
-                    <p className="text-sm font-semibold">Division: {opportunity.data.plant}</p>
+                    <p className="text-sm font-semibold">Division: {opportunity.data.plant ? opportunity.data.plant.name : '---'}</p>
                     <p className="text-sm font-semibold">
                       Department: {opportunity.data.department}
                     </p>
