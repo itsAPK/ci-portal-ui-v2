@@ -1,3 +1,4 @@
+'use client'
 import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
@@ -59,6 +60,7 @@ export const DefinePhaseForm = ({
               control={form.control}
               label="Part number/Machine/Customer/Supplier selected for study"
             />
+            
             <FormFieldInput
               type="text"
               name="part_having_problem"

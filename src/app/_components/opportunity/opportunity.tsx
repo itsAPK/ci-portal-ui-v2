@@ -1,4 +1,4 @@
-
+'use client'
 import { ContentLayout } from '@/components/content-layout';
 import { DataTableSkeleton } from '@/components/data-table/skeleton';
 import UILayout from '@/components/ui-layout';

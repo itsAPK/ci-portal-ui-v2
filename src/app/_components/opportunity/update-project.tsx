@@ -63,9 +63,9 @@ export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div  className="gap-2 flex">
+        <Button variant="link" size={'sm'} className="gap-2">
           <RiEditBoxFill className="h-4 w-4" /> <span className='-mt-[1px] '>Update Project</span>
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
         <DialogHeader>

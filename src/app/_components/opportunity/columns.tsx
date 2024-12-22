@@ -175,21 +175,24 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
           <div className="flex justify-end space-x-2 pl-2">
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Button className="rounded-[4px] text-xs" variant="outline" size={'sm'}>
+                <Button className="rounded-[4px] text-xs" variant="ghost-1" size={'sm'}>
                   <div className="px-2 text-start text-xs">More</div>
                   <ArrowDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  className="flex gap-2"
-                  onSelect={(e) => e.preventDefault()}
-                  onClick={() => router.push(`/opportunity/${row.original._id.$oid}`)}
-                >
-                  <EyeIcon className="h-4 w-4" /> View
+              <DropdownMenuContent className="flex flex-col items-start">
+                <DropdownMenuItem className="flex gap-2" asChild>
+                  <Button
+                    variant="link"
+                    size={'sm'}
+                    className="gap-2 text-xs"
+                    onClick={() => router.push(`/opportunity/${row.original._id.$oid}`)}
+                  >
+                    <EyeIcon className="h-4 w-4" /> View
+                  </Button>
                 </DropdownMenuItem>
                 {role === 'admin' && (
-                  <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                  <DropdownMenuItem className="flex gap-2" asChild>
                     <EditOpportunity opportunity={row.original} />
                   </DropdownMenuItem>
                 )}
@@ -198,166 +201,128 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   ((row.original.category === 'Black Belt' &&
                     row.original.status === 'Open for Assigning') ||
                     row.original.category !== 'Black Belt') && (
-                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
+                    <DropdownMenuItem className="flex gap-2" asChild>
                       <DeleteOpportunity id={row.original._id.$oid} />
                     </DropdownMenuItem>
                   )}
-                {row.original.category === 'Black Belt' && (
-                  <>
-                    {role !== 'employee' &&
-                      (role === 'admin' ||
-                        (row.original.plant && plant === row.original.plant.name)) &&
-                      row.original.status === 'Open for Assigning' && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <SelfAssignOpportunity opportunityId={row.original._id.$oid} />
-                        </DropdownMenuItem>
-                      )}
-                    {role !== 'employee' &&
-                      role !== 'project_leader' &&
-                      (role === 'admin' ||
-                        (row.original.plant && plant === row.original.plant.name)) &&
-                      row.original.status === 'Open for Assigning' && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <AssignProjectLeader opportunity={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Project Assigned' &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <UpdateProject opportunity={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Details Updated' &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <AddTeamMembers opportunity={row.original} />
-                        </DropdownMenuItem>
-                      )}
 
-                    {row.original.status === 'Teams Updated' &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <AddDefinePhase opportunityId={row.original._id.$oid} />
-                        </DropdownMenuItem>
-                      )}
-                    {/* {} */}
-                    {row.original.status === 'Define Phase Completed' &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <SSVTools opportunities={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {(row.original.status === "SSV's Tools Updated" ||
-                      row.original.status === 'Measure & Analyze Phase Pending') &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <MeasureAnalysis opportunities={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {(row.original.status === 'Measure & Analyze Phase Completed' ||
-                      row.original.status === 'Improvement Phase Pending') &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <Improvement opportunities={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {(row.original.status === 'Improvement Phase Completed' ||
-                      row.original.status === 'Control Phase Pending') &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <Control opportunities={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Control Phase Completed' &&
-                      row.original.project_leader &&
-                      userId === row.original.project_leader._id.$oid && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <ProjectClosure opportunities={row.original} />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Project Closure Pending (CIHead)' &&
-                      userId === row.original.plant.ci_head._id.$oid &&
-                      plant === row.original.plant.name && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <ApproveOpportunity opportunity={row.original} role="ci_head" />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Project Closure Pending (HOD)' &&
-                      userId === row.original.plant.hod._id.$oid &&
-                      plant === row.original.plant.name && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <ApproveOpportunity opportunity={row.original} role="hod" />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Project Closure Pending (LOF)' &&
-                      userId === row.original.plant.lof._id.$oid &&
-                      plant === row.original.plant.name && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <ApproveOpportunity opportunity={row.original} role="lof" />
-                        </DropdownMenuItem>
-                      )}
-                    {row.original.status === 'Project Closure Pending (Costing Head)' &&
-                      userId === row.original.plant.cs_head._id.$oid &&
-                      plant === row.original.plant.name && (
-                        <DropdownMenuItem
-                          className="flex gap-2"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <ApproveOpportunity opportunity={row.original} role="cs_head" />
-                        </DropdownMenuItem>
-                      )}
-
-                    <DropdownMenuItem className="flex gap-2" onSelect={(e) => e.preventDefault()}>
-                      <ActionPlan opportunities={row.original} />
+                {role !== 'employee' &&
+                  (role === 'admin' || (row.original.plant && plant === row.original.plant.name)) &&
+                  row.original.status === 'Open for Assigning' && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <SelfAssignOpportunity opportunityId={row.original._id.$oid} />
                     </DropdownMenuItem>
-                  </>
-                )}
+                  )}
+                {role !== 'employee' &&
+                  role !== 'project_leader' &&
+                  (role === 'admin' || (row.original.plant && plant === row.original.plant.name)) &&
+                  row.original.status === 'Open for Assigning' && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <AssignProjectLeader opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.status === 'Project Assigned' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <UpdateProject opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.status === 'Details Updated' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <AddTeamMembers opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
+
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Teams Updated' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <AddDefinePhase opportunityId={row.original._id.$oid} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Define Phase Completed' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <SSVTools opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  (row.original.status === "SSV's Tools Updated" ||
+                    row.original.status === 'Measure & Analyze Phase Pending') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <MeasureAnalysis opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  (row.original.status === 'Measure & Analyze Phase Completed' ||
+                    row.original.status === 'Improvement Phase Pending') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <Improvement opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  (row.original.status === 'Improvement Phase Completed' ||
+                    row.original.status === 'Control Phase Pending') &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <Control opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Control Phase Completed' &&
+                  row.original.project_leader &&
+                  userId === row.original.project_leader._id.$oid && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <ProjectClosure opportunities={row.original} />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Project Closure Pending (CIHead)' &&
+                  userId === row.original.plant.ci_head._id.$oid &&
+                  plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <ApproveOpportunity opportunity={row.original} role="ci_head" />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Project Closure Pending (HOD)' &&
+                  userId === row.original.plant.hod._id.$oid &&
+                  plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <ApproveOpportunity opportunity={row.original} role="hod" />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Project Closure Pending (LOF)' &&
+                  userId === row.original.plant.lof._id.$oid &&
+                  plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <ApproveOpportunity opportunity={row.original} role="lof" />
+                    </DropdownMenuItem>
+                  )}
+                {row.original.category === 'Black Belt' &&
+                  row.original.status === 'Project Closure Pending (Costing Head)' &&
+                  userId === row.original.plant.cs_head._id.$oid &&
+                  plant === row.original.plant.name && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <ApproveOpportunity opportunity={row.original} role="cs_head" />
+                    </DropdownMenuItem>
+                  )}
+
+                <DropdownMenuItem className="flex gap-2" asChild>
+                  <ActionPlan opportunities={row.original} />
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -94,10 +94,10 @@ export const AssignProjectLeader = ({ opportunity }: { opportunity: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex gap-2">
+        <Button variant="link" size={'sm'} className="gap-2">
           <Users2Icon className="h-4 w-4" />{' '}
           <span className="-mt-[1px]">Assign Project Leader</span>
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[240px] max-w-[460px] overflow-y-auto">
         <DialogHeader>

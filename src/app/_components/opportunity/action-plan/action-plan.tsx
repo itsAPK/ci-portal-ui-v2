@@ -28,9 +28,9 @@ export const ActionPlan = ({ opportunities }: { opportunities: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex gap-2 text-sm">
+        <Button variant="link" size={'sm'} className="gap-2">
           <Settings2Icon className="h-4 w-4" /> Action Plan
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl min-h-[300px] max-w-[1005px] overflow-y-auto">
         <DialogHeader>
@@ -88,7 +88,7 @@ export const ActionPlan = ({ opportunities }: { opportunities: any }) => {
                     <TableCell className="text-center text-xs">
                       {item.findings ? item.findings : '---'}
                     </TableCell>
-                    <TableCell className=" flex gap-1">
+                    <TableCell className="flex gap-1">
                       {role !== 'employee' &&
                         role !== 'project_leader' &&
                         (role === 'admin' || plant === opportunities.plant) && (

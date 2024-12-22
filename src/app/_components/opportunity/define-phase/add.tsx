@@ -1,3 +1,4 @@
+'use client'
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { DefinePhaseForm } from './form';
+import { Button } from '@/components/ui/button';
 export const AddDefinePhase = ({ opportunityId }: any) => {
   const [open, setOpen] = useState(false);
   const isoPlotFile = useState<File[] | null>([]);
@@ -224,14 +226,15 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
   return (
     <Dialog open={open} onOpenChange={setOpen} modal>
       <DialogTrigger asChild>
-        <div className="flex gap-2">
-          <RiToolsFill className="mr-2 h-4 w-4" /> Add Define Phase
-        </div>
+        <Button variant="link" size={'sm'} className="gap-1">
+          <RiToolsFill className=" h-4 w-4" /> Add Define Phase
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[80vh] max-w-[1005px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Define Phase</DialogTitle>
         </DialogHeader>
+      <div>
         <DefinePhaseForm
           onSubmit={handleSubmit}
           isoPlotFile={isoPlotFile}
@@ -240,7 +243,7 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
           processFlowDiagram={processFlowDiagram}
           departmentKPI={departmentKPI}
           lastSixMonthsTrend={lastSixMonthsTrend}
-        />
+        /></div>
       </DialogContent>
     </Dialog>
   );
