@@ -65,7 +65,7 @@ export function Plant() {
   };
 
   const onDownloadSample = () => {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/Plant.xlsx`);
+    router.push(`${process.env.NEXT_PUBLIC_PLANT_TEMPLATE_URL}`);
   };
   return (
     <div className="py-4">
