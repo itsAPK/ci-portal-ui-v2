@@ -121,7 +121,7 @@ export const EmployeeTable = ({
   }
 
   const onDownloadSample = () => {
-     router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/employee.xlsx`);
+     router.push(`${process.env.NEXT_PUBLIC_EMPLOYEE_TEMPLATE_URL}`);
   }
 
   return (

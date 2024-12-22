@@ -66,7 +66,7 @@ export function Company() {
   };
 
   const onDownloadSample = () => {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/company.xlsx`);
+    router.push(`${process.env.NEXT_PUBLIC_COMPANY_TEMPLATE_URL}`);
   };
   return (
     <div className="py-4">

@@ -66,7 +66,7 @@ export function Department() {
   };
 
   const onDownloadSample = () => {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/Department.xlsx`);
+    router.push(`${process.env.NEXT_PUBLIC_DEPARTMENT_TEMPLATE_URL}`);
   };
   return (
     <div className="py-4">
