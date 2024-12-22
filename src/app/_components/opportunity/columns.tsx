@@ -290,7 +290,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (CIHead)' &&
                   userId === row.original.plant.ci_head._id.$oid &&
-                  plant === row.original.plant.name && (
+                  (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="ci_head" />
                     </DropdownMenuItem>
@@ -298,7 +298,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (HOD)' &&
                   userId === row.original.plant.hod._id.$oid &&
-                  plant === row.original.plant.name && (
+                 (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="hod" />
                     </DropdownMenuItem>
@@ -306,7 +306,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (LOF)' &&
                   userId === row.original.plant.lof._id.$oid &&
-                  plant === row.original.plant.name && (
+                (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="lof" />
                     </DropdownMenuItem>
@@ -314,7 +314,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (Costing Head)' &&
                   userId === row.original.plant.cs_head._id.$oid &&
-                  plant === row.original.plant.name && (
+                (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="cs_head" />
                     </DropdownMenuItem>
