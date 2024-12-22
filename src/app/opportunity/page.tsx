@@ -5,8 +5,9 @@ import { opportunities } from '@/lib/data';
 import React from 'react';
 import  Opportunities  from '../_components/opportunity/opportunity';
 import UILayout from '@/components/ui-layout';
+import { withAuth } from '@/hooks/use-auth';
 
-export default function Opportunity() {
+function Opportunity() {
   return (
     <UILayout>
     <ContentLayout>
@@ -26,3 +27,5 @@ export default function Opportunity() {
     </ContentLayout></UILayout>
   );
 }
+
+export default withAuth(Opportunity);

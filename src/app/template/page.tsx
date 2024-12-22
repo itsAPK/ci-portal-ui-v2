@@ -3,7 +3,8 @@ import React from 'react';
 import UILayout from '@/components/ui-layout';
 import { Loading } from '@/components/ui/loading';
 import { Document } from '../_components/documents/document';
-export default function Templates() {
+import { withAuth } from '@/hooks/use-auth';
+function Templates() {
   return (
     <UILayout>
     <ContentLayout>
@@ -18,3 +19,5 @@ export default function Templates() {
     </ContentLayout></UILayout>
   );
 }
+
+export default withAuth(Templates);
