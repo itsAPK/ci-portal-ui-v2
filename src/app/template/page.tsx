@@ -1,3 +1,4 @@
+'use client'
 import { ContentLayout } from '@/components/content-layout';
 import React from 'react';
 import UILayout from '@/components/ui-layout';
