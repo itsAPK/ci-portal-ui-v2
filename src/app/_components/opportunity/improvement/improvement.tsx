@@ -158,7 +158,7 @@ export const Improvement = ({ opportunities }: { opportunities: any }) => {
       <DialogTrigger asChild>
       <Button variant="link" size={'sm'} className="gap-2">
 
-          <RiFolderUploadFill className="mr-2 h-4 w-4" /> Improvement Phase
+          <RiFolderUploadFill className="h-4 w-4" /> Improvement Phase
         </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl max-h-[90%] max-w-[1000px] overflow-y-auto">

@@ -230,7 +230,7 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
           <RiToolsFill className=" h-4 w-4" /> Add Define Phase
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-xl h-[80vh] max-w-[1005px] overflow-y-auto">
+      <DialogContent className="min-w-xxl h-[80vh] max-w-[1305px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Define Phase</DialogTitle>
         </DialogHeader>
