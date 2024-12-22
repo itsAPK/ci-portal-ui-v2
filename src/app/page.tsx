@@ -28,8 +28,9 @@ import { TopEmployees } from './_components/dashboard/top-employess';
 import React from 'react';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
+import { withAuth } from '@/hooks/use-auth';
 
-export default function Page() {
+function Page() {
   const [date, setDate] = React.useState<DateRange>({
     from: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
     to: new Date(),
@@ -294,3 +295,5 @@ export default function Page() {
     </UILayout>
   );
 }
+
+export default withAuth(Page);

@@ -4,8 +4,9 @@ import React from 'react';
 import UILayout from '@/components/ui-layout';
 import { Training } from '../_components/training/training';
 import {Loading} from '@/components/ui/loading';
+import { withAuth } from '@/hooks/use-auth';
 
-export default function Page() {
+function Page() {
   return (
     <UILayout>
     <ContentLayout>
@@ -21,3 +22,5 @@ export default function Page() {
     </ContentLayout></UILayout>
   );
 }
+
+export default withAuth(Page);

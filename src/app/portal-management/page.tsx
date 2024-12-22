@@ -9,8 +9,9 @@ import { Company } from '../_components/portal-management/company/company';
 import { Department } from '../_components/portal-management/department/department';
 import { Plant } from '../_components/portal-management/plant/plant';
 import { BussinessUnit } from '../_components/portal-management/bussiness-unit/bussiness-unit';
+import { withAuth } from '@/hooks/use-auth';
 
-export default function PortalManagement() {
+function PortalManagement() {
   const role = getCookie('ci-portal.role');
   return (
     <UILayout>
@@ -45,3 +46,5 @@ export default function PortalManagement() {
     </UILayout>
   );
 }
+
+export default withAuth(PortalManagement);

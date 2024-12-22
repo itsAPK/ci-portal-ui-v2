@@ -17,9 +17,10 @@ import { useParams, usePathname } from 'next/navigation';
 import { Loading } from '@/components/ui/loading';
 import { getRandomColor } from '@/lib/utils';
 import { Report } from '@/app/_components/opportunity/report';
+import { withAuth } from '@/hooks/use-auth';
 
 
-export default function Opportunity({ searchParams }: IndexPageProps) {
+function Opportunity({ searchParams }: IndexPageProps) {
   const { id } = useParams();
 
   const opportunity = useQuery({
@@ -117,3 +118,5 @@ export default function Opportunity({ searchParams }: IndexPageProps) {
     </UILayout>
   );
 }
+
+export default withAuth(Opportunity);

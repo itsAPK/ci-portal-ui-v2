@@ -10,7 +10,8 @@ import { useQuery } from '@tanstack/react-query';
 import { parseFilterInput, buildFilter, parseSort } from '@/lib/filter-parser';
 import { Loading } from '@/components/ui/loading';
 import { Archive } from '../_components/archive/archive';
-export default function Page() {
+import { withAuth } from '@/hooks/use-auth';
+ function Page() {
  
   return (
     <UILayout>
@@ -26,3 +27,5 @@ export default function Page() {
     </ContentLayout></UILayout>
   );
 }
+
+export default withAuth(Page);

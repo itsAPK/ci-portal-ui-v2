@@ -10,8 +10,9 @@ import RequestPlant from '../_components/account-management/request-plant/reques
 import { getCookie } from 'cookies-next';
 import Employee from '../_components/account-management/employee-management/employee';
 import { RequestPlantForm } from '../_components/account-management/request-plant/form';
+import { withAuth } from '@/hooks/use-auth';
 
-export default function AddItem() {
+function AddItem() {
   const role = getCookie('ci-portal.role');
   return (
     <UILayout>
@@ -63,3 +64,6 @@ export default function AddItem() {
     </UILayout>
   );
 }
+
+
+export default withAuth(AddItem);
