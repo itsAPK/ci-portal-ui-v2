@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginSchema, loginSchema } from '@/schema/login';
 import api from '@/lib/api';
 import { useMutation } from '@tanstack/react-query';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { setCookie } from 'cookies-next';
 
@@ -82,8 +82,8 @@ export default function Login() {
             color: '#b3d33a',
             fontSize: '14px',
             position: 'absolute',
-            left: '20%',
-            top: '35%',
+            left: '280px',
+            top: '240px',
           }}
         >
           Employee ID
@@ -99,9 +99,9 @@ export default function Login() {
             backgroundColor: 'transparent',
             boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)',
             position: 'absolute',
-            left: '20%',
+            left: '280px',
             color: 'white',
-            top: '37%',
+            top: '254px',
             outline: 'none',
           }}
         />
@@ -111,8 +111,8 @@ export default function Login() {
             color: '#b3d33a',
             fontSize: '14px',
             position: 'absolute',
-            left: '20%',
-            top: '46%',
+            left: '280px',
+            top: '340px',
             outline: 'none',
           }}
         >
@@ -130,8 +130,8 @@ export default function Login() {
             backgroundColor: 'transparent',
             boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)',
             position: 'absolute',
-            left: '20%',
-            top: '47%',
+            left: '280px',
+            top: '350px',
             outline: 'none',
           }}
         />
@@ -147,25 +147,25 @@ export default function Login() {
             fontSize: '16px',
             position: 'absolute',
             width: '150px',
-            left: '23%',
-            top: '62%',
+            left: '320px',
+            top: '450px',
           }}
         >
-          Login
+      {login.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Login
         </button>
       </form>
       <div
-        className="absolute left-[50%] top-[180px] flex flex-col text-center text-7xl uppercase tracking-widest text-gray-100"
+        className="absolute left-[700px] top-[180px] flex flex-col text-center text-7xl uppercase tracking-widest text-gray-100"
         style={{ fontFamily: '"Monoton", sans-serif' }}
       >
         CIRTS
       </div>
       <div
-        className="absolute left-[50%] top-[260px] flex h-[1px] w-[263px] flex-col bg-gray-200 text-center text-7xl font-extrabold uppercase text-green-300"
+        className="absolute left-[700px] top-[260px] flex h-[1px] w-[263px] flex-col bg-gray-200 text-center text-7xl font-extrabold uppercase text-green-300"
         style={{ fontFamily: '"Montserrat", sans-serif' }}
       ></div>
       <div
-        className="absolute left-[50%] top-[300px] flex flex-col text-5xl font-extrabold uppercase text-gray-100"
+        className="absolute left-[700px] top-[300px] flex flex-col text-5xl font-extrabold uppercase text-gray-100"
         style={{ fontFamily: '"Montserrat", sans-serif' }}
       >
         <div className="animate__animated animate__backInUp">Continuous </div>

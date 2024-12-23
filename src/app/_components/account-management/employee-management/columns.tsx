@@ -37,7 +37,7 @@ export const employeeColumns = (): ColumnDef<Employee>[] => {
       ),
       cell: ({ row }) => {
         const role = row.getValue('role') as string;
-        return <div className="flex justify-center text-center text-xs  capitalize">{role.replace('_', ' ')}</div>;
+        return <div className="flex justify-center text-center text-xs  capitalize">{role.replace('_', ' ').toUpperCase()}</div>;
       },
     },
     {

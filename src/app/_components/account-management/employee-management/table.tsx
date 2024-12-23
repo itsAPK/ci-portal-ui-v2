@@ -37,6 +37,14 @@ export const EmployeeTable = ({
       label: 'Employee ID',
     },
     {
+      value: 'role',
+      label: 'Role',
+      options: ['Admin', 'Employee', 'Project Leader', 'HOD', 'LOF', 'CI Head', 'CI Team'].map((i: any) => ({
+        value: i.replace(' ', '_').toLowerCase(),
+        label: i,
+      })),
+    },
+    {
       value: 'company',
       label: 'Company',
     },
