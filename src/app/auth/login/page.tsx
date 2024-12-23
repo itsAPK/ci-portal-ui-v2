@@ -83,7 +83,7 @@ export default function Login() {
             fontSize: '14px',
             position: 'absolute',
             left: '280px',
-            top: '240px',
+            top: '232px',
           }}
         >
           Employee ID
@@ -112,7 +112,7 @@ export default function Login() {
             fontSize: '14px',
             position: 'absolute',
             left: '280px',
-            top: '340px',
+            top: '330px',
             outline: 'none',
           }}
         >
@@ -137,6 +137,7 @@ export default function Login() {
         />
         <button
           type="submit"
+          className='gap-2 justify-center items-center'
           style={{
             backgroundColor: 'transparent',
             color: 'white',
@@ -149,6 +150,7 @@ export default function Login() {
             width: '150px',
             left: '320px',
             top: '450px',
+            display: 'flex'
           }}
         >
       {login.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Login
