@@ -15,9 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
       <body
         className={cn(
-          'max-w-[100%] overflow-x-hidden font-sans text-foreground bg-primary/10 dark:bg-primary/10',
+          'max-w-[100%] overflow-x-hidden bg-primary/10 font-sans text-foreground dark:bg-primary/10',
         )}
       >
         <Providers>{children}</Providers>
