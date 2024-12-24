@@ -23,7 +23,11 @@ export default function RootLayout({
           'max-w-[100%] overflow-x-hidden bg-primary/10 font-sans text-foreground dark:bg-primary/10',
         )}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+           <div>
+           {children}
+           </div>
+          </Providers>
       </body>
     </html>
   );
