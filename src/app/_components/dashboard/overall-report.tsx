@@ -274,7 +274,8 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
                             {totalOpportunities.data && totalOpportunities.data.length > 0
                               ? totalOpportunities.data[0].totalOngoing +
                                 totalOpportunities.data[0].totalCompleted +
-                                totalOpportunities.data[0].totalOpenForAssign
+                                totalOpportunities.data[0].totalOpenForAssign +
+                                totalOpportunities.data[0].totalProjectClosure
                               : 0}
                           </tspan>
                           <tspan
