@@ -39,8 +39,8 @@ function transformData(originalData: OriginalData[]): ChartData[] {
   const idMapping: { [key: string]: { newId: string; fill: string } } = {
       "<= 1 Lakh": { newId: "less_than_1_lakh", fill: "var(--color-less_than_1_lakh)" },
       ">1 and <=5 Lakh": { newId: "less_than_5_lakh", fill: "var(--color-less_than_5_lakh)" },
-      ">10 and <=15 Lakh": { newId: "less_than_15_lakh", fill: "var(--color-less_than_15_lakh)" },
-      ">15 Lakh": { newId: "greater_than_15_lakh", fill: "var(--color-greater_than_15_lakh)" }
+      ">5 and <=10 Lakh": { newId: "less_than_10_lakh", fill: "var(--color-less_than_10_lakh)" },
+      ">10 Lakh": { newId: "greater_than_10_lakh", fill: "var(--color-greater_than_10_lakh)" }
   };
 
   const chartDataArray: ChartData[] = Object.entries(idMapping).map(([originalId, mapping]) => ({
@@ -80,15 +80,12 @@ const chartConfig = {
     label: '>5 and <=10 Lakh	',
     color: 'hsl(var(--chart-3))',
   },
-  'less_than_15_lakh': {
-    label: '>10 and <=15 Lakh',
+  'greater_than_10_lakh': {
+    label: '>10 lakh',
     color: 'hsl(var(--chart-4))',
   },
-  'greater_than_15_lakh': {
-    label: '>15 Lakh',
-    color: 'hsl(var(--chart-5))',
-  },
 } satisfies ChartConfig;
+
 
 export function EstimatedSavingsOpportunities({ dateRange }: { dateRange?: DateRange }) {
   const estimatedSavings = useQuery({
@@ -132,6 +129,7 @@ export function EstimatedSavingsOpportunities({ dateRange }: { dateRange?: DateR
     },
   });
 
+
   console.log(estimatedSavings.data);
   return (
     <Card className="border-primary/50">
@@ -149,7 +147,8 @@ export function EstimatedSavingsOpportunities({ dateRange }: { dateRange?: DateR
           >
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel nameKey="_id" />}
+            
+              content={<ChartTooltipContent   className="w-[180px]" hideLabel nameKey="_id" />}
             />
             <RadialBar dataKey="total_opportunities" background />;
             <ChartLegend

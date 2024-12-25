@@ -76,7 +76,7 @@ function Page() {
                     $match: {
                       status: {
                         $nin: [
-                          'Open For Assigning',
+                          'Open for Assigning',
                           'Project Closure Pending (CIHead)',
                           'Project Closure Pending (HOD)',
                           'Project Closure Pending (Costing Head)',
@@ -103,7 +103,7 @@ function Page() {
                 totalOpenForAssign: [
                   {
                     $match: {
-                      status: 'Open For Assigning',
+                      status: 'Open for Assigning',
                     },
                   },
                   {

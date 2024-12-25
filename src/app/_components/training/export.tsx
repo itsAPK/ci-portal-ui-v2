@@ -192,7 +192,7 @@ export const ExportTraining = () => {
             throw new Error(res.data.message);
           }
           const fetchedData = res.data.data.data;
-          console.log(fetchedData);
+
 
           if (key === 'sheet') {
             if (fetchedData.length > 0) {

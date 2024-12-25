@@ -94,7 +94,7 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
                     $match: {
                       status: {
                         $nin: [
-                          'Open For Assign',
+                          'Open for Assigning',
                           'Project Closure Pending (CIHead)',
                           'Project Closure Pending (HOD)',
                           'Project Closure Pending (Costing Head)',
@@ -121,7 +121,7 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
                 totalOpenForAssign: [
                   {
                     $match: {
-                      status: 'Open For Assign',
+                      status: 'Open for Assigning',
                     },
                   },
                   {

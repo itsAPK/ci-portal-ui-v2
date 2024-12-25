@@ -165,7 +165,7 @@ export const TrainingTable = ({
   };
 
   const onDownloadSample = () => {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/employee.xlsx`);
+    router.push(`${process.env.NEXT_PUBLIC_TRAINING_TEMPLATE_URL}`);
   };
 
   return (
