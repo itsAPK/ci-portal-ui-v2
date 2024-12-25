@@ -14,7 +14,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
       <body
       style={{
         background: 'linear-gradient(90deg,#e52e71,#ff8a00)',
@@ -23,8 +22,11 @@ export default function RootLayout({
           'max-w-[100%] overflow-x-hidden font-sans text-foreground dark:bg-primary/10',
         )}
       >
-        <Providers>{children}</Providers>
+     
+
+          {children}
+         
       </body>
-    </html>
+ 
   );
 }

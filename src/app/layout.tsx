@@ -24,9 +24,8 @@ export default function RootLayout({
         )}
       >
         <Providers>
-           <div>
+           
            {children}
-           </div>
           </Providers>
       </body>
     </html>
