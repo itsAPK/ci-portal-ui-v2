@@ -16,16 +16,22 @@ import { useRouter } from 'next/navigation';
 import { DocumentCard } from '@/components/document-card';
 import { cn, formatToIndianNumber } from '@/lib/utils';
 
-export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClosure: any,isReport?: boolean }) => {
+export const ProjectClousre = ({
+  projectClosure,
+  isReport = false,
+}: {
+  projectClosure: any;
+  isReport?: boolean;
+}) => {
   const router = useRouter();
   return (
     <div className="py-4">
-      <Card className={cn('bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
+      <Card className={cn('bg-white', isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Project Closure</div>
         </div>
         <CardContent className="flex flex-col gap-4 overflow-y-auto p-4 pt-0">
-          <Card className={cn(isReport && 'shadow-none bg-white border-none ' )}>
+          <Card className={cn(isReport && 'border-none bg-white shadow-none')}>
             <CardContent className="flex flex-col p-4">
               <div className="flex gap-2">
                 <RiBox3Fill className="h-4 w-4" />
@@ -40,7 +46,7 @@ export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClo
               ))}
             </CardContent>
           </Card>
-          <Card className={cn(isReport && 'shadow-none bg-white border-none ' )}>
+          <Card className={cn(isReport && 'border-none bg-white shadow-none')}>
             <CardContent className="flex flex-col p-4">
               <div className="flex gap-2">
                 <RiBox3Fill className="h-4 w-4" />
@@ -55,7 +61,7 @@ export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClo
               ))}
             </CardContent>
           </Card>
-          <Card className={cn(isReport && 'shadow-none bg-white border-none ' )}>
+          <Card className={cn(isReport && 'border-none bg-white shadow-none')}>
             <CardContent className="flex flex-col p-4">
               <div className="flex gap-2">
                 <RiBox3Fill className="h-4 w-4" />
@@ -72,45 +78,47 @@ export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClo
             </CardContent>
           </Card>
         </CardContent>
-      </Card >
-      <Card className={cn('mt-5 bg-white ',isReport ? 'border-none  shadow-none' : 'border-gray-500/20')}>
+      </Card>
+      <Card
+        className={cn('mt-5 bg-white', isReport ? 'border-none shadow-none' : 'border-gray-500/20')}
+      >
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Results</div>
         </div>
         <CardContent className="flex flex-col gap-4 overflow-y-auto p-4 pt-0">
           <div className="grid grid-cols-2 gap-4">
             <ContentCard
-            isReport={isReport}
+              isReport={isReport}
               title="Project Success Rate"
               value="Successfully Completed"
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard
-            isReport={isReport}
+              isReport={isReport}
               title={'Estimated Savings'}
               value={`₹ ${formatToIndianNumber(projectClosure.estimated_savings)}`}
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard
-            isReport={isReport}
+              isReport={isReport}
               title="Tangible benefits"
               value={projectClosure.tangible_benifits}
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard
-            isReport={isReport}
+              isReport={isReport}
               title="Intangible benefits"
               value={projectClosure.intangible_benifits}
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard
-            isReport={isReport}
+              isReport={isReport}
               title="Horizontal Deployment"
               value={projectClosure.horizantal_deployment}
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard
-            isReport={isReport}
+              isReport={isReport}
               title="Standardization"
               value={projectClosure.standardization}
               icon={<RiBox3Fill className="h-4 w-4" />}
@@ -118,28 +126,30 @@ export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClo
           </div>
         </CardContent>
       </Card>
-      {!isReport && <Card className="my-2">
-        <CardHeader>
-          <CardTitle className="text-sm">Documents Uploaded</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-3 gap-4 text-sm">
-          <DocumentCard
-            documentName="Closure Document"
-            onDelete={() => {}}
-            bucket={projectClosure.closure_document}
-          />
-          <DocumentCard
-            documentName="Before & After Improvement"
-            onDelete={() => {}}
-            bucket={projectClosure.before_improvement}
-          />
-          {/* <DocumentCard
+      {!isReport && (
+        <Card className="my-2">
+          <CardHeader>
+            <CardTitle className="text-sm">Documents Uploaded</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-3 gap-4 text-sm">
+            <DocumentCard
+              documentName="Closure Document"
+              onDelete={() => {}}
+              bucket={projectClosure.closure_document}
+            />
+            <DocumentCard
+              documentName="Before & After Improvement"
+              onDelete={() => {}}
+              bucket={projectClosure.before_improvement}
+            />
+            {/* <DocumentCard
             documentName="After Improvement"
             onDelete={() => {}}
             bucket={projectClosure.after_improvement}
           /> */}
-        </CardContent>
-      </Card>}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
