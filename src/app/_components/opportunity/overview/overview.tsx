@@ -23,7 +23,7 @@ import { BuildingIcon, PencilIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProjectSchedule } from './project-schedule';
 import { TeamMemebrs } from './team-memebrs';
-import { cn } from '@/lib/utils';
+import { cn, formatToIndianNumber } from '@/lib/utils';
 import { DocumentCard } from '@/components/document-card';
 
 export const Overview = ({
@@ -119,7 +119,7 @@ export const Overview = ({
                 <ContentCard
                   isReport={isReport}
                   title={'Estimated Savings'}
-                  value={`₹ ${opportunity.estimated_savings}`}
+                  value={`₹ ${formatToIndianNumber(opportunity.estimated_savings)}`}
                   icon={<RiMoneyRupeeCircleFill className="h-4 w-4" />}
                 />
                 <ContentCard

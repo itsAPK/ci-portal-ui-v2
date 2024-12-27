@@ -20,6 +20,7 @@ import { categories } from '@/lib/data';
 import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import api from '@/lib/api';
+import { ExportOppurtunity } from './export';
 export const OpportunityTable = ({
   data,
   pageCount,
@@ -179,10 +180,7 @@ export const OpportunityTable = ({
           {(role === 'admin' || role === 'ci_head') && (
             <>
               <AddOpportunity />
-              <Button variant={'ghost-1'} size={'sm'} className="text-xs">
-                <DownloadIcon className="mr-2 h-4 w-4" />
-                Export
-              </Button>
+              <ExportOppurtunity />
             </>
           )}
         </DataTableAdvancedToolbar>

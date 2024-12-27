@@ -32,8 +32,11 @@ export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
       return await api
         .patch(`/opportunity/${opportunity._id.$oid}`, {
           ...data,
-          status: 'Details Updated'
-            })
+          estimated_savings: data.estimated_savings
+            ? data.estimated_savings.replace(/,/g, '')
+            : null,
+          status: 'Details Updated',
+        })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
           return res.data;
@@ -64,7 +67,7 @@ export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="link" size={'sm'} className="gap-2">
-          <RiEditBoxFill className="h-4 w-4" /> <span className='-mt-[1px] '>Update Project</span>
+          <RiEditBoxFill className="h-4 w-4" /> <span className="-mt-[1px]">Update Project</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
@@ -74,8 +77,11 @@ export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
         <OpportunityForm
           onSubmit={handleSubmit}
           setImpactScore={setImpactScore}
-          defaultValues={processValues({...opportunity, plant : opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant})}
-          mode='update'
+          defaultValues={processValues({
+            ...opportunity,
+            plant: opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant,
+          })}
+          mode="update"
         />
       </DialogContent>
     </Dialog>

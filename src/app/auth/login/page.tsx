@@ -68,8 +68,8 @@ export default function Login() {
   }, []);
 
   return (
-    <div>
-      <form onSubmit={onSubmit} className="slider-thumb">
+    <div className="">
+      <form onSubmit={onSubmit} className="slider-thumb ">
         <img
           src="https://i.ibb.co/Qrc2tps/Screenshot-2024-11-06-at-1-50-22-AM-removebg-preview.png"
           width="170px"
@@ -157,7 +157,7 @@ export default function Login() {
         </button>
       </form>
       <div
-        className="absolute left-[700px] top-[180px] flex flex-col text-center text-7xl uppercase tracking-widest text-gray-100"
+        className="absolute left-[700px] top-[180px] flex flex-col text-center text-6xl uppercase tracking-widest text-gray-100"
         style={{ fontFamily: '"Monoton", sans-serif' }}
       >
         CIRTS
@@ -167,14 +167,14 @@ export default function Login() {
         style={{ fontFamily: '"Montserrat", sans-serif' }}
       ></div>
       <div
-        className="absolute left-[700px] top-[300px] flex flex-col text-5xl font-extrabold uppercase text-gray-100"
+        className="absolute left-[700px] top-[300px] flex flex-col text-4xl font-extrabold uppercase text-gray-100"
         style={{ fontFamily: '"Montserrat", sans-serif' }}
       >
         <div className="animate__animated animate__backInUp">Continuous </div>
         <div className="flex gap-2">
-          {' '}
           <div className="animate__animated animate__backInLeft">Improvement </div>
           <div className="animate__animated animate__backInRight"> Robust</div>
+
         </div>
         <div className="animate__animated animate__backInDown">Tracking System</div>
       </div>

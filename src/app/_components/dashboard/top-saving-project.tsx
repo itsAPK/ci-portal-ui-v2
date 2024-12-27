@@ -8,6 +8,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import api from '@/lib/api';
+import { formatToIndianNumber } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { DateRange } from 'react-day-picker';
 
@@ -97,7 +98,7 @@ export const TotalEstimatedSavings = ({dateRange}: { dateRange?: DateRange }) =>
                   <div className="text-xs text-center">{i.opportunity_id}</div>
                 </TableCell>
                 <TableCell>
-                  <div className="text-xs text-center">₹ {i.estimated_savings}</div>
+                  <div className="text-xs text-center">₹ {formatToIndianNumber(i.estimated_savings)}</div>
                 </TableCell>
                 <TableCell>
                   <div className="text-xs text-center">{i.plant_name}</div>

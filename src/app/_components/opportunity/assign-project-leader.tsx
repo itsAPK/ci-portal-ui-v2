@@ -64,15 +64,17 @@ export const AssignProjectLeader = ({ opportunity }: { opportunity: any }) => {
     mutationFn: async (search: string) => {
       return await api
         .post(`/employee/export`, {
-            filter: [
-                {
-                  $match: {
-                    plant: { $eq: opportunity.plant.name },
-                    role: { $ne: 'employee' }, 
-                    employee_id: { $regex: search, $options: 'i' },
-                  },
-                },
-              ],
+          filter: [
+            {
+              $match: {
+                plant: { $eq: opportunity.plant.name },
+                $or: [
+                  { employee_id: { $regex: search, $options: 'i' } },
+                  { name: { $regex: search, $options: 'i' } },
+                ],
+              },
+            },
+          ],
         })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);

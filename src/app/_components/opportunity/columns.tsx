@@ -24,6 +24,7 @@ import { Improvement } from './improvement/improvement';
 import { Control } from './control-phase/control-phase';
 import { ProjectClosure } from './project-closure/project-closure';
 import { ApproveOpportunity } from './approve-opportunity';
+import { formatToIndianNumber } from '@/lib/utils';
 
 export const opportunityColumns = (): ColumnDef<any>[] => {
   return [
@@ -154,7 +155,8 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
           Estimated Savings
         </div>
       ),
-      cell: ({ cell }) => ((cell.getValue() as any) ? cell.getValue() : '---'),
+      cell: ({ cell }) =>
+        (cell.getValue() as any) ? `₹ ${formatToIndianNumber(cell.getValue() as any)}` : '---',
     },
     {
       accessorKey: 'status',
@@ -191,16 +193,19 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                     <EyeIcon className="h-4 w-4" /> View
                   </Button>
                 </DropdownMenuItem>
-                {role === 'admin' && (
-                  <DropdownMenuItem className="flex gap-2" asChild>
-                    <EditOpportunity opportunity={row.original} />
-                  </DropdownMenuItem>
-                )}
+                {role === 'admin' &&
+                  (row.original.status === 'Open for Assigning' ||
+                    row.original.status === 'Project Assigned' ||
+                    row.original.status === 'Details Updated' ||
+                    row.original.status === 'Teams Updated') && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <EditOpportunity opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )}
 
                 {role === 'admin' &&
-                  ((row.original.category === 'Black Belt' &&
-                    row.original.status === 'Open for Assigning') ||
-                    row.original.category !== 'Black Belt') && (
+                  row.original.category === 'Black Belt' &&
+                    row.original.status === 'Open for Assigning' && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <DeleteOpportunity id={row.original._id.$oid} />
                     </DropdownMenuItem>
@@ -289,32 +294,28 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   )}
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (CIHead)' &&
-                  userId === row.original.plant.ci_head._id.$oid &&
-                  (
+                  userId === row.original.plant.ci_head._id.$oid && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="ci_head" />
                     </DropdownMenuItem>
                   )}
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (HOD)' &&
-                  userId === row.original.plant.hod._id.$oid &&
-                 (
+                  userId === row.original.plant.hod._id.$oid && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="hod" />
                     </DropdownMenuItem>
                   )}
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (LOF)' &&
-                  userId === row.original.plant.lof._id.$oid &&
-                (
+                  userId === row.original.plant.lof._id.$oid && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="lof" />
                     </DropdownMenuItem>
                   )}
                 {row.original.category === 'Black Belt' &&
                   row.original.status === 'Project Closure Pending (Costing Head)' &&
-                  userId === row.original.plant.cs_head._id.$oid &&
-                (
+                  userId === row.original.plant.cs_head._id.$oid && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <ApproveOpportunity opportunity={row.original} role="cs_head" />
                     </DropdownMenuItem>

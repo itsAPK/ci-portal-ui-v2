@@ -43,6 +43,7 @@ import { Button } from '@/components/ui/button';
 import api from '@/lib/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { IndianNumberInput } from '@/components/indian-number-input';
 
 export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
   const [open, setOpen] = useState(false);
@@ -92,11 +93,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
       }
 
       if (!beforeImprovement || beforeImprovement.length === 0) {
-        throw new Error('Please upload Before Improvement');
-      }
-
-      if (!afterImprovement || afterImprovement.length === 0) {
-        throw new Error('Please upload After Improvement');
+        throw new Error('Please upload Before & After Improvement Document');
       }
 
     
@@ -108,7 +105,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
           intangible_benifits: intangibleBenifits,
           horizantal_deployment: horizantalDeployment,
           standardization: standardization,
-          estimated_savings: estimatedSavings,
+          estimated_savings: estimatedSavings.replace(/,/g, ''),
           success_rate: successRate,
           suspected_cause: opportunities.measure_analysis_phase.data.map(
             (i: any, index: number) => i.suspected_source,
@@ -166,24 +163,24 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
           });
       }
 
-      if (afterImprovement && afterImprovement.length > 0) {
-        const formData = new FormData();
-        formData.append('file', afterImprovement[0]);
-        await api
-          .post(
-            `/opportunity/project-closure/upload/after-improvement/${opportunities._id.$oid}`,
-            formData,
-          )
-          .then((res) => {
-            return res.data;
-          })
-          .then((res) => {
-            toast.success('After Improvement Document uploaded successfully', {
-              icon: <CheckCircle className="h-4 w-4" />,
-            });
-            return res.data;
-          });
-      }
+      // if (afterImprovement && afterImprovement.length > 0) {
+      //   const formData = new FormData();
+      //   formData.append('file', afterImprovement[0]);
+      //   await api
+      //     .post(
+      //       `/opportunity/project-closure/upload/after-improvement/${opportunities._id.$oid}`,
+      //       formData,
+      //     )
+      //     .then((res) => {
+      //       return res.data;
+      //     })
+      //     .then((res) => {
+      //       toast.success('After Improvement Document uploaded successfully', {
+      //         icon: <CheckCircle className="h-4 w-4" />,
+      //       });
+      //       return res.data;
+      //     });
+      // }
 
       return response;
     },
@@ -273,10 +270,10 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
             <CardContent className="grid gap-4 text-sm">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  {' '}
-                  <Label className="px-1 pb-1">Project Success Rate</Label>
+            
+                  <Label className="px-1 mb-2">Project Success Rate</Label>
                   <Select defaultValue={successRate} onValueChange={(e) => setSuccessRate(e)}>
-                    <SelectTrigger className="h-12 w-full">
+                    <SelectTrigger className="h-12 w-full pt-4">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -291,12 +288,15 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                   </Select>
                 </div>
                 <div>
-                  <Label className="px-1 pb-1">Estimated Savings</Label>
-                  <Input
-                    value={estimatedSavings}
-                    onChange={(e) => setEstimatedSavings(e.target.value)}
-                    className="h-12 w-full"
-                  />
+                 
+                   <IndianNumberInput
+                      label="Estimated Savings (in Lakh)"
+                      placeholder="Enter Estimated Savings (in Lakh)"
+                      value={estimatedSavings}
+                      onChange={(e) => setEstimatedSavings(e)}
+                      className="h-12 w-full"
+
+                    />
                 </div>
               </div>
               <div>
@@ -306,6 +306,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                   onChange={(e) => setTangibleBenifits(e.target.value)}
                   className="h-12 w-full"
                 />
+                
               </div>
               <div>
                 <Label className="px-1 pb-1">Intangible Benefits</Label>
@@ -381,7 +382,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                   </FileUploader>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label className="-mb-2 px-2">Before Improvement </Label>
+                  <Label className="-mb-2 px-2">Before & After Improvement </Label>
                   <FileUploader
                     value={beforeImprovement}
                     onValueChange={async (file: any) => {
@@ -419,7 +420,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                     </FileUploaderContent>
                   </FileUploader>
                 </div>
-                <div className="flex flex-col gap-2">
+                {/* <div className="flex flex-col gap-2">
                   <Label className="-mb-2 px-2">After Improvement </Label>
                   <FileUploader
                     value={afterImprovement}
@@ -464,7 +465,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                         ))}
                     </FileUploaderContent>
                   </FileUploader>
-                </div>
+                </div> */}
               </div>
             </CardContent>
           </Card>

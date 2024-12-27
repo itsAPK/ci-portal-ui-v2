@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useRouter } from "next/navigation"
+import { BASEURL } from "@/lib/api"
 
 interface DocumentCardProps {
   documentName: string
@@ -35,7 +36,7 @@ const router  = useRouter();
         </h3>
       </CardContent>
       <CardFooter className="justify-end gap-3">
-        <Button variant="ghost-1" size="sm" className="h-8 flex gap-2" onClick={() => router.push(`${process.env.NEXT_PUBLIC_API_URL}/api/files/download/${bucket}`)}>
+        <Button variant="ghost-1" size="sm" className="h-8 flex gap-2" onClick={() => router.push(`${BASEURL}/files/download/${bucket}`)}>
           <RiDownload2Fill className="h-4 w-4" /> Download
         </Button>
         

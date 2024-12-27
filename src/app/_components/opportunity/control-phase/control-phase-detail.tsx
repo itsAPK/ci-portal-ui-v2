@@ -17,6 +17,7 @@ import { ContentCard
 
  } from '../overview/content-card';
 import { cn } from '@/lib/utils';
+import { BASEURL } from '@/lib/api';
 const data = [
   {
     source: 'Mounting height	',
@@ -47,7 +48,7 @@ export const ControlPhase = ({contol,isReport = false} : {contol: any,isReport?:
       <Card className={cn('bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Control Phase</div>
-          {!isReport && <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={() => router.push(`${process.env.NEXT_PUBLIC_API_URL}/api/files/download/${contol.document}`)}>
+          {!isReport && <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={() => router.push(`${BASEURL}/files/download/${contol.document}`)}>
             <RiDownload2Fill className="h-3 w-3" /> Download Document
           </Button>}
         </div>

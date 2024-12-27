@@ -60,7 +60,7 @@ export const SSVToolsForm = ({
       >
         <div className="grid h-full grid-cols-1 md:grid-cols-4">
           <div className="col-span-4 px-2 py-1 md:px-7">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
               <FormFieldInput
                 name="suspected_source"
                 control={form.control}
@@ -77,6 +77,16 @@ export const SSVToolsForm = ({
                   value: i.name,
                   label: i.name,
                 })) : []}
+              />
+              <SelectField
+                control={form.control}
+                name="type_of_ssv"
+                label="Type of SSV"
+                className="col-span-2"
+                options={['Design SSV', "Variation SSV"].map((i: any) => ({
+                  value: i,
+                  label: i,
+                }))}
               />
               <div >
           <Button type="submit" size='lg' className="btn-primary col-span-1 w-[200px] mt-9" variant={'ghost-1'} disabled={form.formState.isSubmitting}>

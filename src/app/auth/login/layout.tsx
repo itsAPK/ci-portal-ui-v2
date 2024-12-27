@@ -14,19 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <body
+    <div
       style={{
         background: 'linear-gradient(90deg,#e52e71,#ff8a00)',
       }}
-        className={cn(
-          'max-w-[100%] overflow-x-hidden font-sans text-foreground dark:bg-primary/10',
-        )}
-      >
-     
-
-          {children}
-         
-      </body>
- 
+      className={cn(
+        'min-h-screen max-w-[100%] overflow-x-hidden font-sans text-foreground'
+      )}
+    >
+      {children}
+    </div>
   );
 }

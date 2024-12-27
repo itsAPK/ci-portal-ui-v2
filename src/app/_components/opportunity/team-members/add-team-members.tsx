@@ -74,9 +74,12 @@ export const AddTeamMembers = ({
             {
               $match: {
                 plant: { $eq: opportunity.plant.name },
-                employee_id: { $regex: search, $options: 'i' },
+                $or: [
+                  { employee_id: { $regex: search, $options: 'i' } },
+                  { name: { $regex: search, $options: 'i' } },
+                ],
               },
-            },
+            }
           ],
         })
         .then((res) => {

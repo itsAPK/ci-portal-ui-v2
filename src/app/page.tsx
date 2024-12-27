@@ -29,6 +29,7 @@ import React from 'react';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { withAuth } from '@/hooks/use-auth';
+import { formatToIndianNumber } from '@/lib/utils';
 
 function Page() {
   const [date, setDate] = React.useState<DateRange>({
@@ -222,7 +223,7 @@ function Page() {
                   color="bg-purple-500/10"
                   count={
                     totalData.data && totalData.data.length > 0
-                      ? totalData.data[0].totalCompleted
+                      ? formatToIndianNumber(totalData.data[0].totalCompleted)
                       : 0
                   }
                 />
@@ -232,17 +233,17 @@ function Page() {
                   color="bg-blue-600/10"
                   count={
                     totalData.data && totalData.data.length > 0
-                      ? totalData.data[0].totalOpenForAssign
+                      ? formatToIndianNumber(totalData.data[0].totalOpenForAssign)
                       : 0
                   }
                 />
                 <CountCard
                   icon={<BoxesIcon className="h-7 w-7 text-orange-600" />}
-                  name={'Project Wait for Closure'}
+                  name={'Projects Waiting for Closure.'}
                   color="bg-orange-600/10"
                   count={
                     totalData.data && totalData.data.length > 0
-                      ? totalData.data[0].totalProjectClosure
+                      ? formatToIndianNumber(totalData.data[0].totalProjectClosure)
                       : 0
                   }
                 />
@@ -251,20 +252,20 @@ function Page() {
                   name={'Ongoing Projects'}
                   color="bg-amber-600/10"
                   count={
-                    totalData.data && totalData.data.length > 0 ? totalData.data[0].totalOngoing : 0
+                    totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalOngoing) : 0
                   }
                 />
                 <CountCard
                   icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
                   name={'Total Savings'}
                   color="bg-red-600/10"
-                  count={`₹ ${totalData.data && totalData.data.length > 0 ? totalData.data[0].totalEstimatedSavings : 0}`}
+                  count={`₹ ${totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalEstimatedSavings) : 0}`}
                 />
                 <CountCard
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
                   name={'Total Employees'}
                   color="bg-indigo-600/10"
-                  count={totalEmployee.data ? totalEmployee.data.employee : 0}
+                  count={totalEmployee.data ? formatToIndianNumber(totalEmployee.data.employee) : 0}
                 />
               </div>
             </div>

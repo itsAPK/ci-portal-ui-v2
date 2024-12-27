@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Documents } from '../documents';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { BASEURL } from '@/lib/api';
 
 
 export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?: boolean}) => {
@@ -15,7 +16,7 @@ export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?:
         <Card className={cn('bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
           <div className="flex justify-between p-4">
             <div className="text-base font-semibold pt-2 ">SSV's & Tools</div>
-            {!isReport && <Button variant="ghost-1" size={'sm'} className=" gap-1" onClick={() => router.push(`${process.env.NEXT_PUBLIC_API_URL}/api/files/download/${ssvTools.document}`)}>
+            {!isReport && <Button variant="ghost-1" size={'sm'} className=" gap-1" onClick={() => router.push(`${BASEURL}/files/download/${ssvTools.document}`)}>
               <RiDownload2Fill className='w-3 h-3'/>  Download Document
             </Button>}
           </div>
@@ -27,6 +28,7 @@ export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?:
                   Suspected Source of Variation{' '}
                 </TableHead>
                 <TableHead className=" text-center text-xs">Tools</TableHead>
+                <TableHead className=" text-center text-xs">Type of SSV</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -35,6 +37,7 @@ export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?:
                   <TableRow key={item._id}>
                     <TableCell className='text-center text-xs'>{item.suspected_source}</TableCell>
                     <TableCell className='text-center text-xs'>{item.tools}</TableCell>
+                    <TableCell className='text-center text-xs'>{item.type_of_ssv}</TableCell>
                     
                   </TableRow>
                 ))

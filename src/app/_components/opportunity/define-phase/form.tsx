@@ -27,6 +27,8 @@ export interface DefinePhaseFormProps {
   processFlowDiagram?: [File[] | null, Dispatch<SetStateAction<File[] | null>>];
   departmentKPI?: [File[] | null, Dispatch<SetStateAction<File[] | null>>];
   lastSixMonthsTrend?: [File[] | null, Dispatch<SetStateAction<File[] | null>>];
+  quickWinForAbnormalities?: [File[] | null, Dispatch<SetStateAction<File[] | null>>];
+  quickWinForToolConditions?: [File[] | null, Dispatch<SetStateAction<File[] | null>>];
 }
 
 export const DefinePhaseForm = ({
@@ -38,6 +40,8 @@ export const DefinePhaseForm = ({
   processFlowDiagram,
   departmentKPI,
   lastSixMonthsTrend,
+  quickWinForAbnormalities,
+  quickWinForToolConditions,
 }: DefinePhaseFormProps) => {
   const form = useForm<DefinePhaseSchema>({
     defaultValues,
@@ -45,9 +49,9 @@ export const DefinePhaseForm = ({
   });
   console.log(form.formState.errors);
   const [file, setFile] = useState<File[] | null>([]);
-  const [is_iso_plot, is_p_chart_done, is_conecentration] = useWatch({
+  const [is_iso_plot, is_p_chart_done, is_conecentration,is_audited_tool_conditions,abnormalities] = useWatch({
     control: form.control,
-    name: ['is_iso_plot', 'is_p_chart_done', 'is_conecentration'],
+    name: ['is_iso_plot', 'is_p_chart_done', 'is_conecentration','is_audited_tool_conditions','abnormalities'],
   });
   return (
     <FormWrapper form={form} onSubmit={form.handleSubmit(onSubmit)}>
@@ -58,82 +62,83 @@ export const DefinePhaseForm = ({
               type="text"
               name="part_no"
               control={form.control}
-              label="Part number/Machine/Customer/Supplier selected for study"
+              label="1. Part number/Machine/Customer/Supplier selected for study"
             />
             
             <FormFieldInput
               type="text"
               name="part_having_problem"
               control={form.control}
-              label="Other Similar Part numbers/Machine/Customer/Supplier having problem"
+              label="2. Other Similar Part numbers/Machine/Customer/Supplier having problem"
             />
             <FormFieldInput
               type="text"
               name="part_not_having_problem"
               control={form.control}
               className="col-span-1"
-              label="Other similar Part numbers/Products/Customers/Suppliers not having the problem"
+              label="3. Other similar Part numbers/Products/Customers/Suppliers not having the problem"
             />
             <FormFieldInput
               type="text"
               name="suspected_phenomenon"
               control={form.control}
-              label="Suspected Phenomenon(s) that is creating the problem"
+              label="4. Suspected Phenomenon(s) that is creating the problem"
             />
             <FormFieldInput
               type="text"
               name="last_manufacturing"
               control={form.control}
-              label="Suspected last manufacturing stage where the problem is generated"
+              label="5. Suspected last manufacturing stage where the problem is generated"
+            />
+             <FormFieldInput
+              type="text"
+              name="process_stage"
+              control={form.control}
+              label="6. Process stages where the problem is inspected"
             />
             <FormFieldInput
               type="text"
               name="no_machines"
               control={form.control}
-              label="Number of Machines used in the suspected last manufacturing stage"
+              label="7. Number of Machines used in the suspected last manufacturing stage"
             />
             <FormFieldInput
               type="text"
               name="no_streams"
-              label="Number of Streams within each Machine"
+              label="8. Number of Streams within each Machine"
             />
-            <FormFieldInput
-              type="text"
-              name="process_stage"
-              control={form.control}
-              label="Process stages where the problem is inspected"
-            />
+           
             <div className="grid grid-cols-2 gap-4">
-              <FormFieldInput control={form.control} type="text" name="baseline" label="Baseline" />
-              <FormFieldInput control={form.control} type="text" name="target" label="Target" />
+              <FormFieldInput control={form.control} type="text" name="baseline" label="9. Baseline" />
+              <FormFieldInput control={form.control} type="text" name="target" label="10. Target" />
               <FormFieldInput
                 control={form.control}
                 type="text"
                 name="max_value_of_baseline"
-                label="Maximum Value of the Baseline in the last 6 months"
+                label="11. Maximum Value of the Baseline in the last 6 months"
               />
               <FormFieldInput
                 control={form.control}
                 type="text"
                 name="max_month"
-                label="In which month the Maximum Value has come"
+                label="12. In which month the Maximum Value has come"
               />
               <FormFieldInput
                 type="text"
                 control={form.control}
                 name="min_value_of_baseline"
-                label="Minimum Value of the Baseline in the last 6 months"
+                label="13. Minimum Value of the Baseline in the last 6 months"
               />
               <FormFieldInput
                 control={form.control}
                 type="text"
                 name="min_month"
-                label="In which month the Minimum Value has come"
+                label="14. In which month the Minimum Value has come"
               />
               <SelectField
                 control={form.control}
                 name="response_type"
-                label="Response Type"
+                label="15. Response Type"
                 options={[
                   { value: 'Variable', label: 'Variable' },
                   { value: 'Attribute', label: 'Attribute' },
@@ -142,7 +147,7 @@ export const DefinePhaseForm = ({
               <SelectField
                 control={form.control}
                 name="is_iso_plot"
-                label="“Have you ISO plot / Attribute Agreement Analysis?"
+                label="16. Have you done ISO plot / Attribute Agreement Analysis?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
@@ -151,13 +156,13 @@ export const DefinePhaseForm = ({
               <FormFieldInput
                 type="text"
                 name="specification"
-                label="Specification"
+                label="17. Specification"
                 className="col-span-1"
               />
               <SelectField
                 control={form.control}
                 name="is_conecentration"
-                label="Is Conecentration Chart Available"
+                label="18. Is Conecentration Chart Available"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
@@ -167,13 +172,13 @@ export const DefinePhaseForm = ({
                 type="text"
                 control={form.control}
                 name="conculsion"
-                label="If Yes, what is the conclusion based on Concentration chart"
+                label="19. If Yes, what is the conclusion based on Concentration chart"
                 className="col-span-2"
               />
               <SelectField
                 control={form.control}
                 name="is_audited"
-                label="Have you audited the process?"
+                label="20. Have you audited the process?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
@@ -182,12 +187,29 @@ export const DefinePhaseForm = ({
               <SelectField
                 control={form.control}
                 name="is_p_chart_done"
-                label="Have you done p-chart?"
+                label="21. Have you done p-chart?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
                 ]}
               />
+               <SelectField
+                control={form.control}
+                name="is_audited_tool_conditions"
+                label="22. Have you audited the machine and tool condition?"
+                options={[
+                  { value: 'Yes', label: 'Yes' },
+                  { value: 'No', label: 'No' },
+                ]}/>
+              <SelectField
+                control={form.control}
+                name="abnormalities"
+                label="23. Any abnormalities in the process audit?"
+                options={[
+                  { value: 'Yes', label: 'Yes' },
+                  { value: 'No', label: 'No' },
+                ]}/>
+               
             </div>
           </div>
         </div>
@@ -293,6 +315,11 @@ export const DefinePhaseForm = ({
                   'image/png': ['.png'],
                   'image/jpg': ['.jpg'],
                   'image/jpeg': ['.jpeg'],
+                  'application/pdf': ['.pdf'],
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                    '.docx',
+                  ],
                 },
               }}
               className="relative rounded-lg bg-white p-2"
@@ -336,6 +363,11 @@ export const DefinePhaseForm = ({
                     'image/png': ['.png'],
                     'image/jpg': ['.jpg'],
                     'image/jpeg': ['.jpeg'],
+                    'application/pdf': ['.pdf'],
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                      '.docx',
+                    ],
                   },
                 }}
                 className="relative rounded-lg bg-white p-2"
@@ -380,6 +412,11 @@ export const DefinePhaseForm = ({
                     'image/png': ['.png'],
                     'image/jpg': ['.jpg'],
                     'image/jpeg': ['.jpeg'],
+                    'application/pdf': ['.pdf'],
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                      '.docx',
+                    ],
                   },
                 }}
                 className="relative rounded-lg bg-white p-2"
@@ -420,6 +457,11 @@ export const DefinePhaseForm = ({
                   maxSize: 1024 * 1024 * 1,
                   multiple: false,
                   accept: {
+                    'application/pdf': ['.pdf'],
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                      '.docx',
+                    ],
                     'image/png': ['.png'],
                     'image/jpg': ['.jpg'],
                     'image/jpeg': ['.jpeg'],
@@ -448,6 +490,108 @@ export const DefinePhaseForm = ({
               </FileUploader>
             </div>
           )}
+         {
+           abnormalities === 'Yes' && (
+            <div className="flex flex-col gap-2">
+               <Label className="-mb-2 px-2">Quick Win of Abnormalities </Label>
+               <FileUploader
+                 value={quickWinForAbnormalities ? quickWinForAbnormalities[0] : []}
+                 onValueChange={async (file: any) => {
+                   if (quickWinForAbnormalities) {
+                     quickWinForAbnormalities[1](file);
+                   }
+                 }}
+                 dropzoneOptions={{
+                   maxFiles: 1,
+                   maxSize: 1024 * 1024 * 1,
+                   multiple: false,
+                   accept: {
+                     'application/pdf': ['.pdf'],
+                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                       '.docx',
+                     ],
+                     'image/png': ['.png'],
+                     'image/jpg': ['.jpg'],
+                     'image/jpeg': ['.jpeg'],
+                   },
+                 }}
+                 className="relative rounded-lg bg-white p-2"
+               >
+                 <FileInput className="outline-dashed outline-1 outline-white">
+                   <div className="flex w-full flex-col pb-2 pt-3">
+                     <FileUploadText
+                       label={'Browse File'}
+                       description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                     />
+                   </div>
+                 </FileInput>
+                 <FileUploaderContent>
+                   {quickWinForAbnormalities &&
+                     quickWinForAbnormalities[0] &&
+                     quickWinForAbnormalities[0].length > 0 &&
+                     quickWinForAbnormalities[0].map((file, i) => (
+                       <FileUploaderItem key={i} index={i}>
+                         <Paperclip className="h-4 w-4 stroke-current" />
+                         <span>{file.name}</span>
+                       </FileUploaderItem>
+                     ))}
+                 </FileUploaderContent>
+               </FileUploader>
+             </div>
+           )
+         }
+         {
+           is_audited_tool_conditions === 'Yes' && (
+            <div className="flex flex-col gap-2">
+               <Label className="-mb-2 px-2">Quick Win of Audited Machine & Tool Conditions </Label>
+               <FileUploader
+                 value={quickWinForToolConditions ? quickWinForToolConditions[0] : []}
+                 onValueChange={async (file: any) => {
+                   if (quickWinForToolConditions) {
+                     quickWinForToolConditions[1](file);
+                   }
+                 }}
+                 dropzoneOptions={{
+                   maxFiles: 1,
+                   maxSize: 1024 * 1024 * 1,
+                   multiple: false,
+                   accept: {
+                     'application/pdf': ['.pdf'],
+                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                       '.docx',
+                     ],
+                     'image/png': ['.png'],
+                     'image/jpg': ['.jpg'],
+                     'image/jpeg': ['.jpeg'],
+                   },
+                 }}
+                 className="relative rounded-lg bg-white p-2"
+               >
+                 <FileInput className="outline-dashed outline-1 outline-white">
+                   <div className="flex w-full flex-col pb-2 pt-3">
+                     <FileUploadText
+                       label={'Browse File'}
+                       description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                     />
+                   </div>
+                 </FileInput>
+                 <FileUploaderContent>
+                   {quickWinForToolConditions &&
+                     quickWinForToolConditions[0] &&
+                     quickWinForToolConditions[0].length > 0 &&
+                     quickWinForToolConditions[0].map((file, i) => (
+                       <FileUploaderItem key={i} index={i}>
+                         <Paperclip className="h-4 w-4 stroke-current" />
+                         <span>{file.name}</span>
+                       </FileUploaderItem>
+                     ))}
+                 </FileUploaderContent>
+               </FileUploader>
+             </div>
+           )
+         }
         </div>
       </div>
       <div className="flex justify-end">

@@ -3,7 +3,13 @@ import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FileUploader,FileInput, FileUploaderContent, FileUploaderItem, FileUploadText } from '@/components/ui/file-upload';
+import {
+  FileUploader,
+  FileInput,
+  FileUploaderContent,
+  FileUploaderItem,
+  FileUploadText,
+} from '@/components/ui/file-upload';
 import { Label } from '@/components/ui/label';
 import api from '@/lib/api';
 import { categories } from '@/lib/data';
@@ -12,10 +18,11 @@ import { opportunitySchema, OpportunitySchema } from '@/schema/opportunity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueries } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
-import {  Loader2, Paperclip } from 'lucide-react';
+import { Loader2, Paperclip } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import Opportunity from '../../opportunity/[id]/page';
+import { IndianNumberInput } from '@/components/indian-number-input';
 
 interface OpportunityFormProps {
   defaultValues?: Partial<OpportunitySchema>;
@@ -30,7 +37,9 @@ export const OpportunityForm = ({
   defaultValues,
   onSubmit,
   setImpactScore,
-  mode = 'create',file,setFile,
+  mode = 'create',
+  file,
+  setFile,
 }: OpportunityFormProps) => {
   const form = useForm<OpportunitySchema>({
     defaultValues,
@@ -59,7 +68,6 @@ export const OpportunityForm = ({
       'project_type',
       'project_nature',
       'expected_savings',
-     
     ],
   });
 
@@ -186,7 +194,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="bussiness_unit"
               label="Business Unit"
-              disabled={mode === 'update' ||  role !== 'admin'}
+              disabled={mode === 'update' || role !== 'admin'}
               options={
                 bussinessUnit.data
                   ? bussinessUnit.data.map((i: any) => ({
@@ -201,7 +209,7 @@ export const OpportunityForm = ({
               name="plant"
               label="Plant"
               placeholder="Select Plant"
-              disabled={mode === 'update' ||  role !== 'admin'}
+              disabled={mode === 'update' || role !== 'admin'}
               options={
                 plant.data
                   ? plant.data.map((i: any) => ({
@@ -215,7 +223,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="department"
               label="Department"
-              disabled={mode === 'update' ||  role !== 'admin'}
+              disabled={mode === 'update' || role !== 'admin'}
               options={
                 department.data
                   ? department.data.map((i: any) => ({
@@ -344,15 +352,22 @@ export const OpportunityForm = ({
                     label: i,
                   }))}
                 />
-                <FormFieldInput
-                  control={form.control}
+
+                <Controller
                   name="estimated_savings"
-                  label="Estimated Savings (in Lakh)"
-                  className="col-span-1"
+                  control={form.control}
+                  rules={{ required: 'Estimated Savings (in Lakh) is required' }}
+                  render={({ field }) => (
+                    <IndianNumberInput
+                      label="Estimated Savings (in Lakh)"
+                      placeholder="Enter Estimated Savings (in Lakh)"
+                      {...field}
+                    />
+                  )}
                 />
               </>
             )}
-           
+
             {
               <div
                 className={cn(project_nature === 'Problem Solving' ? 'col-span-2' : 'col-span-1')}
@@ -378,50 +393,47 @@ export const OpportunityForm = ({
                 </Card>
               </div>
             }
-             {
-              category !== 'Black Belt' && (
-                <div className="flex flex-col gap-2 col-span-2">
-            <Label className="-mb-2 px-2">Upload Opportunity File </Label>
-            <FileUploader
-              value={file ? file : []}
-              onValueChange={async (file: any) => {
-                setFile?.(file);
-              }}
-              dropzoneOptions={{
-                maxFiles: 1,
-                maxSize: 1024 * 1024 * 1,
-                multiple: false,
-                accept: {
-                  'image/png': ['.png'],
-                  'image/jpg': ['.jpg'],
-                  'image/jpeg': ['.jpeg'],
-                },
-              }}
-              className="relative rounded-lg bg-white p-2"
-            >
-              <FileInput className="outline-dashed outline-1 outline-white">
-                <div className="flex w-full flex-col pb-2 pt-3">
-                  <FileUploadText
-                    label={'Browse File'}
-                    description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
-                  />
-                </div>
-              </FileInput>
-              <FileUploaderContent>
-                {
-                  file &&
-                  file.length > 0 &&
-                  file.map((file, i) => (
-                    <FileUploaderItem key={i} index={i}>
-                      <Paperclip className="h-4 w-4 stroke-current" />
-                      <span>{file.name}</span>
-                    </FileUploaderItem>
-                  ))}
-              </FileUploaderContent>
-            </FileUploader>
-          </div>
-              )
-            }
+            {category !== 'Black Belt' && (
+              <div className="col-span-2 flex flex-col gap-2">
+                <Label className="-mb-2 px-2">Upload Opportunity File </Label>
+                <FileUploader
+                  value={file ? file : []}
+                  onValueChange={async (file: any) => {
+                    setFile?.(file);
+                  }}
+                  dropzoneOptions={{
+                    maxFiles: 1,
+                    maxSize: 1024 * 1024 * 1,
+                    multiple: false,
+                    accept: {
+                      'image/png': ['.png'],
+                      'image/jpg': ['.jpg'],
+                      'image/jpeg': ['.jpeg'],
+                    },
+                  }}
+                  className="relative rounded-lg bg-white p-2"
+                >
+                  <FileInput className="outline-dashed outline-1 outline-white">
+                    <div className="flex w-full flex-col pb-2 pt-3">
+                      <FileUploadText
+                        label={'Browse File'}
+                        description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                      />
+                    </div>
+                  </FileInput>
+                  <FileUploaderContent>
+                    {file &&
+                      file.length > 0 &&
+                      file.map((file, i) => (
+                        <FileUploaderItem key={i} index={i}>
+                          <Paperclip className="h-4 w-4 stroke-current" />
+                          <span>{file.name}</span>
+                        </FileUploaderItem>
+                      ))}
+                  </FileUploaderContent>
+                </FileUploader>
+              </div>
+            )}
           </div>
           <div className="flex justify-end pt-5">
             <Button type="submit" size="lg" className="w-[200px] gap-3">

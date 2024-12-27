@@ -139,6 +139,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
                   Suspected Source of Variation{' '}
                 </TableHead>
                 <TableHead className="bg-primary text-center text-xs">Tools</TableHead>
+                <TableHead className="bg-primary text-center text-xs">Type of SSV</TableHead>
                 <TableHead className="rounded-tr-xl bg-primary text-center text-xs"></TableHead>
               </TableRow>
             </TableHeader>
@@ -148,7 +149,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
                   <TableRow key={item.id}>
                     <TableCell className="text-center text-xs">{item.suspected_source}</TableCell>
                     <TableCell className="text-center text-xs">{item.tools}</TableCell>
-
+                    <TableCell className="text-center text-xs">{item.type_of_ssv}</TableCell>
                     <TableCell className="flex gap-1">
                       {userId === opportunities.project_leader._id.$oid && (
                         <>

@@ -189,3 +189,14 @@ export const getRandomColor = () => {
   const randomHex = Math.floor(Math.random() * 16777215).toString(16); // Generate a random number and convert to hex
   return `#${randomHex.padStart(6, '0')}`; // Ensure it is a valid 6-character hex code
 };
+
+
+export function formatToIndianNumber(num : number) {
+  const strNum = num.toString();
+  const lastThree = strNum.slice(-3);
+  const otherNumbers = strNum.slice(0, -3);
+  const formatted =
+    otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + (otherNumbers ? "," : "") + lastThree;
+  return formatted;
+}
+

@@ -23,6 +23,8 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
   const processFlowDiagram = useState<File[] | null>([]);
   const departmentKPI = useState<File[] | null>([]);
   const lastSixMonthsTrend = useState<File[] | null>([]);
+  const quickWinForAbnormalities = useState<File[] | null>([]);
+  const quickWinForToolConditions = useState<File[] | null>([]);
 
   const queryClient = useQueryClient();
   const addActionPlan = useMutation({
@@ -51,6 +53,15 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
       if (data.is_p_chart_done === 'Yes' && (!pChartFile[0] || pChartFile[0].length === 0)) {
         throw new Error('Please upload Pchart file');
       }
+
+      if (data.is_audited_tool_conditions === 'Yes' && (!quickWinForToolConditions[0] || quickWinForToolConditions[0].length === 0)) {
+        throw new Error('Please upload Quick Win of Audited Machine & Tool Conditions file');
+      }
+
+      if (data.abnormalities === 'Yes' && (!quickWinForAbnormalities[0] || quickWinForAbnormalities[0].length === 0)) {
+        throw new Error('Please upload Quick Win of Abnormalities file');
+      }
+
       const response = await api
         .post(`/opportunity/define-phase/${opportunityId}`, {
           ...data,
@@ -197,6 +208,50 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
           });
       }
 
+      if (quickWinForAbnormalities && quickWinForAbnormalities[0] && quickWinForAbnormalities[0].length > 0) {
+        const formData = new FormData();
+        formData.append('file', quickWinForAbnormalities[0][0]);
+        const quickWinForAbnormalitiesResponse = await api
+          .post(
+            `/opportunity/define-phase/upload/abnormalities/${opportunityId}`,
+             formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            },
+          )
+          .then((res) => {
+            if (!res.data.success) throw new Error(res.data.message);
+            toast.success('Quick Win of Abnormalities uploaded successfully', {
+              icon: <CheckCircle className="h-4 w-4" />,
+            });
+            return res.data;
+          });
+      }
+
+      if (quickWinForToolConditions && quickWinForToolConditions[0] && quickWinForToolConditions[0].length > 0) {
+        const formData = new FormData();
+        formData.append('file', quickWinForToolConditions[0][0]);
+        const quickWinForToolConditionsResponse = await api
+          .post(
+            `/opportunity/define-phase/upload/tool-conditions/${opportunityId}`,
+             formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            },
+          )
+          .then((res) => {
+            if (!res.data.success) throw new Error(res.data.message);
+            toast.success('Quick Win of Audited Machine & Tool Conditions uploaded successfully', {
+              icon: <CheckCircle className="h-4 w-4" />,
+            });
+            return res.data;
+          });
+      }
+
     },
     onError: (error: any) => {
       if(error.message){
@@ -243,6 +298,8 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
           processFlowDiagram={processFlowDiagram}
           departmentKPI={departmentKPI}
           lastSixMonthsTrend={lastSixMonthsTrend}
+          quickWinForAbnormalities={quickWinForAbnormalities}
+          quickWinForToolConditions={quickWinForToolConditions}
         /></div>
       </DialogContent>
     </Dialog>

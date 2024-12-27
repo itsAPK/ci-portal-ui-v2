@@ -14,7 +14,7 @@ import { Documents } from '../documents';
 import { ContentCard } from '@/app/_components/opportunity/overview/content-card';
 import { useRouter } from 'next/navigation';
 import { DocumentCard } from '@/components/document-card';
-import { cn } from '@/lib/utils';
+import { cn, formatToIndianNumber } from '@/lib/utils';
 
 export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClosure: any,isReport?: boolean }) => {
   const router = useRouter();
@@ -88,7 +88,7 @@ export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClo
             <ContentCard
             isReport={isReport}
               title={'Estimated Savings'}
-              value={`₹ ${projectClosure.estimated_savings}`}
+              value={`₹ ${formatToIndianNumber(projectClosure.estimated_savings)}`}
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard
@@ -129,15 +129,15 @@ export const ProjectClousre = ({ projectClosure,isReport = false }: { projectClo
             bucket={projectClosure.closure_document}
           />
           <DocumentCard
-            documentName="Before Improvement"
+            documentName="Before & After Improvement"
             onDelete={() => {}}
             bucket={projectClosure.before_improvement}
           />
-          <DocumentCard
+          {/* <DocumentCard
             documentName="After Improvement"
             onDelete={() => {}}
             bucket={projectClosure.after_improvement}
-          />
+          /> */}
         </CardContent>
       </Card>}
     </div>

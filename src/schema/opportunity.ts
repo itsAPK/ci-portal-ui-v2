@@ -75,6 +75,9 @@ export const definePhaseSchema = z.object({
   min_month : z.string(),
   is_iso_plot : z.any(),
   is_p_chart_done : z.any(),
+  abnormalities : z.any(),
+  is_audited_tool_conditions : z.any(),
+
 });
 
 export type DefinePhaseSchema = z.infer<typeof definePhaseSchema>;
@@ -82,6 +85,7 @@ export type DefinePhaseSchema = z.infer<typeof definePhaseSchema>;
 export const ssvToolsSchema = z.object({
   suspected_source : z.string({required_error : 'Suspected Source of Variation is required'}),
   tools : z.string(),
+  type_of_ssv : z.string(),
 });
 
 export type SSVToolsSchema = z.infer<typeof ssvToolsSchema>;

@@ -9,7 +9,7 @@ export const CountCard = ({
 }: {
   name: string;
   icon: any;
-  count: string;
+  count: string | number;
   color: string;
 }) => {
   return (

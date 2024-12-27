@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Documents } from '../documents';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { BASEURL } from '@/lib/api';
 
 
 export const ImprovementPhase = ({ improvements ,isReport = false }: { improvements: any,isReport?: boolean }) => {
@@ -23,7 +24,7 @@ export const ImprovementPhase = ({ improvements ,isReport = false }: { improveme
       <Card className={cn('bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Improvement Phase</div>
-          {!isReport && <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={() => router.push(`${process.env.NEXT_PUBLIC_API_URL}/api/files/download/${improvements.document}`)}>
+          {!isReport && <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={() => router.push(`${BASEURL}/files/download/${improvements.document}`)}>
             <RiDownload2Fill className='w-3 h-3'/>  Download Document
             </Button>}
         </div>
