@@ -39,7 +39,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
+export const OverallReport = ({
+  dateRange,
+  selectedCompany,
+  selectedPlant,
+}: {
+  dateRange?: DateRange;
+  selectedCompany?: string;
+  selectedPlant?: string;
+}) => {
   const chartData: any = [
     {
       status: 'opened',
@@ -64,8 +72,16 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
   ];
 
   const totalOpportunities = useQuery({
-    queryKey: ['total-opportunities', dateRange],
+    queryKey: ['total-opportunities', dateRange, selectedCompany, selectedPlant],
     queryFn: async () => {
+      const match: any = {
+        formatted_date: {
+          ...(dateRange?.from && { $gte: new Date(dateRange.from) }),
+          ...(dateRange?.to && { $lte: new Date(dateRange.to) }),
+        },
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -74,20 +90,15 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
                 formatted_date: {
                   $dateToString: {
                     format: '%Y-%m-%d',
-                    date: "$created_at",
+                    date: '$created_at',
                   },
                 },
               },
             },
             {
-              $match: {
-                formatted_date: {
-                  $gte: dateRange && dateRange.from && new Date(dateRange.from),
-                  $lte: dateRange && dateRange.to && new Date(dateRange.to),
-                },
-            }},
+              $match: match,
+            },
             {
-              
               $facet: {
                 totalOngoing: [
                   {
@@ -204,7 +215,7 @@ export const OverallReport = ({dateRange}: { dateRange?: DateRange }) => {
                             } as React.CSSProperties
                           }
                         />
-                        <div className="flex  text-xs text-muted-foreground w-[100px]">
+                        <div className="flex w-[100px] text-xs text-muted-foreground">
                           {chartConfig[name as keyof typeof chartConfig]?.label || name}
 
                           <div className="ml-auto flex items-center gap-0.5 font-mono font-medium tabular-nums text-foreground">

@@ -10,7 +10,7 @@ import { categories } from '@/lib/data';
 import { Training, TrainingSchema, trainingSchema } from '@/schema/training';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Loader } from 'lucide-react';
+import { AlertTriangle, Loader } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -49,7 +49,9 @@ export const TrainingForm = ({ onSubmit, defaultValues, mode = 'create' }: Train
     },
     // @ts-ignore
     onError: (error: any) => {
-      toast.error(error.message);
+      toast.error(error.response.data.detail.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
     },
     onSuccess: () => {
       toast.success('Employee data fetched successfully');

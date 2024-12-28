@@ -28,18 +28,28 @@ interface MonthlyData {
 
 function generateCompleteMonthlyData(inputData: MonthlyData[]): MonthlyData[] {
   const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   const dataMap: Record<string, MonthlyData> = {};
-  inputData.forEach(item => {
-      dataMap[item.month] = { month: item.month, ongoing: item.ongoing, completed: item.completed };
+  inputData.forEach((item) => {
+    dataMap[item.month] = { month: item.month, ongoing: item.ongoing, completed: item.completed };
   });
 
-  return months.map(month => {
-      const monthData = dataMap[month] || { month, ongoing: 0, completed: 0 };
-      return monthData;
+  return months.map((month) => {
+    const monthData = dataMap[month] || { month, ongoing: 0, completed: 0 };
+    return monthData;
   });
 }
 const chartConfig = {
@@ -53,70 +63,77 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function CompletedVsOpened() {
+export function CompletedVsOpened({
+  selectedCompany,
+  selectedPlant,
+}: {
+  selectedCompany?: string;
+  selectedPlant?: string;
+}) {
   const totalData = useQuery({
-    queryKey: ['total-opportunities---completed-vs-ongoing'],
+    queryKey: ['completed-vs-ongoing', selectedCompany, selectedPlant],
     queryFn: async () => {
+      const match: any = {
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
       return await api
         .post(`/opportunity/export`, {
           filter: [
-          
-  
-    {
-      "$group": {
-        "_id": { "$month": '$created_at' },
-        "ongoing": {
-          "$sum": {
-            "$cond": [{ "$ne": ["$status", "Opportunity Completed"] }, 1, 0]
-          }
-        },
-        "completed": {
-          "$sum": {
-            "$cond": [{ "$eq": ["$status", "Opportunity Completed"] }, 1, 0]
-          }
-        }
-      }
-    },
-    {
-            $addFields: {
-              month: {
-                $let: {
-                  vars: {
-                    monthsInString: [
-                      'January',
-                      'February',
-                      'March',
-                      'April',
-                      'May',
-                      'June',
-                      'July',
-                      'August',
-                      'September',
-                      'October',
-                      'November',
-                      'December',
-                    ],
+            { $match: match },
+            {
+              $group: {
+                _id: { $month: '$created_at' },
+                ongoing: {
+                  $sum: {
+                    $cond: [{ $ne: ['$status', 'Opportunity Completed'] }, 1, 0],
                   },
-                  in: {
-                    $arrayElemAt: ['$$monthsInString', { $subtract: ['$_id', 1] }],
+                },
+                completed: {
+                  $sum: {
+                    $cond: [{ $eq: ['$status', 'Opportunity Completed'] }, 1, 0],
                   },
                 },
               },
             },
-          },    {
-            $project: {
-              _id: 0,
-              month: 1,
-              ongoing: 1,
-              completed : 1
+            {
+              $addFields: {
+                month: {
+                  $let: {
+                    vars: {
+                      monthsInString: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December',
+                      ],
+                    },
+                    in: {
+                      $arrayElemAt: ['$$monthsInString', { $subtract: ['$_id', 1] }],
+                    },
+                  },
+                },
+              },
             },
-          },       {
-            $sort: { month: 1 },
-          },
-
-    
-  
-
+            {
+              $project: {
+                _id: 0,
+                month: 1,
+                ongoing: 1,
+                completed: 1,
+              },
+            },
+            {
+              $sort: { month: 1 },
+            },
           ],
         })
         .then((res) => {
@@ -135,40 +152,48 @@ export function CompletedVsOpened() {
         <CardTitle>Total Project Completed vs Ongoing</CardTitle>
       </CardHeader>
       <CardContent>
-       {!totalData.isLoading ? <ChartContainer config={chartConfig}>
-          <LineChart
-            accessibilityLayer
-            data={totalData.data ? generateCompleteMonthlyData(totalData.data) : generateCompleteMonthlyData([])}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Line
-              dataKey="ongoing"
-              type="monotone"
-              stroke="var(--color-ongoing)"
-              strokeWidth={2}
-              dot={false}
-            />
-            <Line
-              dataKey="completed"
-              type="monotone"
-              stroke="var(--color-completed)"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ChartContainer> : <Loading />}
+        {!totalData.isLoading ? (
+          <ChartContainer config={chartConfig}>
+            <LineChart
+              accessibilityLayer
+              data={
+                totalData.data
+                  ? generateCompleteMonthlyData(totalData.data)
+                  : generateCompleteMonthlyData([])
+              }
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <Line
+                dataKey="ongoing"
+                type="monotone"
+                stroke="var(--color-ongoing)"
+                strokeWidth={2}
+                dot={false}
+              />
+              <Line
+                dataKey="completed"
+                type="monotone"
+                stroke="var(--color-completed)"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ChartContainer>
+        ) : (
+          <Loading />
+        )}
       </CardContent>
     </Card>
   );

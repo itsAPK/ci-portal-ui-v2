@@ -30,6 +30,14 @@ import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { withAuth } from '@/hooks/use-auth';
 import { formatToIndianNumber } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 function Page() {
   const [date, setDate] = React.useState<DateRange>({
@@ -37,9 +45,21 @@ function Page() {
     to: new Date(),
   });
 
+  const [selectedPlant, setSelectedPlant] = React.useState<string>();
+  const [selectedCompany, setSelectedCompany] = React.useState<string>();
+
   const totalData = useQuery({
     queryKey: ['total-opportunities-dashboard'],
     queryFn: async () => {
+      const match: any = {
+        formatted_date: {
+          ...(date?.from && { $gte: new Date(date.from) }),
+          ...(date?.to && { $lte: new Date(date.to) }),
+        },
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
+
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -54,12 +74,7 @@ function Page() {
               },
             },
             {
-              $match: {
-                formatted_date: {
-                  $gte: date && date.from && new Date(date.from),
-                  $lte: date && date.to && new Date(date.to),
-                },
-              },
+              $match: match,
             },
 
             {
@@ -180,6 +195,40 @@ function Page() {
     },
   });
 
+  const company = useQuery({
+    queryKey: ['get-company'],
+    queryFn: async (): Promise<any> => {
+      return await api
+        .get('/company')
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+  });
+
+  const plant = useQuery({
+    queryKey: ['get-plant'],
+    queryFn: async (): Promise<any> => {
+      return await api
+        .get('/plant')
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+  });
+
   const queryClient = useQueryClient();
 
   return (
@@ -188,6 +237,104 @@ function Page() {
         <div className="flex justify-between p-3 pb-0 text-xl font-semibold text-gray-800 dark:text-white">
           <div>Dashboard</div>
           <div className="flex gap-2">
+            <Select
+              onValueChange={(e) => {
+                setSelectedCompany(e);
+
+                setTimeout(() => {
+                  totalData.refetch();
+                  queryClient.refetchQueries({
+                    queryKey: [
+                      'total-opportunities',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'top-estimated-savings',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'category-wise-opportunity',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'estimated-savings',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'top-employees',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                    ],
+                  });
+                }, 1000);
+              }}
+              value={selectedCompany}
+            >
+              <SelectTrigger className="h-8 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                <SelectValue placeholder="Select Company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {company.data &&
+                    company.data.map((i: any) => (
+                      <SelectItem key={i._id} value={i.name}>
+                        {i.name}
+                      </SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select
+              onValueChange={(e) => {
+                setSelectedPlant(e);
+                setTimeout(() => {
+                  totalData.refetch();
+                  queryClient.refetchQueries({
+                    queryKey: [
+                      'total-opportunities',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'top-estimated-savings',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'category-wise-opportunity',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'estimated-savings',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'top-employees',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'completed-vs-ongoing',
+                      selectedCompany,
+                      selectedPlant,
+                    ],
+                  });
+                }, 1000);
+              }}
+              value={selectedPlant}
+            >
+              <SelectTrigger className="h-8 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                <SelectValue placeholder="Select Plant" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {plant.data &&
+                    plant.data.map((i: any) => (
+                      <SelectItem key={i._id} value={i.name}>
+                        {i.name}
+                      </SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <div className="flex gap-2 px-4">
               <CalendarDatePicker
                 date={date}
@@ -198,11 +345,29 @@ function Page() {
                     totalEmployee.refetch();
                     queryClient.refetchQueries({
                       queryKey: [
-                        'total-opportunities', date, 
-                        'top-estimated-savings', date,
-                        'category-wise-opportunity', date,
-                        'estimated-savings', date,
-                        'top-employees', date
+                        'total-opportunities',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'top-estimated-savings',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'category-wise-opportunity',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'estimated-savings',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'top-employees',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'completed-vs-ongoing',
+                        selectedCompany,
+                        selectedPlant,
                       ],
                     });
                   }, 1000);
@@ -252,7 +417,9 @@ function Page() {
                   name={'Ongoing Projects'}
                   color="bg-amber-600/10"
                   count={
-                    totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalOngoing) : 0
+                    totalData.data && totalData.data.length > 0
+                      ? formatToIndianNumber(totalData.data[0].totalOngoing)
+                      : 0
                   }
                 />
                 <CountCard
@@ -270,25 +437,45 @@ function Page() {
               </div>
             </div>
             <div className="md:col-span-4">
-              <OverallReport dateRange={date} />
+              <OverallReport
+                dateRange={date}
+                selectedCompany={selectedCompany}
+                selectedPlant={selectedPlant}
+              />
             </div>
             <div className="pl-3 md:col-span-6">
-              <CompletedVsOpened />
+              <CompletedVsOpened selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
             </div>
             <div className="md:col-span-6">
-              <TotalEstimatedSavings dateRange={date} />
+              <TotalEstimatedSavings
+                dateRange={date}
+                selectedCompany={selectedCompany}
+                selectedPlant={selectedPlant}
+              />
             </div>
             <div className="md:col-span-6">
-              <CategoryWiseOpportunity dateRange={date} />
+              <CategoryWiseOpportunity
+                dateRange={date}
+                selectedPlant={selectedPlant}
+                selectedCompany={selectedCompany}
+              />
             </div>
             <div className="md:col-span-6">
               <TotalEmployees />
             </div>
             <div className="md:col-span-6">
-              <EstimatedSavingsOpportunities dateRange={date} />
+              <EstimatedSavingsOpportunities
+                dateRange={date}
+                selectedCompany={selectedCompany}
+                selectedPlant={selectedPlant}
+              />
             </div>
             <div className="md:col-span-6">
-              <TopEmployees dateRange={date} />
+              <TopEmployees
+                dateRange={date}
+                selectedCompany={selectedCompany}
+                selectedPlant={selectedPlant}
+              />
             </div>
           </div>
         </div>

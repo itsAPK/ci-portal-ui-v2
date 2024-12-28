@@ -55,10 +55,18 @@ function generateCompleteCategoryData(inputData: CategoryData[]): CategoryData[]
    
 }
 
-export function CategoryWiseOpportunity({dateRange}: { dateRange?: DateRange }) {
+export function CategoryWiseOpportunity({dateRange,selectedCompany,selectedPlant}: { dateRange?: DateRange,selectedCompany?: string,selectedPlant?: string }) {
   const category = useQuery({
-    queryKey: ['category-wise-opportunity', dateRange],
+    queryKey: ['category-wise-opportunity', dateRange,selectedCompany, selectedPlant],
     queryFn: async () => {
+      const match: any = {
+        formatted_date: {
+          ...(dateRange?.from && { $gte: new Date(dateRange.from) }),
+          ...(dateRange?.to && { $lte: new Date(dateRange.to) }),
+        },
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -73,12 +81,7 @@ export function CategoryWiseOpportunity({dateRange}: { dateRange?: DateRange }) 
               },
             },
             {
-              $match: {
-                formatted_date: {
-                  $gte: dateRange && dateRange.from && new Date(dateRange.from),
-                  $lte: dateRange && dateRange.to && new Date(dateRange.to),
-                },
-              },
+              $match: match,
             },
             {
               "$group": {

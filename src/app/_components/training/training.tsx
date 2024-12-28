@@ -198,9 +198,7 @@ export function Training() {
   return (
    
       <div className="">
-          <div className="flex justify-between p-4">
-            <div className="pt-2 text-base font-semibold">Certified Belts Details</div>
-          </div>
+         
          
             <div className="w-full">
               <TrainingTable

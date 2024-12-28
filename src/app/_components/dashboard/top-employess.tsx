@@ -11,10 +11,28 @@ import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { DateRange } from 'react-day-picker';
 
-export const TopEmployees = ({ dateRange }: { dateRange?: DateRange }) => {
+export const TopEmployees = ({
+  dateRange,
+  selectedCompany,
+  selectedPlant,
+}: {
+  dateRange?: DateRange;
+  selectedCompany?: string;
+  selectedPlant?: string;
+}) => {
   const topEmployees = useQuery({
-    queryKey: ['top-employees', dateRange],
+    queryKey: ['top-employees', dateRange, selectedCompany, selectedPlant],
     queryFn: async () => {
+      const match: any = {
+        formatted_date: {
+          ...(dateRange?.from && { $gte: new Date(dateRange.from) }),
+          ...(dateRange?.to && { $lte: new Date(dateRange.to) }),
+        },
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+        project_leader: { $ne: null },
+      };
+
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -29,13 +47,7 @@ export const TopEmployees = ({ dateRange }: { dateRange?: DateRange }) => {
               },
             },
             {
-              $match: {
-                formatted_date: {
-                  $gte: dateRange && dateRange.from && new Date(dateRange.from),
-                  $lte: dateRange && dateRange.to && new Date(dateRange.to),
-                },
-                project_leader: { $ne: null },
-              },
+              $match: match,
             },
             {
               $group: {
@@ -88,22 +100,23 @@ export const TopEmployees = ({ dateRange }: { dateRange?: DateRange }) => {
             </TableRow>
           </TableHeader>
           <TableBody className="w-full">
-            {topEmployees.data && topEmployees.data.map((i : any, index : number) => (
-              <TableRow key={i.employee_id} className={index % 2 === 0 ? 'bg-accent' : ''}>
-                <TableCell>
-                  <div className="text-center text-xs">{i.employee_id}</div>
-                </TableCell>
-                <TableCell>
-                  <div className="text-center text-xs">{i.employee_name}</div>
-                </TableCell>
-                <TableCell className="text-center">
-                  <div className="text-center text-xs">{i.plant_name}</div>
-                </TableCell>
-                <TableCell>
-                  <div className="text-center text-xs">{i.total_opportunities}</div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {topEmployees.data &&
+              topEmployees.data.map((i: any, index: number) => (
+                <TableRow key={i.employee_id} className={index % 2 === 0 ? 'bg-accent' : ''}>
+                  <TableCell>
+                    <div className="text-center text-xs">{i.employee_id}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-center text-xs">{i.employee_name}</div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="text-center text-xs">{i.plant_name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-center text-xs">{i.total_opportunities}</div>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </CardContent>

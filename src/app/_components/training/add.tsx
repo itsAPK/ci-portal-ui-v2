@@ -41,6 +41,12 @@ import {
         });
         queryClient.refetchQueries({
           queryKey: ['get-training'],
+          
+        });
+
+        queryClient.refetchQueries({
+          queryKey: ['total-training'],
+          
         });
         
   
