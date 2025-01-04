@@ -47,13 +47,27 @@ const roleMapping = {
   ci_team: 'CI Team',
 };
 
-export function TotalEmployees() {
+export function TotalEmployees({
+  selectedCompany,
+  selectedPlant,
+}: {
+  selectedCompany?: string;
+  selectedPlant?: string;
+}) {
   const getEmployeesByRole = useQuery({
-    queryKey: ['employees-count-by-role'],
+    queryKey: ['employees-count-by-role', selectedPlant, selectedCompany],
     queryFn: async () => {
+      const match: any = {
+        ...(selectedPlant && { plant: { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
       return await api
         .post(`/employee/export`, {
           filter: [
+            {
+              $match: match,
+            },
+
             {
               $group: {
                 _id: '$role',
@@ -76,14 +90,14 @@ export function TotalEmployees() {
         <CardTitle>Total Employees</CardTitle>
       </CardHeader>
       <CardContent className="pb-0">
-        { !getEmployeesByRole.isLoading ? 
+        {!getEmployeesByRole.isLoading ? (
           <ChartContainer config={chartConfig} className="mx-auto max-h-[280px]">
             <RadarChart
               data={
                 getEmployeesByRole.data &&
                 getEmployeesByRole.data.data.data
-                  .filter((i : any) => i._id !== 'employee')
-                  .map((item : any) => {
+                  .filter((i: any) => i._id !== 'employee')
+                  .map((item: any) => {
                     return {
                       //@ts-ignore
                       role: roleMapping[item._id], // Map ID to full role name
@@ -97,8 +111,10 @@ export function TotalEmployees() {
               <PolarAngleAxis dataKey="role" />
               <Radar dataKey="total" fill="var(--color-total)" fillOpacity={0.5} />
             </RadarChart>
-          </ChartContainer> : <Loading />
-        }
+          </ChartContainer>
+        ) : (
+          <Loading />
+        )}
       </CardContent>
     </Card>
   );

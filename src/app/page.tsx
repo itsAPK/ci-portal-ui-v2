@@ -186,12 +186,30 @@ function Page() {
   const totalEmployee = useQuery({
     queryKey: ['total-employees'],
     queryFn: async () => {
-      return await api.get(`/employee/count/`, {}).then((res) => {
-        if (!res.data.success) {
-          throw new Error(res.data.message);
-        }
-        return res.data.data;
-      });
+      const match: any = {
+        ...(selectedPlant && { plant: { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
+      return await api
+        .post(`/employee/export/`, {
+          filter: [
+            {
+              $match: match,
+            },
+            {
+              $group: {
+                _id: null, // Use null to group everything together
+                total: { $sum: 1 },
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data;
+        });
     },
   });
 
@@ -230,7 +248,7 @@ function Page() {
   });
 
   const queryClient = useQueryClient();
-
+  console.log(totalEmployee.data);
   return (
     <UILayout>
       <ContentLayout title={'Login'} tags={['authentication', 'login']}>
@@ -243,6 +261,7 @@ function Page() {
 
                 setTimeout(() => {
                   totalData.refetch();
+                  totalEmployee.refetch();
                   queryClient.refetchQueries({
                     queryKey: [
                       'total-opportunities',
@@ -262,7 +281,6 @@ function Page() {
                       selectedPlant,
                       selectedCompany,
                       'top-employees',
-                      date,
                       selectedPlant,
                       selectedCompany,
                     ],
@@ -290,6 +308,7 @@ function Page() {
                 setSelectedPlant(e);
                 setTimeout(() => {
                   totalData.refetch();
+                  totalEmployee.refetch();
                   queryClient.refetchQueries({
                     queryKey: [
                       'total-opportunities',
@@ -315,6 +334,13 @@ function Page() {
                       'completed-vs-ongoing',
                       selectedCompany,
                       selectedPlant,
+                      'employees-count-by-role',
+                      selectedPlant,
+                      selectedCompany,
+                      'total-employees',
+                      selectedPlant,
+                      selectedCompany,
+                    
                     ],
                   });
                 }, 1000);
@@ -432,7 +458,11 @@ function Page() {
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
                   name={'Total Employees'}
                   color="bg-indigo-600/10"
-                  count={totalEmployee.data ? formatToIndianNumber(totalEmployee.data.employee) : 0}
+                  count={
+                    totalEmployee.data && totalEmployee.data.data.length > 0
+                      ? formatToIndianNumber(totalEmployee.data.data[0].total)
+                      : 0
+                  }
                 />
               </div>
             </div>
@@ -461,7 +491,7 @@ function Page() {
               />
             </div>
             <div className="md:col-span-6">
-              <TotalEmployees />
+              <TotalEmployees selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
             </div>
             <div className="md:col-span-6">
               <EstimatedSavingsOpportunities
