@@ -9,11 +9,12 @@ import { AddPlant } from './add-plant';
 import { EditPlant } from './edit-plant';
 import { FileUploadDialog } from '@/components/file-upload-dialog';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getCookie } from 'cookies-next';
 export function Plant() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const plants = useQuery({
     queryKey: ['get-plant'],
     queryFn: async (): Promise<any> => {

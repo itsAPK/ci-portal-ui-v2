@@ -9,13 +9,14 @@ import { AddCompany } from './add-company';
 import { EditCompany } from './edit-company';
 import { FileUploadDialog } from '@/components/file-upload-dialog';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
-import router from 'next/router';
+import { useRouter }  from 'next/navigation';
 import { toast } from 'sonner';
 import { getCookie } from 'cookies-next';
 
 export function Company() {
   const role = getCookie('ci-portal.role');
   const queryClient = useQueryClient();
+  const router = useRouter();
   const company = useQuery({
     queryKey: ['get-company'],
     queryFn: async (): Promise<any> => {
