@@ -54,7 +54,7 @@ const transformCategoryData = (responseData: ResponseData): CategoryData[] => {
       (key) => categoryMapping[key] === defaultCategory.category,
     );
 
-    const count = matchingCategoryKey ? responseData.categories[matchingCategoryKey] || 0 : 0;
+    const count = matchingCategoryKey ?  responseData  ? responseData.categories[matchingCategoryKey] : 0 || 0 : 0;
     return {
       ...defaultCategory,
       count,
@@ -180,7 +180,9 @@ export const CategoryWiseTrainingGraph = () => {
           if (!res.data.success) {
             throw new Error(res.data.message);
           }
+          if(res.data){
           return res.data.data.data;
+          }
         });
     },
   });
@@ -252,7 +254,7 @@ export const CategoryWiseTrainingGraph = () => {
                             className="fill-foreground text-2xl font-bold"
                           >
                             {totalOpportunities.data && totalOpportunities.data.length > 0
-                              ? calculateCategorySum(totalOpportunities.data[0].categories)
+                              ? calculateCategorySum(totalOpportunities.data[0] ? totalOpportunities.data[0].categories : {})
                               : 0}
                           </tspan>
 
