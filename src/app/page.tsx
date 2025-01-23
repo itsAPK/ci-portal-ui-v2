@@ -30,6 +30,7 @@ import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { withAuth } from '@/hooks/use-auth';
 import { formatToIndianNumber } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -38,6 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RiCloseCircleFill } from '@remixicon/react';
 
 function Page() {
   const [date, setDate] = React.useState<DateRange>({
@@ -340,7 +342,6 @@ function Page() {
                       'total-employees',
                       selectedPlant,
                       selectedCompany,
-                    
                     ],
                   });
                 }, 1000);
@@ -400,6 +401,48 @@ function Page() {
                 }}
                 className="h-8 w-[320px]"
               />
+            </div>
+            <div>
+              {(selectedPlant || selectedCompany) && (
+                <Button variant="destructive" size="sm" className="gap-2" onClick={() => {
+                  setSelectedCompany('');
+                  setSelectedPlant('');
+                  setTimeout(() => {
+                    totalData.refetch();
+                    totalEmployee.refetch();
+                    queryClient.refetchQueries({
+                      queryKey: [
+                        'total-opportunities',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'top-estimated-savings',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'category-wise-opportunity',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'estimated-savings',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'top-employees',
+                        date,
+                        selectedPlant,
+                        selectedCompany,
+                        'completed-vs-ongoing',
+                        selectedCompany,
+                        selectedPlant,
+                      ],
+                    });
+                  }, 1000);
+
+                }}>
+                  <RiCloseCircleFill className="h-4 w-4" /> Clear
+                </Button>
+              )}
             </div>
           </div>
         </div>

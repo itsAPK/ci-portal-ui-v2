@@ -70,30 +70,15 @@ const chartConfig = {
   count: {
     label: 'Opportunities',
   },
-  sitg: {
-    label: 'SITG',
-    color: 'hsl(var(--chart-1))',
-  },
   'black-belt': {
     label: 'Black Belt',
-    color: 'hsl(var(--chart-2))',
+    color: '#000000',
   },
   'green-belt': {
     label: 'Green Belt',
-    color: 'hsl(var(--destructive))',
+    color: 'hsl(var(--chart-2))',
   },
-  '3m': {
-    label: '3M',
-    color: 'hsl(var(--chart-4))',
-  },
-  kaizen: {
-    label: 'Kaizen',
-    color: 'hsl(var(--chart-5))',
-  },
-  'poka-yoke': {
-    label: 'Poka-Yoke',
-    color: 'hsl(var(--chart-3))',
-  },
+ 
 } satisfies ChartConfig;
 
 const getTotalCount = (categoryData: CategoryData[]): number => {
@@ -193,10 +178,8 @@ export const CategoryWiseTrainingGraph = () => {
     return chartData.reduce((acc: any, curr: { count: any }) => acc + curr.count, 0);
   }, []);
   return (
-    <Card className="flex min-h-[420px] flex-col rounded-xl border-primary/50 shadow-none">
-      <CardHeader className="pb-0">
-        <CardTitle className="text-base">Category Wise Training Report</CardTitle>
-      </CardHeader>
+    <Card className="flex min-h-[420px] flex-col rounded-xl border-none shadow-none">
+    
       <CardContent className="flex-1 pb-0 pt-10">
         {!totalOpportunities.isLoading ? (
           <ChartContainer config={chartConfig} className="aspect-square max-h-[290px] w-full">
@@ -273,7 +256,7 @@ export const CategoryWiseTrainingGraph = () => {
               </Pie>
               <ChartLegend
                 content={<ChartLegendContent nameKey="category" />}
-                className="-translate-y-2 flex-wrap gap-2 text-xs"
+                className="-translate-y-2 flex-wrap gap-2 justify-center items-center px- text-xs"
               />
             </PieChart>
           </ChartContainer>

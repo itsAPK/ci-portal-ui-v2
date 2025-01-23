@@ -111,7 +111,7 @@ export const EmployeeTable = ({
     },
     onSuccess: () => {
       
-      toast.success('Uploading', {
+      toast.success('Upload is in progress. It will take sometime', {
         icon: <CheckCircle className="h-4 w-4" />,
       });
       queryClient.refetchQueries({

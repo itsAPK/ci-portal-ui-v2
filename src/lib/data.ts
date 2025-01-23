@@ -759,4 +759,4 @@ export const trainingData = [
 
 
 
-export const categories = ['Black Belt', 'Green Belt', 'SITG', 'Kaizen', 'Poka-Yoke', '3M']
+export const categories = ['Black Belt', 'Green Belt', 'SITG', 'Kaizen', 'Poka-Yoke', '3M','SMED']

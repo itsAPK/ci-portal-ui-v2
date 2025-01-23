@@ -37,39 +37,38 @@ export const AddTemplate = () => {
   });
 
   const [file, setFile] = useState<File[] | null>([]);
-const queryClient = useQueryClient();
-    const addTemplate = useMutation({
-      mutationKey: ["add-template"],
-      mutationFn: async (data: TemplateSchema) => {
-        if (!file || file.length === 0) {
-          throw new Error('Please select a file');
-        }
-        const formData = new FormData();
-        formData.append('file', file[0]!);
-        formData.append('document', JSON.stringify(data)); // sending as string (this is fine)
-        
-        return await api.post("/document", formData).then((res) => {
-          if (!res.data.success) throw new Error(res.data.message);
-          return res.data;
-        });
-      },
-      onError: (error) => {
-        toast.error(error.message, {
-          icon: <AlertTriangle className="h-4 w-4" />,
-        });
-      },
-      onSuccess: () => {
+  const queryClient = useQueryClient();
+  const addTemplate = useMutation({
+    mutationKey: ['add-template'],
+    mutationFn: async (data: TemplateSchema) => {
+      if (!file || file.length === 0) {
+        throw new Error('Please select a file');
+      }
+      const formData = new FormData();
+      formData.append('file', file[0]!);
+      formData.append('document', JSON.stringify(data)); // sending as string (this is fine)
 
+      return await api.post('/document', formData).then((res) => {
+        if (!res.data.success) throw new Error(res.data.message);
+        return res.data;
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {
       setOpen(false);
-      toast.success("Template added successfully", {
-          icon: <AlertTriangle className="h-4 w-4" />,
-        });
-        queryClient.refetchQueries({
-          queryKey: ['get-document'],
-        });
+      toast.success('Template added successfully', {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+      queryClient.refetchQueries({
+        queryKey: ['get-document'],
+      });
       setOpen(false);
-      },
-    });
+    },
+  });
 
   const onSubmit = async (data: any) => {
     await addTemplate.mutateAsync(data);
@@ -109,6 +108,10 @@ const queryClient = useQueryClient();
                   multiple: false,
                   accept: {
                     'application/pdf': ['.pdf'],
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation': [
+                      '.pptx',
+                    ],
+                    'application/vnd.ms-powerpoint': ['ppt'],
                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
                       '.docx',
@@ -144,7 +147,7 @@ const queryClient = useQueryClient();
           <div className="flex justify-end pt-5">
             {' '}
             <Button type="submit" size="lg" className="w-full">
-            {addTemplate.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Submit
+              {addTemplate.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Submit
             </Button>
           </div>
         </FormWrapper>

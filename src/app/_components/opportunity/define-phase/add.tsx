@@ -69,6 +69,7 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
           is_iso_plot: data.is_iso_plot === 'Yes' ? true : false,
           is_p_chart_done: data.is_p_chart_done === 'Yes' ? true : false,
           is_conecentration: data.is_conecentration === 'Yes' ? true : false,
+          abnormalities_audited_tool_conditions: data.abnormalities_audited_tool_conditions === 'Yes' ? true : false,
         })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);

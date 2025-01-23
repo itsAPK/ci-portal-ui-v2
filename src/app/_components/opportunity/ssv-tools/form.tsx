@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import api from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { SelectField } from "@/components/select-field-wrapper";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { MultiSelector, MultiSelectorTrigger, MultiSelectorInput, MultiSelectorContent, MultiSelectorList, MultiSelectorItem } from "@/components/ui/multi-select";
 
 export interface SSVToolsFormProps {
   defaultValues?: Partial<SSVToolsSchema>;
@@ -60,7 +62,7 @@ export const SSVToolsForm = ({
       >
         <div className="grid h-full grid-cols-1 md:grid-cols-4">
           <div className="col-span-4 px-2 py-1 md:px-7">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
               <FormFieldInput
                 name="suspected_source"
                 control={form.control}
@@ -68,7 +70,7 @@ export const SSVToolsForm = ({
                 label="Suspected Source of Variation"
 
               />
-              <SelectField
+              {/* <SelectField
                 control={form.control}
                 name="tools"
                 label="Tools"
@@ -77,7 +79,8 @@ export const SSVToolsForm = ({
                   value: i.name,
                   label: i.name,
                 })) : []}
-              />
+              /> */}
+              
               <SelectField
                 control={form.control}
                 name="type_of_ssv"
@@ -88,8 +91,39 @@ export const SSVToolsForm = ({
                   label: i,
                 }))}
               />
+               <FormField
+                control={form.control}
+                name="tools"
+                render={({ field }) => (
+                  <FormItem className="w-full col-span-3">
+                    <div className="flex flex-col space-y-1 mt-2">
+                      <FormLabel>Tools</FormLabel>
+                      <FormControl>
+                        <MultiSelector
+                          onValuesChange={field.onChange}
+                          values={field.value ? [...field.value] : []}
+                        >
+                          <MultiSelectorTrigger>
+                            <MultiSelectorInput placeholder="" />
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              {tools.data ? tools.data.map((i: any, index: number) => (
+                                <MultiSelectorItem key={i.name} value={i.name}>
+                                  {i.name}
+                                </MultiSelectorItem> 
+                              ) ): null}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div >
-          <Button type="submit" size='lg' className="btn-primary col-span-1 w-[200px] mt-9" variant={'ghost-1'} disabled={form.formState.isSubmitting}>
+          <Button type="submit" size='lg' className="btn-primary  w-[200px] mt-9" variant={'ghost-1'} disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4" />}
             Save
           </Button>

@@ -25,6 +25,7 @@ import { Control } from './control-phase/control-phase';
 import { ProjectClosure } from './project-closure/project-closure';
 import { ApproveOpportunity } from './approve-opportunity';
 import { formatToIndianNumber } from '@/lib/utils';
+import { MonthlySavings } from './monthly-savings/monthly-savings';
 
 export const opportunityColumns = (): ColumnDef<any>[] => {
   return [
@@ -87,15 +88,15 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
       ),
       cell: ({ cell }) => ((cell.getValue() as any) ? cell.getValue() : '---'),
     },
-    {
-      accessorKey: 'category',
-      header: ({ column }) => (
-        <div className="flex w-[150px] justify-center text-center text-xs font-medium">
-          Category
-        </div>
-      ),
-      cell: ({ cell }) => ((cell.getValue() as any) ? cell.getValue() : '---'),
-    },
+    // {
+    //   accessorKey: 'category',
+    //   header: ({ column }) => (
+    //     <div className="flex w-[150px] justify-center text-center text-xs font-medium">
+    //       Category
+    //     </div>
+    //   ),
+    //   cell: ({ cell }) => ((cell.getValue() as any) ? cell.getValue() : '---'),
+    // },
     {
       accessorKey: 'project_score',
       header: ({ column }) => (
@@ -172,7 +173,6 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
         const role = getCookie('ci-portal.role');
         const plant = getCookie('ci-portal.plant');
         const userId = getCookie('ci-portal.user_id');
-        console.log(row.original.plant);
         return (
           <div className="flex justify-end space-x-2 pl-2">
             <DropdownMenu>
@@ -194,22 +194,20 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   </Button>
                 </DropdownMenuItem>
                 {role === 'admin' &&
-                  (row.original.status === 'Open for Assigning' ||
-                    row.original.status === 'Project Assigned' ||
-                    row.original.status === 'Details Updated' ||
-                    row.original.status === 'Teams Updated') && (
+                  ((row.original.category === 'Black Belt' &&
+                    (row.original.status === 'Open for Assigning' ||
+                      row.original.status === 'Project Assigned')) ||
+                    row.original.category !== 'Black Belt') && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <EditOpportunity opportunity={row.original} />
                     </DropdownMenuItem>
                   )}
 
-                {role === 'admin' &&
-                  row.original.category === 'Black Belt' &&
-                    row.original.status === 'Open for Assigning' && (
-                    <DropdownMenuItem className="flex gap-2" asChild>
-                      <DeleteOpportunity id={row.original._id.$oid} />
-                    </DropdownMenuItem>
-                  )}
+                {role === 'admin' && (
+                  <DropdownMenuItem className="flex gap-2" asChild>
+                    <DeleteOpportunity id={row.original._id.$oid} />
+                  </DropdownMenuItem>
+                )}
 
                 {role !== 'employee' &&
                   (role === 'admin' || (row.original.plant && plant === row.original.plant.name)) &&
@@ -324,6 +322,12 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                 <DropdownMenuItem className="flex gap-2" asChild>
                   <ActionPlan opportunities={row.original} />
                 </DropdownMenuItem>
+
+                {role === 'admin' && row.original.status === 'Opportunity Completed' && (
+                  <DropdownMenuItem className="flex gap-2" asChild>
+                    <MonthlySavings opportunities={row.original} />
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

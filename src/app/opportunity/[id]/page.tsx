@@ -59,7 +59,7 @@ function Opportunity({ searchParams }: IndexPageProps) {
                         }))}
                       />
                     )} */}
-                    <Report opportunity={opportunity} /></div> 
+                    {opportunity.data.status === 'Opportunity Completed' &&	<Report opportunity={opportunity} />}</div> 
                   </div>
                   <Tabs defaultValue="1" className="w-full px-4">
                     <TabsList className="flex h-12 bg-primary/10 px-3 shadow">

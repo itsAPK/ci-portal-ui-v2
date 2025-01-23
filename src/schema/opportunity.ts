@@ -22,6 +22,10 @@ export const opportunitySchema = z.object({
   estimated_savings: z.string({ required_error: 'Estimated Savings is required' }).optional(),
   savings_type: z.string({ required_error: 'Savings Type is required' }).optional(),
   status: z.string({ required_error: 'Status is required' }).optional(),
+  start_date: z.any({ required_error: 'Start Date is required' }).optional(),
+  end_date: z.any({ required_error: 'End Date is required' }).optional(),
+  sub_category: z.string({ required_error: 'Sub Category is required' }).optional(),
+
 });
 
 export type OpportunitySchema = z.infer<typeof opportunitySchema>;
@@ -77,15 +81,29 @@ export const definePhaseSchema = z.object({
   is_p_chart_done : z.any(),
   abnormalities : z.any(),
   is_audited_tool_conditions : z.any(),
-
+  abnormalities_audited_tool_conditions : z.any(),
 });
 
 export type DefinePhaseSchema = z.infer<typeof definePhaseSchema>;
 
 export const ssvToolsSchema = z.object({
   suspected_source : z.string({required_error : 'Suspected Source of Variation is required'}),
-  tools : z.string(),
+  tools : z.array(z.string()).min(1,{message : 'At least one tool is required'}),
   type_of_ssv : z.string(),
 });
 
 export type SSVToolsSchema = z.infer<typeof ssvToolsSchema>;
+
+
+export const monthlySavingsSchema = z.object({
+  year: z.string(),
+  month: z.string(),
+  savings: z.string(),
+});
+
+export type MonthlySavingsSchema = z.infer<typeof monthlySavingsSchema>;
+
+export interface MonthlySavings extends MonthlySavingsSchema {
+  _id: { $oid: string };
+
+}

@@ -8,6 +8,7 @@ import { Documents } from '../documents';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { BASEURL } from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
 const data = [
 {
     source : 'Mounting height	',
@@ -45,7 +46,7 @@ export const MeasureAnalysisPhase = ({ma,isReport = false} : {ma: any,isReport?:
           <TableHeader>
             <TableRow>
               <TableHead className='text-center text-xs'>Suspected Source of Variation	</TableHead>
-              <TableHead className='text-center text-xs'>Tools</TableHead>
+              <TableHead className='text-center text-xs w-[600px]'>Tools</TableHead>
               <TableHead className='text-center text-xs'>Identified Root Cause</TableHead>
             </TableRow>
           </TableHeader>
@@ -54,7 +55,7 @@ export const MeasureAnalysisPhase = ({ma,isReport = false} : {ma: any,isReport?:
                 ma.data.map((item : any) => (
                   <TableRow key={item.source}>
                     <TableCell className='text-center text-xs'>{item.suspected_source}</TableCell>
-                    <TableCell className='text-center text-xs'>{item.tools}</TableCell>
+                    <TableCell className='text-center text-xs flex justify-center gap-2 flex-wrap w-[600px]'>{item.tools.map((i: any) => <Badge variant={'ghost'} key={i}>{i}</Badge>)}</TableCell>
                     <TableCell className='text-center text-xs'>{item.root_cause}</TableCell>
                    
                   </TableRow>

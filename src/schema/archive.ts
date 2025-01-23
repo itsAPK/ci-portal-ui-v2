@@ -10,6 +10,8 @@ export const archiveSchema = z.object({
   baseline: z.string({required_error: 'Baseline is required'}),
   target: z.string({required_error: 'Target is required'}),
   result: z.string({required_error: 'Result is required'}),
+  plant : z.string({required_error: 'Plant is required'}),
+  project_leader : z.any({required_error : "Project Leader is required"})
  
 });
 

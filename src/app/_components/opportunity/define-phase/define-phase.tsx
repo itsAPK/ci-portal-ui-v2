@@ -107,17 +107,21 @@ export const DefinePhase = ({
               value={definePhase.min_month}
               className="col-span-2"
             />{' '}
-            <ContentCard
+             <ContentCard
               isReport={isReport}
               title={'15. Response type'}
+              className='col-span-2'
               value={definePhase.response_type}
             />{' '}
-            <ContentCard
+              <ContentCard
               isReport={isReport}
-              title={'16. Have you done p-chart?'}
-              value={definePhase.p_chart_done ? 'Yes' : 'No'}
-            />
-            <ContentCard
+              title={'16. Specification'}
+              className="col-span-2"
+              value={definePhase.specification ?? 'Not Applicable'}
+            />{' '}
+           
+          
+             <ContentCard
               isReport={isReport}
               title={'17. Have you done ISO plot / Attribute Agreement Analysis?'}
               value={definePhase.is_iso_plot ? 'Yes' : 'No'}
@@ -125,39 +129,49 @@ export const DefinePhase = ({
             />
             <ContentCard
               isReport={isReport}
-              title={'18. Specification'}
-              className="col-span-2"
-              value={definePhase.specification ?? 'Not Applicable'}
-            />{' '}
-            <ContentCard
-              isReport={isReport}
-              title={'19. Is Concentration chart applicable?'}
+              title={'18. Is Concentration chart applicable?'}
               className="col-span-2"
               value={definePhase.is_conecentration ? 'Yes' : 'No'}
             />
             <ContentCard
               isReport={isReport}
-              title={'20. If Yes, what is the conclusion based on Concentration chart'}
+              title={'19. If Yes, what is the conclusion based on Concentration chart'}
               value={definePhase.conculsion}
               className="col-span-2"
             />
+             <ContentCard
+              isReport={isReport}
+              title={'20.  Have you audited the process?'}
+              value={definePhase.abnormalities ? 'Yes' : 'No'}
+              className="col-span-2"
+            />
+             <ContentCard
+              isReport={isReport}
+              title={'21. Any abnormalities in the process audit?'}
+              value={definePhase.abnormalities ? 'Yes' : 'No'}
+              className="col-span-2"
+            />
+           
             <ContentCard
               isReport={isReport}
-              title={'21. Have you audited the machine and tool condition?'}
+              title={'22. Have you audited the machine and tool condition?'}
               value={definePhase.is_audited_tool_conditions ? 'Yes' : 'No'}
               className="col-span-2"
             />
-            <ContentCard
+
+<ContentCard
               isReport={isReport}
-              title={'22. Any abnormalities in the process audit?'}
-              value={definePhase.abnormalities ? 'Yes' : 'No'}
+              title={'23. Any abnormalities  audited the machine and tool condition?'}
+              value={definePhase.abnormalities_audited_tool_conditions ? 'Yes' : 'No'}
               className="col-span-2"
             />
-            <ContentCard
+           
+           
+             <ContentCard
               isReport={isReport}
-              title={'23.  Have you audited the process?'}
-              value={definePhase.abnormalities ? 'Yes' : 'No'}
+              title={'24. Have you done p-chart?'}
               className="col-span-2"
+              value={definePhase.p_chart_done ? 'Yes' : 'No'}
             />
           </div>
           {!isReport && (

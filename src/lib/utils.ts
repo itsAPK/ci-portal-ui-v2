@@ -191,12 +191,19 @@ export const getRandomColor = () => {
 };
 
 
-export function formatToIndianNumber(num : number) {
-  const strNum = num.toString();
-  const lastThree = strNum.slice(-3);
-  const otherNumbers = strNum.slice(0, -3);
+export function formatToIndianNumber(num : any) {
+  if (num == null || isNaN(num)) return '0'; 
+  if (num === 0) return '0'; // Return '0' for zero
+
+  const strNum = num.toString(); // Convert number to string
+  const lastThree = strNum.slice(-3); // Get last three digits
+  const otherNumbers = strNum.slice(0, -3); // Get the rest of the number
+
+  // Format the number according to Indian numbering system
   const formatted =
     otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + (otherNumbers ? "," : "") + lastThree;
-  return formatted;
+  
+  return formatted; // Return the formatted string
 }
+
 

@@ -1,15 +1,12 @@
 'use client';
 import { DialogHeader } from '@/components/ui/dialog';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { RiAddCircleFill } from '@remixicon/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -36,13 +33,13 @@ export const ActionPlan = ({ opportunities }: { opportunities: any }) => {
         <DialogHeader>
           <DialogTitle>Action Plan</DialogTitle>
         </DialogHeader>
-        {role !== 'employee' &&
-          role !== 'project_leader' &&
-          (role === 'admin' || plant === opportunities.plant) && (
-            <div className="flex justify-end pt-5">
-              {<AddActionPlan opportunities={opportunities} />}
-            </div>
-          )}
+        {(role === 'admin' ||
+          ((role === 'ci_team' || role === 'ci_head') && plant === opportunities.plant)) && (
+          <div className="flex justify-end pt-5">
+            <AddActionPlan opportunities={opportunities} />
+          </div>
+        )}
+
         <div className="rounded-xl border">
           <Table>
             <TableHeader>

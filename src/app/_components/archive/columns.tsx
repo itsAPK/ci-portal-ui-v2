@@ -16,6 +16,14 @@ export const archiveColumns = (): ColumnDef<Archive>[] => {
         ),
       },
       {
+        accessorKey: "plant",
+        header: ({ column }) => (
+          <div className="text-xs flex justify-center w-[200px] font-medium text-center ">
+            Plant
+          </div>
+        ),
+      },
+      {
         accessorKey: "department",
         header: ({ column }) => (
           <div className="text-xs flex justify-center w-[200px] font-medium text-center ">
@@ -39,11 +47,25 @@ export const archiveColumns = (): ColumnDef<Archive>[] => {
           </div>
         ),
       },
+      
       {
         accessorKey: "project_title",
         header: ({ column }) => (
           <div className="text-xs flex justify-center w-[200px] font-medium text-center ">
            Project Title
+          </div>
+        ),
+      },
+      {
+        accessorKey: "project_leader",
+        header: ({ column }) => (
+          <div className="text-xs flex justify-center w-[300px] font-medium text-center ">
+            Project Leader
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="text-xs flex justify-center w-[300px] font-medium text-center ">
+            {row.original.project_leader ? `${row.original.project_leader.name} (${row.original.project_leader.employee_id})` : "---"}
           </div>
         ),
       },

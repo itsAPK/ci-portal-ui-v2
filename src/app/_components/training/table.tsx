@@ -53,7 +53,7 @@ export const TrainingTable = ({
     {
       label: 'Category',
       value: 'category',
-      options: categories.map((i: any) => ({
+      options: ['Black Belt', 'Green Belt'].map((i: any) => ({
         value: i,
         label: i,
       })),

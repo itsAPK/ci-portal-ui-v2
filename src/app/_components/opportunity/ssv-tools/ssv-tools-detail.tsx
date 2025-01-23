@@ -7,6 +7,7 @@ import { Documents } from '../documents';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { BASEURL } from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
 
 
 export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?: boolean}) => {
@@ -27,7 +28,7 @@ export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?:
                 <TableHead className="text-center text-xs">
                   Suspected Source of Variation{' '}
                 </TableHead>
-                <TableHead className=" text-center text-xs">Tools</TableHead>
+                <TableHead className=" text-center text-xs  w-[400px]">Tools</TableHead>
                 <TableHead className=" text-center text-xs">Type of SSV</TableHead>
               </TableRow>
             </TableHeader>
@@ -36,7 +37,7 @@ export const SSVTools = ({ssvTools,isReport = false} : {ssvTools: any,isReport?:
               ssvTools.data.map((item : any) => (
                   <TableRow key={item._id}>
                     <TableCell className='text-center text-xs'>{item.suspected_source}</TableCell>
-                    <TableCell className='text-center text-xs'>{item.tools}</TableCell>
+                    <TableCell className="text-center text-xs flex flex-wrap gap-2 justify-center w-[600px]">{item.tools.map((i: any) => <Badge variant={'ghost'} key={i}>{i}</Badge>)}</TableCell>
                     <TableCell className='text-center text-xs'>{item.type_of_ssv}</TableCell>
                     
                   </TableRow>

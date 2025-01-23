@@ -55,6 +55,8 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { formatToIndianNumber } from '../../../../lib/utils';
+import { IndianNumberInput } from '@/components/indian-number-input';
 
 export const Control = ({ opportunities }: { opportunities: any }) => {
   const [open, setOpen] = useState(false);
@@ -62,9 +64,21 @@ export const Control = ({ opportunities }: { opportunities: any }) => {
   const userId = getCookie('ci-portal.user_id');
   const [file, setFile] = useState<File[] | null>([]);
   const queryClient = useQueryClient();
-  const [actualReponse, setActualReponse] = useState<any>(opportunities.control_phase && opportunities.control_phase.control_response ? opportunities.control_phase.control_response.actual : null);
-  const [actualCost, setActualCost] = useState<any>(opportunities.control_phase && opportunities.control_phase.control_cost ? opportunities.control_phase.control_cost.actual : null);
-
+  const [actualReponse, setActualReponse] = useState<any>(
+    opportunities.control_phase && opportunities.control_phase.control_response
+      ? opportunities.control_phase.control_response.actual
+      : null,
+  );
+  const [actualCost, setActualCost] = useState<any>(
+    opportunities.control_phase && opportunities.control_phase.control_cost
+      ? String(opportunities.control_phase.control_cost.actual)
+      : '0',
+  );
+  const [responseUOM, setResponseUOM] = useState<any>(
+    opportunities.control_phase && opportunities.control_phase.control_response
+      ? opportunities.control_phase.control_response.uom
+      : null,
+  );
   const [tools, setTools] = useState<any>([
     ...opportunities.improvement_phase.data.map((i: any) =>
       opportunities.control_phase &&
@@ -127,23 +141,24 @@ export const Control = ({ opportunities }: { opportunities: any }) => {
           return res.data;
         });
 
-      await api.patch(`/opportunity/control/${opportunities._id.$oid}`, {
-        control_response : {
-            baseline : opportunities.define_phase.baseline,
-            target : opportunities.define_phase.target,
-            actual : actualReponse,
-            uom : "PPM"
-        },
-        control_cost : {
-            estimated :  String( opportunities.estimated_savings),
-            actual :actualCost,
-            uom : "Rupees in Lakhs"
-        },
-        
-      }).then((res) => {
-        if (!res.data.success) throw new Error(res.data.message);
-        return res.data;
-      });
+      await api
+        .patch(`/opportunity/control/${opportunities._id.$oid}`, {
+          control_response: {
+            baseline: opportunities.define_phase.baseline,
+            target: opportunities.define_phase.target,
+            actual: actualReponse,
+            uom: responseUOM ?? "PPM",
+          },
+          control_cost: {
+            estimated: String(opportunities.estimated_savings),
+            actual: actualCost.replace(/,/g, ''),
+            uom: 'Rupees in Lakhs',
+          },
+        })
+        .then((res) => {
+          if (!res.data.success) throw new Error(res.data.message);
+          return res.data;
+        });
 
       if (file && file.length > 0) {
         const formData = new FormData();
@@ -186,8 +201,7 @@ export const Control = ({ opportunities }: { opportunities: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-      <Button variant="link" size={'sm'} className="gap-2">
-
+        <Button variant="link" size={'sm'} className="gap-2">
           <RiRemoteControlFill className="h-4 w-4" /> Control Phase
         </Button>
       </DialogTrigger>
@@ -292,38 +306,57 @@ export const Control = ({ opportunities }: { opportunities: any }) => {
               />
             </div>
             <div>
-              <Label className="px-1 text-xs">Actual</Label>
-              <Input
-                value={actualReponse}
-                onChange={(e) => setActualReponse(e.target.value)}
-                className="h-10 w-full rounded-lg border border-gray-400 px-3 py-2"
-              />
+              <div className="flex gap-2">
+                <div>
+                  <Label className="px-1 text-xs">Actual</Label>
+                  <Input
+                    value={actualReponse}
+                    onChange={(e) => setActualReponse(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-gray-400 px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <Label className="px-1 text-xs">UOM</Label>
+                  <Input
+                    value={responseUOM}
+                    onChange={(e) => setResponseUOM(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-gray-400 px-3 py-2"
+                  />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
         <Card className="broder">
           <CardHeader>
-            <CardTitle>Control Cost</CardTitle>
+            <CardTitle>Savings</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-3 gap-4">
             <div>
               <Label className="px-1 text-xs">Estimated</Label>
               <Input
-                value={opportunities.estimated_savings}
+                value={formatToIndianNumber(opportunities.estimated_savings)}
                 disabled
                 className="h-10 w-full rounded-lg border border-gray-400 px-3 py-2"
               />
             </div>
             <div>
               <Label className="px-1 text-xs">Actual</Label>
-              <Input
+              {/* <Input
                 value={actualCost}
                 onChange={(e) => setActualCost(e.target.value)}
+                className="h-10 w-full rounded-lg border border-gray-400 px-3 py-2"
+              /> */}
+              <IndianNumberInput
+                label=""
+                placeholder=""
+                value={actualCost}
+                onChange={(e) => setActualCost(e)}
                 className="h-10 w-full rounded-lg border border-gray-400 px-3 py-2"
               />
             </div>
             <div>
-              <Label className="px-1 text-xs">Actual</Label>
+              <Label className="px-1 text-xs"></Label>
               <Input
                 value={'Rupees in Lakhs'}
                 disabled

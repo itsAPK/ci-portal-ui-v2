@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/chart';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
+import { cn } from '@/lib/utils';
 const chartData = [
   { role: 'Project Leader', total: 186 },
   { role: 'CI Head', total: 285 },
@@ -50,9 +51,11 @@ const roleMapping = {
 export function TotalEmployees({
   selectedCompany,
   selectedPlant,
+  isDashboard = true,
 }: {
   selectedCompany?: string;
   selectedPlant?: string;
+  isDashboard?: boolean;
 }) {
   const getEmployeesByRole = useQuery({
     queryKey: ['employees-count-by-role', selectedPlant, selectedCompany],
@@ -85,9 +88,9 @@ export function TotalEmployees({
     },
   });
   return (
-    <Card className="h-[350px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
+    <Card className={cn("h-[350px]", isDashboard ? "overflow-y-auto rounded-xl border-primary/50 shadow-none" : "border-none shadow-none")}>
       <CardHeader className="pb-4">
-        <CardTitle>Total Employees</CardTitle>
+        {isDashboard && <CardTitle>Total Employees</CardTitle>}
       </CardHeader>
       <CardContent className="pb-0">
         {!getEmployeesByRole.isLoading ? (

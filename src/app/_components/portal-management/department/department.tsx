@@ -51,7 +51,7 @@ export function Department() {
       });
     },
     onSuccess: () => {
-      toast.success('Department data uploaded successfully', {
+      toast.success('Upload is in progress. It will take sometime', {
         icon: <CheckCircle className="h-4 w-4" />,
       });
       queryClient.refetchQueries({
@@ -80,7 +80,7 @@ export function Department() {
               onUpload={onUpload}
               onDownloadSample={onDownloadSample}
               triggerButtonText="Upload"
-              dialogTitle="Upload Employee"
+              dialogTitle="Upload Department"
               allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             />
           </div>}

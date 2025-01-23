@@ -144,20 +144,21 @@ export const DefinePhaseForm = ({
                   { value: 'Attribute', label: 'Attribute' },
                 ]}
               />
-              <SelectField
+             
+              <FormFieldInput
+                type="text"
+                name="specification"
+                label="16. Specification"
+                className="col-span-1"
+              />
+               <SelectField
                 control={form.control}
                 name="is_iso_plot"
-                label="16. Have you done ISO plot / Attribute Agreement Analysis?"
+                label="17. Have you done ISO plot / Attribute Agreement Analysis?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
                 ]}
-              />
-              <FormFieldInput
-                type="text"
-                name="specification"
-                label="17. Specification"
-                className="col-span-1"
               />
               <SelectField
                 control={form.control}
@@ -184,16 +185,16 @@ export const DefinePhaseForm = ({
                   { value: 'No', label: 'No' },
                 ]}
               />
-              <SelectField
+               <SelectField
                 control={form.control}
-                name="is_p_chart_done"
-                label="21. Have you done p-chart?"
+                name="abnormalities"
+                label="21. Any abnormalities in the process audit?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
-                ]}
-              />
-               <SelectField
+                ]}/>
+                
+                <SelectField
                 control={form.control}
                 name="is_audited_tool_conditions"
                 label="22. Have you audited the machine and tool condition?"
@@ -201,15 +202,24 @@ export const DefinePhaseForm = ({
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
                 ]}/>
-              <SelectField
+                <SelectField
                 control={form.control}
-                name="abnormalities"
-                label="23. Any abnormalities in the process audit?"
+                name="abnormalities_audited_tool_conditions"
+                label="23. Any abnormalities  audited the machine and tool condition?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
                 ]}/>
-               
+              <SelectField
+                control={form.control}
+                name="is_p_chart_done"
+                label="24. Have you done p-chart?"
+                options={[
+                  { value: 'Yes', label: 'Yes' },
+                  { value: 'No', label: 'No' },
+                ]}
+              />
+              
             </div>
           </div>
         </div>

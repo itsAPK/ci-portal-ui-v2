@@ -59,9 +59,15 @@ export const AddTeamMembers = ({
       toast.success('Team Member added successfully', {
         icon: <CheckCircle className="h-4 w-4" />,
       });
-      queryClient.refetchQueries({
-        queryKey: ['get-opportunities'],
-      });
+      if (opportunity.category === 'Black Belt') {
+        queryClient.refetchQueries({
+          queryKey: ['get-opportunities'],
+        });
+      } else {
+        queryClient.refetchQueries({
+          queryKey: ['get-other-opportunities'],
+        });
+      }
     },
   });
 
@@ -73,13 +79,12 @@ export const AddTeamMembers = ({
           filter: [
             {
               $match: {
-                plant: { $eq: opportunity.plant.name },
                 $or: [
                   { employee_id: { $regex: search, $options: 'i' } },
                   { name: { $regex: search, $options: 'i' } },
                 ],
               },
-            }
+            },
           ],
         })
         .then((res) => {
@@ -118,9 +123,15 @@ export const AddTeamMembers = ({
         icon: <AlertTriangle className="h-4 w-4" />,
       });
       setOpen(false);
-      queryClient.refetchQueries({
-        queryKey: ['get-opportunities'],
-      });
+      if (opportunity.category === 'Black Belt') {
+        queryClient.refetchQueries({
+          queryKey: ['get-opportunities'],
+        });
+      } else {
+        queryClient.refetchQueries({
+          queryKey: ['get-other-opportunities'],
+        });
+      }
     },
   });
 
@@ -170,7 +181,7 @@ export const AddTeamMembers = ({
                               employee.data
                                 ? employee.data.map((i: any) => ({
                                     value: String(i._id.$oid),
-                                    label: `${i.employee_id} - ${i.name}`,
+                                    label: `${i.employee_id} | ${i.name} | (${i.designation && i.designation.split('-')[0]} - ${i.department})`,
                                   }))
                                 : []
                             }
@@ -210,15 +221,17 @@ export const AddTeamMembers = ({
         {mode === 'dialog' ||
           (opportunity.team_members.length > 0 && <ViewTeamMembers opportunity={opportunity} />)}
 
-        <div className="flex justify-end pt-5">
-          <Button
-            onClick={async () => updateOpportunity.mutateAsync()}
-            size="lg"
-            className="w-[200px] gap-3"
-          >
-            {updateOpportunity.isPending && <Loader2 className="h-4 w-3" />} Submit
-          </Button>
-        </div>
+        {opportunity.category === 'Black Belt' && (
+          <div className="flex justify-end pt-5">
+            <Button
+              onClick={async () => updateOpportunity.mutateAsync()}
+              size="lg"
+              className="w-[200px] gap-3"
+            >
+              {updateOpportunity.isPending && <Loader2 className="h-4 w-3" />} Submit
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

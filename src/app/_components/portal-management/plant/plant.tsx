@@ -50,7 +50,7 @@ export function Plant() {
       });
     },
     onSuccess: () => {
-      toast.success('Plant data uploaded successfully', {
+      toast.success('Upload is in progress. It will take sometime', {
         icon: <CheckCircle className="h-4 w-4" />,
       });
       queryClient.refetchQueries({
@@ -80,7 +80,7 @@ export function Plant() {
                 onUpload={onUpload}
                 onDownloadSample={onDownloadSample}
                 triggerButtonText="Upload"
-                dialogTitle="Upload Employee"
+                dialogTitle="Upload Plant"
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
             </div>

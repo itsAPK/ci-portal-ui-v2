@@ -55,6 +55,7 @@ export const TeamMemebrs = ({teamMember,isReport = false} : {teamMember: any,isR
               <TableHead className='text-center text-xs'>Employee Id</TableHead>
               <TableHead className='text-center text-xs'>Employee Name</TableHead>
               <TableHead className='text-center text-xs'>Department</TableHead>
+              <TableHead className='text-center text-xs'>Designation</TableHead>
               <TableHead className='text-center text-xs'>Role</TableHead>
               
             </TableRow>
@@ -66,6 +67,7 @@ export const TeamMemebrs = ({teamMember,isReport = false} : {teamMember: any,isR
                     <TableCell className='text-center text-xs'>{item.employee.employee_id}</TableCell>
                     <TableCell className='text-center text-xs'>{item.employee.name}</TableCell>
                     <TableCell className='text-center text-xs'>{item.employee.department}</TableCell>
+                    <TableCell className='text-center text-xs'>{item.employee.designation}</TableCell>
                     <TableCell className='text-center text-xs'>{item.role}</TableCell>
                     
                   </TableRow>

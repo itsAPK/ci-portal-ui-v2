@@ -9,7 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { parseFilterInput, buildFilter, parseSort } from '@/lib/filter-parser';
-
+import {TotalEmployees} from '@/app/_components/dashboard/user-by-role';
 export default function Employee() {
   const params = useSearchParams();
 
@@ -119,6 +119,17 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
+          params.get('role') ? (() => {
+            const parsed = parseFilterInput(params.get('role') as string);
+            return parsed
+              ? buildFilter({
+                  column: 'role',
+                  operator: parsed.operator,
+                  value: parsed.value,
+                })
+              : undefined;
+          })()
+        : undefined,
       
         
       ].filter(Boolean);
@@ -171,6 +182,8 @@ export default function Employee() {
             <div className="pt-2 text-base font-semibold">Employee Management</div>
           </div>
           <CardContent className="overflow-y-auto p-4 pt-0">
+          <div className="pb-8"><TotalEmployees isDashboard={false}/>
+          </div>
             <div className="w-full">
               <EmployeeTable
                 data={employee.data ? employee.data.data : []}

@@ -101,7 +101,7 @@ export const AssignProjectLeader = ({ opportunity }: { opportunity: any }) => {
           <span className="-mt-[1px]">Assign Project Leader</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-xl h-[240px] max-w-[460px] overflow-y-auto">
+      <DialogContent className="min-w-xl h-[240px] max-w-[760px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Assign Project Leader</DialogTitle>
         </DialogHeader>
@@ -118,13 +118,13 @@ export const AssignProjectLeader = ({ opportunity }: { opportunity: any }) => {
               <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="h-full bg-white">
+          <PopoverContent className="h-full w-full bg-white">
             <AutoComplete
               options={
                 employee.data
                   ? employee.data.map((i: any) => ({
                       value: String(i._id.$oid),
-                      label: `${i.employee_id} - ${i.name}`,
+                      label: `${i.employee_id} | ${i.name} (${i.designation && i.designation.split('-')[0]} - ${i.department})`,
                     }))
                   : []
               }

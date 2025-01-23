@@ -29,6 +29,10 @@ export const ArchiveTable = ({ data, pageCount,refetchFn }: { data: any[]; pageC
       label: "Department",
     },
     {
+      value: "plant",
+      label: "Plant",
+    },
+    {
       value: "category",
       label: "Category",
       options: categories.map((i: any) => ({
@@ -46,6 +50,10 @@ export const ArchiveTable = ({ data, pageCount,refetchFn }: { data: any[]; pageC
         value: i,
         label: i,
       }))
+    },
+    {
+      value: "project_leader",
+      label: "Project Leader",
     },
     {
         value: "project_title",

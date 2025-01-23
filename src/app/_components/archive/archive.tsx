@@ -102,6 +102,26 @@ export function Archive() {
                 : undefined;
             })()
           : undefined,
+        params.get('project_leader')
+          ? (() => {
+              const parsed = parseFilterInput(params.get('project_leader') as string);
+              return parsed
+                ? buildFilter({
+                    column: 'project_leader.name',
+                    operator: parsed.operator,
+                    value: parsed.value,
+                  })
+                : undefined;
+            })()
+          : undefined,
+        params.get('plant')
+          ? (() => {
+              const parsed = parseFilterInput(params.get('plant') as string);
+              return parsed
+                ? buildFilter({ column: 'plant', operator: parsed.operator, value: parsed.value })
+                : undefined;
+            })()
+          : undefined,
       ].filter(Boolean);
 
       const filters = [...expressions];

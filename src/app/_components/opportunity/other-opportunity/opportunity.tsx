@@ -10,17 +10,12 @@ import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { parseFilterInput, buildFilter, parseSort } from '@/lib/filter-parser';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BussinessUnit } from '../portal-management/bussiness-unit/bussiness-unit';
-import { Company } from '../portal-management/company/company';
-import { Department } from '../portal-management/department/department';
-import { Plant } from '../portal-management/plant/plant';
 
-export default function Opportunities() {
+export default function OtherOpportunities() {
   const params = useSearchParams();
 
   const opportunities = useQuery({
-    queryKey: ['get-opportunities'],
+    queryKey: ['get-other-opportunities'],
     queryFn: async (): Promise<any> => {
       const query = `page=${params.get('page') ? Number(params.get('page')) : 1}&page_size=${params.get('per_page') ? Number(params.get('per_page')) : 50}`;
       const expressions: (any | undefined)[] = [
@@ -72,7 +67,18 @@ export default function Opportunities() {
                 : undefined;
             })()
           : undefined,
-      
+        params.get('category')
+          ? (() => {
+              const parsed = parseFilterInput(params.get('category') as string);
+              return parsed
+                ? buildFilter({
+                    column: 'category',
+                    operator: parsed.operator,
+                    value: parsed.value,
+                  })
+                : undefined;
+            })()
+          : undefined,
         params.get('project_type')
           ? (() => {
               const parsed = parseFilterInput(params.get('project_type') as string);
@@ -121,18 +127,7 @@ export default function Opportunities() {
                 : undefined;
             })()
           : undefined,
-        params.get('status')
-          ? (() => {
-              const parsed = parseFilterInput(params.get('status') as string);
-              return parsed
-                ? buildFilter({
-                    column: 'status',
-                    operator: parsed.operator,
-                    value: parsed.value,
-                  })
-                : undefined;
-            })()
-          : undefined,
+       
         params.get('savings_type')
           ? (() => {
               const parsed = parseFilterInput(params.get('savings_type') as string);
@@ -171,17 +166,14 @@ export default function Opportunities() {
           : undefined,
       ].filter(Boolean);
 
-      const filters = [...expressions,   { category: 'Black Belt' },];
+      const filters = [...expressions, { category: { $ne: 'Black Belt' } }];
       if (params.get('from') && params.get('to')) {
-        filters.push(
-          {
-            formatted_date: {
-              $gte: new Date(params.get('from') as string),
-              $lte: new Date(params.get('to') as string),
-            },
+        filters.push({
+          formatted_date: {
+            $gte: new Date(params.get('from') as string),
+            $lte: new Date(params.get('to') as string),
           },
-       
-        );
+        });
       }
       let data: any = {
         filter: [

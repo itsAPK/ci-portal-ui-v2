@@ -51,6 +51,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import api from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
 
 export const MeasureAnalysis = ({ opportunities }: { opportunities: any }) => {
   const [open, setOpen] = useState(false);
@@ -152,7 +153,7 @@ export const MeasureAnalysis = ({ opportunities }: { opportunities: any }) => {
                 <TableHead className="max-w-[300px] bg-primary text-center text-xs">
                   Suspected Source of Variation{' '}
                 </TableHead>
-                <TableHead className="bg-primary text-center text-xs">Selected Tool</TableHead>
+                <TableHead className="bg-primary text-center text-xs w-[400px]">Selected Tool</TableHead>
                 <TableHead className="rounded-tr-xl bg-primary text-center text-xs">
                   Identified Root Cause
                 </TableHead>
@@ -165,7 +166,7 @@ export const MeasureAnalysis = ({ opportunities }: { opportunities: any }) => {
                     <TableCell className="max-w-[300px] text-center text-xs">
                       {item.suspected_source}
                     </TableCell>
-                    <TableCell className="text-center text-xs">{item.tools}</TableCell>
+                    <TableCell className="text-center text-xs flex flex-wrap gap-2 justify-center w-[400px]">{item.tools.map((i: any) => <Badge variant={'ghost'} key={i}>{i}</Badge>)}</TableCell>
                     <TableCell className="text-center text-xs">
                       <Select
                         defaultValue={item.root_cause}

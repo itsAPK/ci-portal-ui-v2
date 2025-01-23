@@ -21,8 +21,16 @@ import { getCookie } from 'cookies-next';
 import { Loader2, Paperclip } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import Opportunity from '../../opportunity/[id]/page';
 import { IndianNumberInput } from '@/components/indian-number-input';
+import { DatePickerWrapper } from '@/components/date-picker-wrapper';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface OpportunityFormProps {
   defaultValues?: Partial<OpportunitySchema>;
@@ -31,6 +39,8 @@ interface OpportunityFormProps {
   mode?: 'create' | 'update';
   file?: File[] | null;
   setFile?: React.Dispatch<React.SetStateAction<File[] | null>>;
+  projectLeader: string | undefined;
+  setProjectLeader: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const OpportunityForm = ({
@@ -40,63 +50,21 @@ export const OpportunityForm = ({
   mode = 'create',
   file,
   setFile,
+  projectLeader,
+  setProjectLeader,
 }: OpportunityFormProps) => {
   const form = useForm<OpportunitySchema>({
-    defaultValues : {
+    defaultValues: {
       ...defaultValues,
-      category : 'Black Belt'
+      category: 'Black Belt',
     },
     resolver: zodResolver(opportunitySchema),
   });
   const [category, setCategory] = useState<string>(defaultValues?.category ?? 'Black Belt');
   console.log(form.formState.errors);
   // Watch relevant form fields
-  const [
-    baseline,
-    cross_functional_rating,
-    data_analysis,
-    external_customer,
-    internal_customer,
-    project_type,
-    project_nature,
-    expected_savings,
-  ] = useWatch({
-    control: form.control,
-    name: [
-      'baseline',
-      'cross_ratio',
-      'data_analysis',
-      'external_customer_impact',
-      'internal_customer_impact',
-      'project_type',
-      'project_nature',
-      'expected_savings',
-    ],
-  });
 
-  const impactScore = useMemo(() => {
-    return calculateImpactScore({
-      baseline,
-      cross_functional_rating,
-      data_analysis,
-      external_customer,
-      internal_customer,
-      project_type,
-      project_nature,
-      expected_savings,
-    });
-  }, [
-    baseline,
-    cross_functional_rating,
-    data_analysis,
-    external_customer,
-    internal_customer,
-    project_type,
-    project_nature,
-    expected_savings,
-  ]);
-
-  const [company, department, plant, bussinessUnit] = useQueries({
+  const [company, department, plant, bussinessUnit, employee] = useQueries({
     queries: [
       {
         queryKey: ['get-company'],
@@ -162,6 +130,32 @@ export const OpportunityForm = ({
             });
         },
       },
+      {
+        queryKey: ['get-employee-by-role'],
+        queryFn: async (): Promise<any> => {
+          return await api
+            .post('/employee/export', {
+              filter: [
+                {
+                  $match: {
+                    role: {
+                      $in: ['project_leader', 'ci_head', 'ci_team', 'cs_head', 'lof', 'admin'],
+                    },
+                  },
+                },
+              ],
+            })
+            .then((res) => {
+              if (!res.data.success) {
+                throw new Error(res.data.message);
+              }
+              return res.data.data.data;
+            })
+            .catch((err) => {
+              throw err;
+            });
+        },
+      },
     ],
   });
 
@@ -172,7 +166,7 @@ export const OpportunityForm = ({
       form={form}
       onSubmit={form.handleSubmit((data: OpportunitySchema) => {
         onSubmit(data);
-        setImpactScore(impactScore);
+        setImpactScore(0);
       })}
     >
       <div className="grid h-full grid-cols-1 md:grid-cols-4">
@@ -240,15 +234,74 @@ export const OpportunityForm = ({
               control={form.control}
               name="category"
               label="Project Category"
-              disabled={true}
               onChange={(e) => {
                 setCategory(e);
               }}
-              options={categories.map((i: any) => ({
-                value: i,
-                label: i,
-              }))}
+              options={categories
+                .filter((i: any) => i !== 'Black Belt')
+                .map((i: any) => ({
+                  value: i,
+                  label: i,
+                }))}
             />
+
+            {['Green Belt', 'Kaizen', 'Poka-Yoke', '3M'].includes(category) && (
+              <SelectField
+                control={form.control}
+                name="sub_category"
+                label={
+                  category === 'Green Belt'
+                    ? 'Greenbelt Category'
+                    : category === 'Kaizen'
+                      ? 'Kaizen Category'
+                      : category === 'Poka-Yoke'
+                        ? 'Poka-Yoke Type'
+                        : category === '3M'
+                          ? '3M Category'
+                          : 'Sub Category'
+                }
+                options={
+                  category === 'Green Belt'
+                    ? ['Problem Solving', 'Optimisation'].map((i: any) => ({
+                        value: i,
+                        label: i,
+                      }))
+                    : category === 'Kaizen'
+                      ? ['Restorative', 'Renovative', 'Innovative', 'Breakthrough'].map(
+                          (i: any) => ({
+                            value: i,
+                            label: i,
+                          }),
+                        )
+                      : category === 'Poka-Yoke'
+                        ? ['Alarm', 'Shutdown', 'Control'].map((i: any) => ({
+                            value: i,
+                            label: i,
+                          }))
+                        : category === '3M'
+                          ? ['Muri (Overburden)', 'Mura (Unevenness)', 'Muda (Waste)'].map(
+                              (i: any) => ({
+                                value: i,
+                                label: i,
+                              }),
+                            )
+                          : []
+                }
+              />
+            )}
+            <DatePickerWrapper
+              control={form.control}
+              name="start_date"
+              label="Start Date"
+              disabled={mode === 'update'}
+            />
+            <DatePickerWrapper
+              control={form.control}
+              name="end_date"
+              label="Completed"
+              disabled={mode === 'update'}
+            />
+
             <FormFieldInput
               control={form.control}
               name="statement"
@@ -256,71 +309,7 @@ export const OpportunityForm = ({
               label="Problem Statement"
               className="col-span-1"
             />
-            {category === 'Black Belt' && (
-              <>
-                <SelectField
-                  control={form.control}
-                  name="project_type"
-                  disabled={mode === 'update'}
-                  label="Project Type"
-                  options={opportunityCategories.project_type.map((i: any) => ({
-                    value: i.name,
-                    label: i.name,
-                  }))}
-                />
 
-                <SelectField
-                  control={form.control}
-                  name="project_nature"
-                  label="Nature of Project"
-                  disabled={mode === 'update'}
-                  options={opportunityCategories.project_nature.map((i: any) => ({
-                    value: i.name,
-                    label: i.name,
-                  }))}
-                />
-                <SelectField
-                  control={form.control}
-                  name="internal_customer_impact"
-                  disabled={mode === 'update'}
-                  label="Impact on Internal Customer"
-                  options={opportunityCategories.internal_customer.map((i: any) => ({
-                    value: i.name,
-                    label: i.name,
-                  }))}
-                />
-                <SelectField
-                  control={form.control}
-                  name="external_customer_impact"
-                  disabled={mode === 'update'}
-                  label="Impact on External Customer"
-                  options={opportunityCategories.external_customer.map((i: any) => ({
-                    value: i.name,
-                    label: i.name,
-                  }))}
-                />
-                <SelectField
-                  control={form.control}
-                  name="data_analysis"
-                  disabled={mode === 'update'}
-                  label="Data Oriented Analysis"
-                  options={opportunityCategories.data_analysis.map((i: any) => ({
-                    value: i.name,
-                    label: i.name,
-                  }))}
-                />
-                <SelectField
-                  control={form.control}
-                  name="cross_ratio"
-                  disabled={mode === 'update'}
-                  label="Cross Functional Rating"
-                  options={opportunityCategories.cross_function_rating.map((i: any) => ({
-                    value: i.name,
-                    label: i.name,
-                  }))}
-                />
-              </>
-            )}
             <SelectField
               control={form.control}
               name="expected_savings"
@@ -331,71 +320,47 @@ export const OpportunityForm = ({
                 label: i.name,
               }))}
             />
-            {project_nature === 'Problem Solving' && (
-              <SelectField
+
+            <div
+              className={cn(
+                ['Green Belt', 'Kaizen', 'Poka-Yoke', '3M'].includes(category)
+                  ? 'col-span-2 w-full'
+                  : 'col-span-1',
+              )}
+            >
+              {' '}
+              <Controller
+                name="estimated_savings"
                 control={form.control}
-                name="baseline"
-                disabled={mode === 'update'}
-                label="Baseline"
-                options={opportunityCategories.baseline.map((i: any) => ({
-                  value: i.name,
-                  label: i.name,
-                }))}
+                rules={{ required: 'Estimated Savings (in Lakh) is required' }}
+                render={({ field }) => (
+                  <IndianNumberInput
+                    label="Estimated Savings (in Lakh)"
+                    placeholder="Enter Estimated Savings (in Lakh)"
+                    {...field}
+                  />
+                )}
               />
-            )}
-            {mode === 'update' && (
-              <>
-                <SelectField
-                  control={form.control}
-                  name="savings_type"
-                  label="Savings Type"
-                  options={['Soft', 'Hard'].map((i: any) => ({
-                    value: i,
-                    label: i,
-                  }))}
-                />
-
-                <Controller
-                  name="estimated_savings"
-                  control={form.control}
-                  rules={{ required: 'Estimated Savings (in Lakh) is required' }}
-                  render={({ field }) => (
-                    <IndianNumberInput
-                      label="Estimated Savings (in Lakh)"
-                      placeholder="Enter Estimated Savings (in Lakh)"
-                      {...field}
-                    />
-                  )}
-                />
-              </>
-            )}
-
+            </div>
+            <div className="col-span-2 flex flex-col gap-2">
+                <Label className="-mb-1 px-2">Project Leader</Label>
+              <Select value={projectLeader} onValueChange={(e) => setProjectLeader(e)} >
+                <SelectTrigger className="h-12  w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                  <SelectValue  />
+                  <SelectContent>
+                    <SelectGroup>
+                      {employee.data &&
+                        employee.data.map((i: any) => (
+                          <SelectItem key={i._id} value={i._id.$oid}>
+                            {i.employee_id} | {i.name} - ({i.designation && i.designation.split('-')[0]} - {i.department})
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </SelectTrigger>
+              </Select>
+            </div>
             {
-              <div
-                className={cn(project_nature === 'Problem Solving' ? 'col-span-2' : 'col-span-1')}
-              >
-                <Label>Project Impact Score</Label>
-                <Card
-                  className={cn(
-                    'mt-2 h-12 w-full',
-                    impactScore >= 80
-                      ? 'border-green-500 bg-green-500/20'
-                      : impactScore >= 60 && impactScore < 80
-                        ? 'border-yellow-500 bg-yellow-500/20'
-                        : impactScore < 60
-                          ? impactScore >= 40 && impactScore < 60
-                            ? 'border-red-500 bg-red-500/20'
-                            : 'border-gray-300 bg-gray-300/20'
-                          : null,
-                  )}
-                >
-                  <CardContent className="flex items-center justify-center pt-2 text-xl font-bold">
-                    <div className="text-center">{impactScore}</div>
-                  </CardContent>
-                </Card>
-              </div>
-            }
-            {category !== 'Black Belt' && (
               <div className="col-span-2 flex flex-col gap-2">
                 <Label className="-mb-2 px-2">Upload Opportunity File </Label>
                 <FileUploader
@@ -435,7 +400,7 @@ export const OpportunityForm = ({
                   </FileUploaderContent>
                 </FileUploader>
               </div>
-            )}
+            }
           </div>
           <div className="flex justify-end pt-5">
             <Button type="submit" size="lg" className="w-[200px] gap-3">

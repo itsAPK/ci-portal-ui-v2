@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { getCookie } from 'cookies-next';
 import { SSVToolsSchema } from '@/schema/opportunity';
 import { SSVToolsForm } from './form';
@@ -148,7 +149,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
                 ssvTools.map((item: any, index: number) => (
                   <TableRow key={item.id}>
                     <TableCell className="text-center text-xs">{item.suspected_source}</TableCell>
-                    <TableCell className="text-center text-xs">{item.tools}</TableCell>
+                    <TableCell className="text-center text-xs flex flex-wrap gap-2 justify-center">{item.tools.map((i: any) => <Badge variant={'ghost'} key={i}>{i}</Badge>)}</TableCell>
                     <TableCell className="text-center text-xs">{item.type_of_ssv}</TableCell>
                     <TableCell className="flex gap-1">
                       {userId === opportunities.project_leader._id.$oid && (

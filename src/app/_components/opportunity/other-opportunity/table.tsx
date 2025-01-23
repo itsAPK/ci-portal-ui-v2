@@ -20,7 +20,7 @@ import { categories } from '@/lib/data';
 import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import api from '@/lib/api';
-import { ExportOppurtunity } from './export';
+import { ExportOppurtunity } from '../export';
 export const OpportunityTable = ({
   data,
   pageCount,
@@ -60,73 +60,13 @@ export const OpportunityTable = ({
       })),
     },
     {
-      label: 'Type',
-      value: 'project_type',
-      options: opportunityCategories.project_type.map((i: any) => ({
-        value: i.name,
-        label: i.name,
-      })),
-    },
-    {
-      label: 'Savings Type',
-      value: 'savings_type',
-      options: ['Soft', 'Hard'].map((i: any) => ({
-        value: i,
-        label: i,
-      })),
+      label: 'Sub Category',
+      value: 'sub_category',
     },
     {
       label: 'Estimated Savings',
       value: 'estimated_savings',
       dtype: 'int',
-    },
-
-    {
-      label: 'Impact Score',
-      value: 'project_score',
-      dtype: 'int',
-    },
-    {
-      label: 'Problem Impact',
-      value: 'project_impact',
-      options: ['Low', 'Medium', 'High'].map((i: any) => ({
-        value: i,
-        label: i,
-      })),
-    },
-
-    {
-      label: 'Status',
-      value: 'status',
-      options: [
-        'Open for Assigning',
-        'Project Assign Pending (CIHead)',
-        'Project Assign Pending (HOD)',
-        'PL Approved',
-        'Details Updated',
-        'Teams Updated',
-        'Opportunity Completed',
-        'Define Completed',
-        'Revoke',
-        'Define Phase Pending',
-        'Define Phase Completed',
-        'Measure/Analyze Phase Pending',
-        'Measure/Analyze Phase Completed',
-        'Improve Phase Pending',
-        'Improve Phase Completed',
-        'Control Phase Pending',
-        'Control Phase Completed',
-        'Closure Completed',
-        'Project Closure Pending (CIHead)',
-        'Project Closure Pending (HOD)',
-        'Project Closure Pending (LOF)',
-        'Project Closure Pending (Costing Head)',
-        'Project Completed',
-        'Expired',
-      ].map((i: any) => ({
-        value: i,
-        label: i,
-      })),
     },
   ];
   const columns = React.useMemo(() => opportunityColumns(), []);
@@ -150,7 +90,9 @@ export const OpportunityTable = ({
   const role = getCookie('ci-portal.role');
 
   return (
-    <Shell className="gap-2 pt-10" variant={'sidebar'}>
+    <Shell variant={
+        'sidebar'
+    } className="gap-2 pt-10">
       <DataTable table={table} size={'w-full'} pagination={true} isServer refetchFn={refetchFn}>
         <DataTableAdvancedToolbar
           table={table}

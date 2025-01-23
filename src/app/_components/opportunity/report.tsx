@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { DialogHeader } from '@/components/ui/dialog';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useRef, useState } from 'react';
@@ -59,12 +59,14 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
           <DialogTitle>Report</DialogTitle>
         </DialogHeader>
         <div className="flex justify-end gap-2">
-          {opportunity.data.category === 'Black Belt' && <ManageView
-            items={items}
-            selectedItems={selectedItems}
-            onItemToggle={handleItemToggle}
-            label="Toggle Views"
-          />}
+          {opportunity.data.category === 'Black Belt' && (
+            <ManageView
+              items={items}
+              selectedItems={selectedItems}
+              onItemToggle={handleItemToggle}
+              label="Toggle Views"
+            />
+          )}
           <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={exportPDFWithMethod}>
             <RiDownload2Fill className="h-4 w-4" /> Download
           </Button>
@@ -99,44 +101,105 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
                     </PDFLetterhead.Content>
                   </div>
                   <PDFLetterhead.RightData>
-                    <p className="text-sm font-semibold">Division: {opportunity.data.plant ? opportunity.data.plant.name : '---'}</p>
+                    <p className="text-sm font-semibold">
+                      Division: {opportunity.data.plant ? opportunity.data.plant.name : '---'}
+                    </p>
                     <p className="text-sm font-semibold">
                       Department: {opportunity.data.department}
                     </p>
                     <p className="text-sm font-semibold">
-                      Project Leader: {opportunity.data.project_leader ? opportunity.data.project_leader.name : '---'}
+                      Project Leader:{' '}
+                      {opportunity.data.project_leader
+                        ? opportunity.data.project_leader.name
+                        : '---'}
                     </p>
                   </PDFLetterhead.RightData>
                 </div>
               </PDFLetterhead.Root>
             </div>
-         {opportunity.data.category === 'Black Belt' ? <>  {selectedItems.includes('Opportunity Overview') && (
+            {opportunity.data.category === 'Black Belt' ? (
+              <>
+                {' '}
+                {selectedItems.includes('Opportunity Overview') && (
+                  <Overview opportunity={opportunity.data} isReport />
+                )}
+                {selectedItems.includes('Define Phase') && opportunity.data.define_phase && (
+                  <DefinePhase definePhase={opportunity.data.define_phase} isReport />
+                )}
+                {selectedItems.includes('SSV Tools') && opportunity.data.ssv_tools && (
+                  <SSVTools ssvTools={opportunity.data.ssv_tools} isReport />
+                )}
+                {selectedItems.includes('Measure Analysis Phase') &&
+                  opportunity.data.measure_analysis_phase && (
+                    <MeasureAnalysisPhase ma={opportunity.data.measure_analysis_phase} isReport />
+                  )}
+                {selectedItems.includes('Improvement Phase') &&
+                  opportunity.data.improvement_phase && (
+                    <ImprovementPhase improvements={opportunity.data.improvement_phase} isReport />
+                  )}
+                {selectedItems.includes('Control Phase') && opportunity.data.control_phase && (
+                  <ControlPhase contol={opportunity.data.control_phase} isReport />
+                )}
+                {selectedItems.includes('Project Closure') && opportunity.data.project_closure && (
+                  <ProjectClousre projectClosure={opportunity.data.project_closure} isReport />
+                )}{' '}
+              </>
+            ) : (
               <Overview opportunity={opportunity.data} isReport />
             )}
-
-            {selectedItems.includes('Define Phase') && opportunity.data.define_phase && (
-              <DefinePhase definePhase={opportunity.data.define_phase} isReport />
-            )}
-
-            {selectedItems.includes('SSV Tools') && opportunity.data.ssv_tools && (
-              <SSVTools ssvTools={opportunity.data.ssv_tools} isReport />
-            )}
-
-            {selectedItems.includes('Measure Analysis Phase') &&
-              opportunity.data.measure_analysis_phase && (
-                <MeasureAnalysisPhase ma={opportunity.data.measure_analysis_phase} isReport />
-              )}
-            {selectedItems.includes('Improvement Phase') && opportunity.data.improvement_phase && (
-              <ImprovementPhase improvements={opportunity.data.improvement_phase} isReport />
-            )}
-
-            {selectedItems.includes('Control Phase') && opportunity.data.control_phase && (
-              <ControlPhase contol={opportunity.data.control_phase} isReport />
-            )}
-
-            {selectedItems.includes('Project Closure') && opportunity.data.project_closure && (
-              <ProjectClousre projectClosure={opportunity.data.project_closure} isReport />
-            )}  </> : <Overview opportunity={opportunity.data} isReport /> }
+            <div className="flex flex-wrap justify-between gap-5 border-t border-gray-200 px-3 pb-5 pt-2">
+              <div className="text-xs font-semibold">
+                <div className="text-gray-600">CI HEAD</div>
+                <div className="flex items-center gap-2 text-xs">
+                  {opportunity.data.category === 'Black Belt'
+                    ? opportunity.data.ci_head
+                      ? opportunity.data.ci_head.name
+                      : '-----'
+                    : opportunity.data.plant.ci_head
+                      ? opportunity.data.plant.ci_head.name
+                      : '-----'}
+                </div>
+              </div>
+              <div className="text-xs font-semibold">
+                <div className="text-gray-600">HOD</div>
+                <div className="flex items-center gap-2 text-xs">
+                  {opportunity.data.category === 'Black Belt'
+                    ? opportunity.data.hod
+                      ? opportunity.data.hod.name
+                      : '-----'
+                    : opportunity.data.plant.hod
+                      ? opportunity.data.plant.hod.name
+                      : '-----'}
+                </div>
+              </div>
+              <div className="text-xs font-semibold">
+                <div className="text-gray-600">LOF</div>
+                <div className="flex items-center gap-2 text-xs">
+                  {opportunity.data.category === 'Black Belt'
+                    ? opportunity.data.lof
+                      ? opportunity.data.lof.name
+                      : '-----'
+                    : opportunity.data.plant.lof
+                      ? opportunity.data.plant.lof.name
+                      : '-----'}
+                </div>
+              </div>
+              <div className="text-xs font-semibold">
+                <div className="text-gray-600">CS HEAD</div>
+                <div className="flex items-center gap-2 text-xs">
+                  {opportunity.data.category === 'Black Belt'
+                    ? opportunity.data.cs_head
+                      ? opportunity.data.cs_head.name
+                      : '-----'
+                    : opportunity.data.plant.cs_head
+                      ? opportunity.data.plant.cs_head.name
+                      : '-----'}
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 text-xs font-semibold italic text-red-600">
+              This is a digitally generated and electronically signed opportunity report.
+            </div>
           </div>
         </PDFExport>
       </DialogContent>

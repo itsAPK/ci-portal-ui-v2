@@ -186,7 +186,7 @@ export const TrainingForm = ({ onSubmit, defaultValues, mode = 'create' }: Train
               name="category"
               label="Category"
               placeholder="Select Category"
-              options={categories.map((i: any) => ({
+              options={['Black Belt', 'Green Belt'].map((i: any) => ({
                 value: i,
                 label: i,
               }))}

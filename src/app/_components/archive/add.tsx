@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
-import {categories} from '@/lib/data';
+import { categories } from '@/lib/data';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -41,7 +41,7 @@ export const AddArchive = () => {
   });
 
   console.log(form.formState.errors);
-  const [company, department, plant] = useQueries({
+  const [company, department, plant, employee] = useQueries({
     queries: [
       {
         queryKey: ['get-company'],
@@ -91,6 +91,32 @@ export const AddArchive = () => {
             });
         },
       },
+      {
+        queryKey: ['get-employee-by-role'],
+        queryFn: async (): Promise<any> => {
+          return await api
+            .post('/employee/export', {
+              filter: [
+                {
+                  $match: {
+                    role: {
+                      $in: ['project_leader', 'ci_head', 'ci_team', 'cs_head', 'lof', 'admin'],
+                    },
+                  },
+                },
+              ],
+            })
+            .then((res) => {
+              if (!res.data.success) {
+                throw new Error(res.data.message);
+              }
+              return res.data.data.data;
+            })
+            .catch((err) => {
+              throw err;
+            });
+        },
+      },
     ],
   });
 
@@ -105,7 +131,7 @@ export const AddArchive = () => {
       }
       formData.append('file', file[0]!);
       formData.append('archive', JSON.stringify(data)); // sending as string (this is fine)
-      
+
       return await api.post('/archive', formData).then((res) => {
         if (!res.data.success) throw new Error(res.data.message);
         return res.data;
@@ -127,7 +153,6 @@ export const AddArchive = () => {
       setOpen(false);
     },
   });
-  
 
   const onSubmit = async (data: ArchiveSchema) => {
     await addArchive.mutateAsync(data);
@@ -170,6 +195,34 @@ export const AddArchive = () => {
                       ? department.data.map((i: any) => ({
                           value: i.name,
                           label: i.name,
+                        }))
+                      : []
+                  }
+                />
+
+                <SelectField
+                  control={form.control}
+                  name="plant"
+                  label="Plant"
+                  options={
+                    plant.data
+                      ? plant.data.map((i: any) => ({
+                          value: i.name,
+                          label: i.name,
+                        }))
+                      : []
+                  }
+                />
+
+                <SelectField
+                  control={form.control}
+                  name="project_leader"
+                  label="Project Leader"
+                  options={
+                    employee.data
+                      ? employee.data.map((i: any) => ({
+                          value: i._id.$oid,
+                          label: `${i.employee_id} - ${i.name}`,
                         }))
                       : []
                   }
@@ -264,7 +317,7 @@ export const AddArchive = () => {
           <div className="flex justify-end pt-5">
             {' '}
             <Button type="submit" size="lg" className="w-[200px] gap-2">
-          {addArchive.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Submit
+              {addArchive.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Submit
             </Button>
           </div>
         </FormWrapper>

@@ -24,15 +24,15 @@ export const TotalEstimatedSavings = ({
   const topEstimatedSavings = useQuery({
     queryKey: ['top-estimated-savings', dateRange, selectedCompany, selectedPlant],
     queryFn: async () => {
-      const match: any = {
+      const match = {
         formatted_date: {
           ...(dateRange?.from && { $gte: new Date(dateRange.from) }),
           ...(dateRange?.to && { $lte: new Date(dateRange.to) }),
         },
-        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }),
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
-        estimated_savings: { $ne: null },
       };
+  
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -51,7 +51,7 @@ export const TotalEstimatedSavings = ({
             },
             {
               $group: {
-                _id: 'estimated_savings',
+                _id: '$estimated_savings', // Group by estimated_savings
                 estimated_savings: { $first: '$estimated_savings' },
                 opportunity_id: { $first: '$opportunity_id' },
                 plant_name: { $first: '$plant.name' },
@@ -83,6 +83,7 @@ export const TotalEstimatedSavings = ({
         });
     },
   });
+  
   return (
     <Card className="h-[350px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
       <CardHeader className="px-7">
@@ -93,10 +94,10 @@ export const TotalEstimatedSavings = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Opportunity ID</TableHead>
-              <TableHead> Estimated Savings</TableHead>
-              <TableHead>Plant</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead  className="text-center">Opportunity ID</TableHead>
+              <TableHead className="text-center"> Estimated Savings</TableHead>
+              <TableHead className="text-center">Plant</TableHead>
+              <TableHead className="text-center">Project Leader</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="w-full">

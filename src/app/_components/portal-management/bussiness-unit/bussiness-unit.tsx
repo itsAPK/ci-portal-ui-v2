@@ -53,7 +53,7 @@ export function BussinessUnit() {
       });
     },
     onSuccess: () => {
-      toast.success('BussinessUnit data uploaded successfully', {
+      toast.success('Upload is in progress. It will take sometime', {
         icon: <CheckCircle className="h-4 w-4" />,
       });
       queryClient.refetchQueries({
@@ -68,7 +68,7 @@ export function BussinessUnit() {
   };
 
   const onDownloadSample = () => {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/files/download/template/BussinessUnit.xlsx`);
+    router.push(`${process.env.NEXT_PUBLIC_BUSSINESS_UNIT_TEMPLATE_URL}`);
   };
   return (
     <div className="py-4">
@@ -82,7 +82,7 @@ export function BussinessUnit() {
                 onUpload={onUpload}
                 onDownloadSample={onDownloadSample}
                 triggerButtonText="Upload"
-                dialogTitle="Upload Employee"
+                dialogTitle="Upload Bussiness Unit"
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
             </div>

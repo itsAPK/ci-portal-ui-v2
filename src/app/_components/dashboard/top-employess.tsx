@@ -23,16 +23,16 @@ export const TopEmployees = ({
   const topEmployees = useQuery({
     queryKey: ['top-employees', dateRange, selectedCompany, selectedPlant],
     queryFn: async () => {
-      const match: any = {
+      const match = {
         formatted_date: {
           ...(dateRange?.from && { $gte: new Date(dateRange.from) }),
           ...(dateRange?.to && { $lte: new Date(dateRange.to) }),
         },
-        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }),
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
         project_leader: { $ne: null },
       };
-
+  
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -51,7 +51,7 @@ export const TopEmployees = ({
             },
             {
               $group: {
-                _id: 'project_leader',
+                _id: '$project_leader',
                 total_opportunities: { $sum: 1 },
                 employee_id: { $first: '$project_leader.employee_id' },
                 employee_name: { $first: '$project_leader.name' },
@@ -83,6 +83,7 @@ export const TopEmployees = ({
         });
     },
   });
+  
   return (
     <Card className="h-[380px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
       <CardHeader className="px-7">

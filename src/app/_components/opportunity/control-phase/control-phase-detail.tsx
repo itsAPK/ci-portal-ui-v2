@@ -18,6 +18,7 @@ import { ContentCard
  } from '../overview/content-card';
 import { cn } from '@/lib/utils';
 import { BASEURL } from '@/lib/api';
+import { formatToIndianNumber } from '../../../../lib/utils';
 const data = [
   {
     source: 'Mounting height	',
@@ -107,19 +108,19 @@ export const ControlPhase = ({contol,isReport = false} : {contol: any,isReport?:
       </Card>
       <Card className={cn('my-4',isReport ? 'border-none bg-white shadow-none' : 'border-gray-500/20')}>
       <CardHeader>
-        <CardTitle className="text-sm">Control Cost</CardTitle>
+        <CardTitle className="text-sm">Savings</CardTitle>
       </CardHeader>
         <CardContent className="gap-4 text-sm grid grid-cols-3">
           <ContentCard
           isReport={isReport}
             title={'Estimated'}
-            value={contol.control_cost.estimated}
+            value={`₹ ${formatToIndianNumber(contol.control_cost.estimated)}`}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
           isReport={isReport}
             title={'Actual'}
-            value={contol.control_cost.actual}
+            value={`₹ ${formatToIndianNumber(contol.control_cost.actual)}`}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
