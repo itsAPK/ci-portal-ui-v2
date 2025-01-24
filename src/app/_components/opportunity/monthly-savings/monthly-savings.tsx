@@ -14,11 +14,13 @@ import {
 import { AddMonthlySavings } from './add';
 import { getCookie } from 'cookies-next';
 import { RiMoneyRupeeCircleFill } from '@remixicon/react';
+import { MonthlySavingsRow } from './monthly-savings-row';
 
 export const MonthlySavings = ({ opportunities }: { opportunities: any }) => {
   const [open, setOpen] = useState(false);
   const role = getCookie('ci-portal.role');
   const plant = getCookie('ci-portal.plant');
+  const userId = getCookie('ci-portal.user_id');
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -44,18 +46,22 @@ export const MonthlySavings = ({ opportunities }: { opportunities: any }) => {
                 <TableHead className="rounded-tl-xl bg-primary text-center text-xs">Year</TableHead>
                 <TableHead className="bg-primary text-center text-xs">Month</TableHead>
                 <TableHead className="bg-primary text-center text-xs">Savings</TableHead>
+                <TableHead className="bg-primary text-center text-xs">Actual</TableHead>
+                <TableHead className="bg-primary text-center text-xs"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {opportunities.monthly_savings.length > 0 ? (
                 opportunities.monthly_savings.map((item: any, index: number) => (
-                  <TableRow key={index}>
-                    <TableCell className="text-center text-xs">{item.year}</TableCell>
-                    <TableCell className="text-center text-xs">{item.month}</TableCell>
-                    <TableCell className="text-center text-xs">
-                      {`₹ ${item.savings}`}
-                    </TableCell>
-                  </TableRow>
+                  <MonthlySavingsRow
+                    item={item}
+                    csHeadId={
+                      opportunities.plant.cs_head ? opportunities.plant.cs_head._id.$oid : ''
+                    }
+                    key={index}
+                    opportunityId={opportunities._id.$oid}
+                    category={opportunities.category}
+                  />
                 ))
               ) : (
                 <TableRow>
