@@ -109,7 +109,7 @@ export const TotalEstimatedSavings = ({
                   </TableCell>
                   <TableCell>
                     <div className="text-center text-xs">
-                      ₹ {formatToIndianNumber(i.estimated_savings)}
+                      Rs {formatToIndianNumber(i.estimated_savings)}
                     </div>
                   </TableCell>
                   <TableCell>

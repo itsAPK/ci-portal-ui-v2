@@ -157,7 +157,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
         </div>
       ),
       cell: ({ cell }) =>
-        (cell.getValue() as any) ? `₹ ${formatToIndianNumber(cell.getValue() as any)}` : '---',
+        (cell.getValue() as any) ? `Rs ${formatToIndianNumber(cell.getValue() as any)}` : '---',
     },
     {
       accessorKey: 'status',
@@ -323,7 +323,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   <ActionPlan opportunities={row.original} />
                 </DropdownMenuItem>
 
-                {role === 'admin' && row.original.status === 'Opportunity Completed' && (
+                {row.original.status === 'Opportunity Completed' && (
                   <DropdownMenuItem className="flex gap-2" asChild>
                     <MonthlySavings opportunities={row.original} />
                   </DropdownMenuItem>

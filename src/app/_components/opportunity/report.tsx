@@ -151,9 +151,10 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
               <div className="text-xs font-semibold">
                 <div className="text-gray-600">CI HEAD</div>
                 <div className="flex items-center gap-2 text-xs">
-                  {opportunity.data.category === 'Black Belt'
-                    ? opportunity.data.ci_head
-                      ? opportunity.data.ci_head.name
+                  {opportunity.data.category === 'Black Belt' && opportunity.data.is_approved_by_ci_head
+                    ? opportunity.data.plant.ci_head
+                      ? opportunity.data.plant.ci_head.name
+              
                       : '-----'
                     : opportunity.data.plant.ci_head
                       ? opportunity.data.plant.ci_head.name
@@ -163,9 +164,9 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
               <div className="text-xs font-semibold">
                 <div className="text-gray-600">HOD</div>
                 <div className="flex items-center gap-2 text-xs">
-                  {opportunity.data.category === 'Black Belt'
-                    ? opportunity.data.hod
-                      ? opportunity.data.hod.name
+                  {opportunity.data.category === 'Black Belt' && opportunity.data.is_approved_by_hod
+                    ? opportunity.data.plant.hod
+                      ? opportunity.data.plant.hod.name
                       : '-----'
                     : opportunity.data.plant.hod
                       ? opportunity.data.plant.hod.name
@@ -175,9 +176,9 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
               <div className="text-xs font-semibold">
                 <div className="text-gray-600">LOF</div>
                 <div className="flex items-center gap-2 text-xs">
-                  {opportunity.data.category === 'Black Belt'
-                    ? opportunity.data.lof
-                      ? opportunity.data.lof.name
+                  {opportunity.data.category === 'Black Belt' && opportunity.data.is_approved_by_lof
+                    ? opportunity.data.plant.lof
+                      ? opportunity.data.plant.lof.name
                       : '-----'
                     : opportunity.data.plant.lof
                       ? opportunity.data.plant.lof.name
@@ -187,9 +188,9 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
               <div className="text-xs font-semibold">
                 <div className="text-gray-600">CS HEAD</div>
                 <div className="flex items-center gap-2 text-xs">
-                  {opportunity.data.category === 'Black Belt'
-                    ? opportunity.data.cs_head
-                      ? opportunity.data.cs_head.name
+                  {opportunity.data.category === 'Black Belt' && opportunity.data.is_approved_by_cs_head
+                    ? opportunity.data.plant.cs_head
+                      ? opportunity.data.plant.cs_head.name
                       : '-----'
                     : opportunity.data.plant.cs_head
                       ? opportunity.data.plant.cs_head.name

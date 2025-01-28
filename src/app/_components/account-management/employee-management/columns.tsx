@@ -82,26 +82,26 @@ export const employeeColumns = (): ColumnDef<Employee>[] => {
         <div className="flex justify-center text-center text-xs font-medium w-[150px]">Designation</div>
       ),
     },
-    {
-      accessorKey: 'date_of_birth',
-      header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium w-[150px]">Date of Birth</div>
-      ),
-      cell: ({ row }) => {
-        const dateOfBirth = row.getValue('date_of_birth') as { $date: string };
-        return new Date(dateOfBirth.$date).toDateString();
-      },
-    },
-    {
-      accessorKey: 'date_of_joining',
-      header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium w-[150px]">Date of Joining</div>
-      ),
-      cell: ({ row }) => {
-        const dateOfJoining = row.getValue('date_of_joining') as { $date: string };
-        return new Date(dateOfJoining.$date).toDateString();
-      },
-    },
+    // {
+    //   accessorKey: 'date_of_birth',
+    //   header: ({ column }) => (
+    //     <div className="flex justify-center text-center text-xs font-medium w-[150px]">Date of Birth</div>
+    //   ),
+    //   cell: ({ row }) => {
+    //     const dateOfBirth = row.getValue('date_of_birth') as { $date: string };
+    //     return new Date(dateOfBirth.$date).toDateString();
+    //   },
+    // },
+    // {
+    //   accessorKey: 'date_of_joining',
+    //   header: ({ column }) => (
+    //     <div className="flex justify-center text-center text-xs font-medium w-[150px]">Date of Joining</div>
+    //   ),
+    //   cell: ({ row }) => {
+    //     const dateOfJoining = row.getValue('date_of_joining') as { $date: string };
+    //     return new Date(dateOfJoining.$date).toDateString();
+    //   },
+    // },
 
     {
       id: 'actions',

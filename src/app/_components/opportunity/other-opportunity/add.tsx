@@ -25,7 +25,7 @@ export const AddOpportunity = () => {
   const params = useSearchParams();
   const queryClient = useQueryClient();
   const [impactScore, setImpactScore] = useState<number>(0);
-  const [projectLeader, setProjectLeader] = useState<string>();
+  const [projectLeader, setProjectLeader] = useState<any>();
   const [file, setFile] = useState<File[] | null>([]);
   const addOpportunity = useMutation({
     mutationKey: ['add-opportunity'],
@@ -50,7 +50,7 @@ export const AddOpportunity = () => {
         await api
           .post(`/opportunity/assign-project-leader`, {
             opportunity_id: res.data._id,
-            employee_id: projectLeader,
+            employee_id: projectLeader.value,
           })
           .then((res) => {
             if (!res.data.success) throw new Error(res.data.message);

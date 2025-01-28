@@ -495,7 +495,7 @@ function Page() {
                   icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
                   name={'Total Savings'}
                   color="bg-red-600/10"
-                  count={`₹ ${totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalEstimatedSavings) : 0}`}
+                  count={`Rs ${totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalEstimatedSavings) : 0}`}
                 />
                 <CountCard
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
@@ -526,16 +526,16 @@ function Page() {
                 selectedPlant={selectedPlant}
               />
             </div>
-            <div className="md:col-span-6">
+            <div className="md:col-span-12 px-4">
               <CategoryWiseOpportunity
                 dateRange={date}
                 selectedPlant={selectedPlant}
                 selectedCompany={selectedCompany}
               />
             </div>
-            <div className="md:col-span-6">
+            {/* <div className="md:col-span-6">
               <TotalEmployees selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
-            </div>
+            </div> */}
             <div className="md:col-span-6">
               <EstimatedSavingsOpportunities
                 dateRange={date}

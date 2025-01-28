@@ -1,18 +1,10 @@
 'use client';
 
-import { TrendingUp } from 'lucide-react';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { Loading } from '@/components/ui/loading';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -20,21 +12,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { cn } from '@/lib/utils';
-const chartData = [
-  { role: 'Project Leader', total: 186 },
-  { role: 'CI Head', total: 285 },
-  { role: 'CS Head', total: 237 },
-  { role: 'LOF', total: 203 },
-  { role: 'HOD', total: 209 },
-  { role: 'Admin', total: 24 },
-  { role: 'CI Team', total: 24 },
-  { role: 'Employee', total: 24 },
-];
 
 const chartConfig = {
   total: {
     label: 'Employees',
-    color: 'hsl(var(--destructive))',
+    color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
 
@@ -61,7 +43,7 @@ export function TotalEmployees({
     queryKey: ['employees-count-by-role', selectedPlant, selectedCompany],
     queryFn: async () => {
       const match: any = {
-        ...(selectedPlant && { plant: { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedPlant && { plant: { $regex: selectedPlant, $options: 'i' } }),
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
       };
       return await api
@@ -70,7 +52,6 @@ export function TotalEmployees({
             {
               $match: match,
             },
-
             {
               $group: {
                 _id: '$role',
@@ -87,33 +68,38 @@ export function TotalEmployees({
         });
     },
   });
+
+  const chartData =
+    getEmployeesByRole.data?.data.data
+      .filter((i: any) => i._id !== 'employee')
+      .map((item: any) => ({
+        role: roleMapping[item._id as keyof typeof roleMapping] || item._id,
+        total: item.count,
+      }))
+      .sort((a: any, b: any) => b.total - a.total) || [];
+
   return (
-    <Card className={cn("h-[350px]", isDashboard ? "overflow-y-auto rounded-xl border-primary/50 shadow-none" : "border-none shadow-none")}>
-      <CardHeader className="pb-4">
-        {isDashboard && <CardTitle>Total Employees</CardTitle>}
-      </CardHeader>
-      <CardContent className="pb-0">
+    <Card className={cn('border-primary/50')}>
+      <CardHeader className="">{isDashboard && <CardTitle>Total Employees</CardTitle>}</CardHeader>
+      <CardContent>
         {!getEmployeesByRole.isLoading ? (
-          <ChartContainer config={chartConfig} className="mx-auto max-h-[280px]">
-            <RadarChart
-              data={
-                getEmployeesByRole.data &&
-                getEmployeesByRole.data.data.data
-                  .filter((i: any) => i._id !== 'employee')
-                  .map((item: any) => {
-                    return {
-                      //@ts-ignore
-                      role: roleMapping[item._id], // Map ID to full role name
-                      total: item.count, // Use the count as total
-                    };
-                  })
-              }
-            >
-              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-              <PolarGrid className="fill-[--color-total] opacity-20" gridType="circle" />
-              <PolarAngleAxis dataKey="role" />
-              <Radar dataKey="total" fill="var(--color-total)" fillOpacity={0.5} />
-            </RadarChart>
+          <ChartContainer config={chartConfig} className="h-[200px]">
+            <ResponsiveContainer width="140%" height="100%">
+              <BarChart data={chartData} >
+                <CartesianGrid strokeDasharray="4 4" />
+                <XAxis
+                  dataKey="role"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+            
+            
+                />
+               
+                <ChartTooltip cursor={true} content={<ChartTooltipContent indicator="dashed" />} />
+                <Bar dataKey="total" fill="var(--color-total)" barSize={30} radius={4}  />
+              </BarChart>
+            </ResponsiveContainer>
           </ChartContainer>
         ) : (
           <Loading />

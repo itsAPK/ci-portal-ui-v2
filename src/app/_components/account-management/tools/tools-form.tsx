@@ -7,6 +7,8 @@ import { toolsSchema, ToolsSchema } from '@/schema/tools';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SelectField } from '@/components/select-field-wrapper';
 import { categories } from '@/lib/data';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { MultiSelector, MultiSelectorTrigger, MultiSelectorInput, MultiSelectorContent, MultiSelectorList, MultiSelectorItem } from '@/components/ui/multi-select';
 
 interface ToolsFormProps {
   defaultValues?: Partial<ToolsSchema>;
@@ -30,17 +32,38 @@ export const ToolsForm = ({ defaultValues, onSubmit , mode = 'add'}: ToolsFormPr
               label="Name"
               className="col-span-1"
             />
-            <SelectField
-              control={form.control}
-              name="category"
-              label="Category"
-              options={categories.map(
-                (i: any) => ({
-                  value: i,
-                  label: i,
-                }),
-              )}
-            />
+           
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem className="w-full col-span-3">
+                    <div className="flex flex-col space-y-1 mt-2">
+                      <FormLabel>Categories</FormLabel>
+                      <FormControl>
+                        <MultiSelector
+                          onValuesChange={field.onChange}
+                          values={field.value ? [...field.value] : []}
+                        >
+                          <MultiSelectorTrigger>
+                            <MultiSelectorInput placeholder="" />
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              { categories.map((i: any, index: number) => (
+                                <MultiSelectorItem key={i} value={i}>
+                                  {i}
+                                </MultiSelectorItem> 
+                              ) )}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             {
               mode === 'edit' &&  <SelectField
               control={form.control}

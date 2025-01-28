@@ -9,14 +9,14 @@ import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { parseFilterInput, buildFilter, parseSort } from '@/lib/filter-parser';
-import {TotalEmployees} from '@/app/_components/dashboard/user-by-role';
+import { TotalEmployees } from '@/app/_components/dashboard/user-by-role';
+import { CompanyWiseEmployee } from '@/app/_components/account-management/employee-management/company-wise-employees';
 export default function Employee() {
   const params = useSearchParams();
 
   const employee = useQuery({
     queryKey: ['get-employee'],
     queryFn: async (): Promise<any> => {
-
       const query = `page=${params.get('page') ? Number(params.get('page')) : 1}&page_size=${params.get('per_page') ? Number(params.get('per_page')) : 50}`;
       const expressions: (any | undefined)[] = [
         params.get('name')
@@ -31,7 +31,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('employee_id') ? (() => {
+        params.get('employee_id')
+          ? (() => {
               const parsed = parseFilterInput(params.get('employee_id') as string);
               return parsed
                 ? buildFilter({
@@ -42,7 +43,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('company') ? (() => {
+        params.get('company')
+          ? (() => {
               const parsed = parseFilterInput(params.get('company') as string);
               return parsed
                 ? buildFilter({
@@ -51,9 +53,10 @@ export default function Employee() {
                     value: parsed.value,
                   })
                 : undefined;
-            })() 
+            })()
           : undefined,
-          params.get('bussiness_unit') ? (() => {
+        params.get('bussiness_unit')
+          ? (() => {
               const parsed = parseFilterInput(params.get('bussiness_unit') as string);
               return parsed
                 ? buildFilter({
@@ -64,7 +67,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('plant') ? (() => {
+        params.get('plant')
+          ? (() => {
               const parsed = parseFilterInput(params.get('plant') as string);
               return parsed
                 ? buildFilter({
@@ -75,7 +79,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('designation') ? (() => {
+        params.get('designation')
+          ? (() => {
               const parsed = parseFilterInput(params.get('designation') as string);
               return parsed
                 ? buildFilter({
@@ -86,7 +91,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('department') ? (() => {
+        params.get('department')
+          ? (() => {
               const parsed = parseFilterInput(params.get('department') as string);
               return parsed
                 ? buildFilter({
@@ -97,7 +103,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('grade') ? (() => {
+        params.get('grade')
+          ? (() => {
               const parsed = parseFilterInput(params.get('grade') as string);
               return parsed
                 ? buildFilter({
@@ -108,7 +115,8 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('working_location') ? (() => {
+        params.get('working_location')
+          ? (() => {
               const parsed = parseFilterInput(params.get('working_location') as string);
               return parsed
                 ? buildFilter({
@@ -119,22 +127,21 @@ export default function Employee() {
                 : undefined;
             })()
           : undefined,
-          params.get('role') ? (() => {
-            const parsed = parseFilterInput(params.get('role') as string);
-            return parsed
-              ? buildFilter({
-                  column: 'role',
-                  operator: parsed.operator,
-                  value: parsed.value,
-                })
-              : undefined;
-          })()
-        : undefined,
-      
-        
+        params.get('role')
+          ? (() => {
+              const parsed = parseFilterInput(params.get('role') as string);
+              return parsed
+                ? buildFilter({
+                    column: 'role',
+                    operator: parsed.operator,
+                    value: parsed.value,
+                  })
+                : undefined;
+            })()
+          : undefined,
       ].filter(Boolean);
 
-      const filters = [...expressions,{is_active : {$eq : true}}];
+      const filters = [...expressions, { is_active: { $eq: true } }];
       let data: any = {
         filter: [
           {
@@ -182,14 +189,19 @@ export default function Employee() {
             <div className="pt-2 text-base font-semibold">Employee Management</div>
           </div>
           <CardContent className="overflow-y-auto p-4 pt-0">
-          <div className="pb-8"><TotalEmployees isDashboard={false}/>
-          </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+              <div className="pb-8 col-span-5">
+                <TotalEmployees isDashboard />
+              </div>
+              <div className='col-span-7'>
+                <CompanyWiseEmployee />
+              </div>
+            </div>
             <div className="w-full">
               <EmployeeTable
                 data={employee.data ? employee.data.data : []}
                 pageCount={employee.data ? (employee.data.total_pages ?? 1) : 1}
                 refetch={employee.refetch}
-              
               />
             </div>
           </CardContent>

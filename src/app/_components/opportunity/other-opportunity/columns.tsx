@@ -141,7 +141,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
         </div>
       ),
       cell: ({ cell }) =>
-        (cell.getValue() as any) ? `₹ ${formatToIndianNumber(cell.getValue() as any)}` : '---',
+        (cell.getValue() as any) ? `Rs ${formatToIndianNumber(cell.getValue() as any)}` : '---',
     },
 
     {

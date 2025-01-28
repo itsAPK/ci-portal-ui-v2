@@ -64,7 +64,7 @@ export const MonthlySavingsRow = ({
     <TableRow>
       <TableCell className="text-center text-xs">{item.year}</TableCell>
       <TableCell className="text-center text-xs">{item.month}</TableCell>
-      <TableCell className="text-center text-xs">{`₹ ${item.savings}`}</TableCell>
+      <TableCell className="text-center text-xs">{`Rs ${item.savings}`}</TableCell>
       <TableCell className="flex justify-center text-center text-xs">
         {role === 'cs_head' && userId === csHeadId  ? (
           <IndianNumberInput
@@ -75,7 +75,7 @@ export const MonthlySavingsRow = ({
             className="text-center text-xs"
           />
         ) : item.actual ? (
-          `₹ ${item.actual}`
+          `Rs ${item.actual}`
         ) : (
           'N/A'
         )}

@@ -120,7 +120,7 @@ export const Overview = ({
             <ContentCard
               isReport={isReport}
               title={'Estimated Savings'}
-              value={`₹ ${formatToIndianNumber(opportunity.estimated_savings)}`}
+              value={`Rs ${formatToIndianNumber(opportunity.estimated_savings)}`}
               icon={<RiMoneyRupeeCircleFill className="h-4 w-4" />}
             />
             {opportunity.project_leader && (

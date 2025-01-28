@@ -1,7 +1,7 @@
 'use client';
 
 import { TrendingUp } from 'lucide-react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import {
   Card,
@@ -166,14 +166,19 @@ export function CompletedVsOpened({
                 right: 12,
               }}
             >
-              <CartesianGrid vertical={false} />
-              <XAxis
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
                 dataKey="month"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
+                 <YAxis tickLine={false}
+                              tickMargin={10}
+                              type='number'
+                              axisLine={false}
+                              tickFormatter={(value) => value} />
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
               <Line
                 dataKey="ongoing"

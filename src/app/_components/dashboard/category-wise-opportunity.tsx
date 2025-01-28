@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { TrendingUp } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import {
   Card,
@@ -10,30 +10,29 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import api from "@/lib/api"
-import { useQuery } from "@tanstack/react-query"
-import { DateRange } from "react-day-picker"
-import { categories } from "@/lib/data"
-import { Loading } from "@/components/ui/loading"
-
+} from '@/components/ui/chart';
+import api from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
+import { DateRange } from 'react-day-picker';
+import { categories } from '@/lib/data';
+import { Loading } from '@/components/ui/loading';
 
 const chartConfig = {
   ongoing: {
-    label: "Ongoing",
-    color: "hsl(var(--chart-1))",
+    label: 'Ongoing',
+    color: 'hsl(var(--chart-1))',
   },
   completed: {
-    label: "Completed",
-    color: "hsl(var(--chart-2))",
+    label: 'Completed',
+    color: 'hsl(var(--chart-2))',
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface CategoryData {
   category: string;
@@ -41,23 +40,32 @@ interface CategoryData {
   completed: number;
 }
 function generateCompleteCategoryData(inputData: CategoryData[]): CategoryData[] {
-  
-
   const dataMap: Record<string, CategoryData> = {};
-  inputData.forEach(item => {
-      dataMap[item.category] = { category: item.category, ongoing: item.ongoing, completed: item.completed };
+  inputData.forEach((item) => {
+    dataMap[item.category] = {
+      category: item.category,
+      ongoing: item.ongoing,
+      completed: item.completed,
+    };
   });
 
-  return categories.map(category => {
-      const categoryData = dataMap[category] || { category, ongoing: 0, completed: 0 };
-      return categoryData;
+  return categories.map((category) => {
+    const categoryData = dataMap[category] || { category, ongoing: 0, completed: 0 };
+    return categoryData;
   });
-   
 }
 
-export function CategoryWiseOpportunity({dateRange,selectedCompany,selectedPlant}: { dateRange?: DateRange,selectedCompany?: string,selectedPlant?: string }) {
+export function CategoryWiseOpportunity({
+  dateRange,
+  selectedCompany,
+  selectedPlant,
+}: {
+  dateRange?: DateRange;
+  selectedCompany?: string;
+  selectedPlant?: string;
+}) {
   const category = useQuery({
-    queryKey: ['category-wise-opportunity', dateRange,selectedCompany, selectedPlant],
+    queryKey: ['category-wise-opportunity', dateRange, selectedCompany, selectedPlant],
     queryFn: async () => {
       const match: any = {
         formatted_date: {
@@ -84,61 +92,53 @@ export function CategoryWiseOpportunity({dateRange,selectedCompany,selectedPlant
               $match: match,
             },
             {
-              "$group": {
-                "_id": {
-                  "category": "$category",
-                  "status": "$status"
+              $group: {
+                _id: {
+                  category: '$category',
+                  status: '$status',
                 },
-                "count": { "$sum": 1 }
-              }
+                count: { $sum: 1 },
+              },
             },
             {
-              "$project": {
-                "category": "$_id.category",
-                "status": "$_id.status",
-                "count": 1,
-                "_id": 0
-              }
+              $project: {
+                category: '$_id.category',
+                status: '$_id.status',
+                count: 1,
+                _id: 0,
+              },
             },
             {
-              "$group": {
-                "_id": "$category",
-                "completed": {
-                  "$sum": {
-                    "$cond": [
-                      { "$eq": ["$status", "Opportunity Completed"] },
-                      "$count",
-                      0
-                    ]
-                  }
+              $group: {
+                _id: '$category',
+                completed: {
+                  $sum: {
+                    $cond: [{ $eq: ['$status', 'Opportunity Completed'] }, '$count', 0],
+                  },
                 },
-                "ongoing": {
-                  "$sum": {
-                    "$cond": [
-                      { "$ne": ["$status", "Opportunity Completed"] },
-                      "$count",
-                      0
-                    ]
-                  }
-                }
-              }
+                ongoing: {
+                  $sum: {
+                    $cond: [{ $ne: ['$status', 'Opportunity Completed'] }, '$count', 0],
+                  },
+                },
+              },
             },
             {
-              "$project": {
-                "category": "$_id",
-                "completed": 1,
-                "ongoing": 1,
-                "_id": 0
-              }
-            }
-        ],
-      }).then((res) => {
-        if (!res.data.success) {
-          throw new Error(res.data.message);
-        }
-        return res.data.data.data;
-      });
-    
+              $project: {
+                category: '$_id',
+                completed: 1,
+                ongoing: 1,
+                _id: 0,
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data.data;
+        });
     },
   });
   return (
@@ -147,26 +147,39 @@ export function CategoryWiseOpportunity({dateRange,selectedCompany,selectedPlant
         <CardTitle>Category Wise Opportunities</CardTitle>
       </CardHeader>
       <CardContent>
-        {!category.isLoading ? <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={category.data ? generateCompleteCategoryData(category.data) : generateCompleteCategoryData([])}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dashed" />}
-            />
-            <Bar dataKey="ongoing" fill="var(--color-ongoing)" radius={4} />
-            <Bar dataKey="completed" fill="var(--color-completed)" radius={4} />
-          </BarChart>
-        </ChartContainer> : <Loading />}
+        {!category.isLoading ? (
+          <ChartContainer config={chartConfig} className=' h-[400px] w-full'>
+            <BarChart
+              accessibilityLayer
+              data={
+                category.data
+                  ? generateCompleteCategoryData(category.data)
+                  : generateCompleteCategoryData([])
+              }
+            >
+                              <CartesianGrid strokeDasharray="3 3" />
+
+              <XAxis
+                dataKey="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value}
+              />
+              <YAxis tickLine={false}
+                tickMargin={10}
+                type='number'
+                axisLine={false}
+                tickFormatter={(value) => value} />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+              <Bar dataKey="ongoing" fill="var(--color-ongoing)" radius={4} />
+              <Bar dataKey="completed" fill="var(--color-completed)" radius={4} />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <Loading />
+        )}
       </CardContent>
-    
     </Card>
-  )
+  );
 }

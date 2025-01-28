@@ -96,7 +96,7 @@ export const ProjectClousre = ({
             <ContentCard
               isReport={isReport}
               title={'Estimated Savings'}
-              value={`₹ ${formatToIndianNumber(projectClosure.estimated_savings)}`}
+              value={`Rs ${formatToIndianNumber(projectClosure.estimated_savings)}`}
               icon={<RiBox3Fill className="h-4 w-4" />}
             />
             <ContentCard

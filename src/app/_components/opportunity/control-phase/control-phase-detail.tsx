@@ -114,13 +114,13 @@ export const ControlPhase = ({contol,isReport = false} : {contol: any,isReport?:
           <ContentCard
           isReport={isReport}
             title={'Estimated'}
-            value={`₹ ${formatToIndianNumber(contol.control_cost.estimated)}`}
+            value={`Rs ${formatToIndianNumber(contol.control_cost.estimated)}`}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
           isReport={isReport}
             title={'Actual'}
-            value={`₹ ${formatToIndianNumber(contol.control_cost.actual)}`}
+            value={`Rs ${formatToIndianNumber(contol.control_cost.actual)}`}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard

@@ -16,9 +16,9 @@ import { categories } from '@/lib/data';
 import { calculateImpactScore, cn, opportunityCategories } from '@/lib/utils';
 import { opportunitySchema, OpportunitySchema } from '@/schema/opportunity';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueries } from '@tanstack/react-query';
+import { useMutation, useQueries } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
-import { Loader2, Paperclip } from 'lucide-react';
+import { AlertTriangle, Loader2, Paperclip } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { IndianNumberInput } from '@/components/indian-number-input';
@@ -31,6 +31,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { AutoComplete } from '@/components/ui/autocomplete';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CaretSortIcon } from '@radix-ui/react-icons';
+import { toast } from 'sonner';
 
 interface OpportunityFormProps {
   defaultValues?: Partial<OpportunitySchema>;
@@ -39,8 +43,8 @@ interface OpportunityFormProps {
   mode?: 'create' | 'update';
   file?: File[] | null;
   setFile?: React.Dispatch<React.SetStateAction<File[] | null>>;
-  projectLeader: string | undefined;
-  setProjectLeader: React.Dispatch<React.SetStateAction<string | undefined>>;
+  projectLeader: any | undefined;
+  setProjectLeader: React.Dispatch<React.SetStateAction<any | undefined>>;
 }
 
 export const OpportunityForm = ({
@@ -64,7 +68,37 @@ export const OpportunityForm = ({
   console.log(form.formState.errors);
   // Watch relevant form fields
 
-  const [company, department, plant, bussinessUnit, employee] = useQueries({
+  const employee = useMutation({
+    mutationKey: ['get-employee'],
+    mutationFn: async (search: string) => {
+      return await api
+        .post(`/employee/export`, {
+          filter: [
+            {
+              $match: {
+                $or: [
+                  { employee_id: { $regex: search, $options: 'i' } },
+                  { name: { $regex: search, $options: 'i' } },
+                ],
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) throw new Error(res.data.message);
+          return res.data.data.data;
+        });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {},
+  });
+
+
+  const [company, department, plant, bussinessUnit] = useQueries({
     queries: [
       {
         queryKey: ['get-company'],
@@ -130,32 +164,32 @@ export const OpportunityForm = ({
             });
         },
       },
-      {
-        queryKey: ['get-employee-by-role'],
-        queryFn: async (): Promise<any> => {
-          return await api
-            .post('/employee/export', {
-              filter: [
-                {
-                  $match: {
-                    role: {
-                      $in: ['project_leader', 'ci_head', 'ci_team', 'cs_head', 'lof', 'admin'],
-                    },
-                  },
-                },
-              ],
-            })
-            .then((res) => {
-              if (!res.data.success) {
-                throw new Error(res.data.message);
-              }
-              return res.data.data.data;
-            })
-            .catch((err) => {
-              throw err;
-            });
-        },
-      },
+      // {
+      //   queryKey: ['get-employee-by-role'],
+      //   queryFn: async (): Promise<any> => {
+      //     return await api
+      //       .post('/employee/export', {
+      //         filter: [
+      //           {
+      //             $match: {
+      //               role: {
+      //                 $in: ['project_leader', 'ci_head', 'ci_team', 'cs_head', 'lof', 'admin'],
+      //               },
+      //             },
+      //           },
+      //         ],
+      //       })
+      //       .then((res) => {
+      //         if (!res.data.success) {
+      //           throw new Error(res.data.message);
+      //         }
+      //         return res.data.data.data;
+      //       })
+      //       .catch((err) => {
+      //         throw err;
+      //       });
+      //   },
+      // },
     ],
   });
 
@@ -344,21 +378,40 @@ export const OpportunityForm = ({
             </div>
             <div className="col-span-2 flex flex-col gap-2">
                 <Label className="-mb-1 px-2">Project Leader</Label>
-              <Select value={projectLeader} onValueChange={(e) => setProjectLeader(e)} >
-                <SelectTrigger className="h-12  w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
-                  <SelectValue  />
-                  <SelectContent>
-                    <SelectGroup>
-                      {employee.data &&
-                        employee.data.map((i: any) => (
-                          <SelectItem key={i._id} value={i._id.$oid}>
-                            {i.employee_id} | {i.name} - ({i.designation && i.designation.split('-')[0]} - {i.department})
-                          </SelectItem>
-                        ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </SelectTrigger>
-              </Select>
+                 <Popover modal>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              role="combobox"
+              className={cn(
+                'flex h-12 items-center rounded-md border border-primary bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-[#099bab] focus-visible:ring-1 focus-visible:ring-[#099bab] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+              )}
+            >
+              {projectLeader ? projectLeader.label : ''}
+              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="h-full w-full bg-white">
+            <AutoComplete
+              options={
+                employee.data
+                  ? employee.data.map((i: any) => ({
+                      value: String(i._id.$oid),
+                      label: `${i.employee_id} | ${i.name} (${i.designation && i.designation.split('-')[0]} - ${i.department})`,
+                    }))
+                  : []
+              }
+              onSearch={async (e) => setTimeout(async () =>await employee.mutateAsync(e),1000)}
+              value={projectLeader}
+              emptyMessage="No Employee Found."
+              isLoading={employee.isPending}
+              onValueChange={(e : any) => {
+                setProjectLeader(e);
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+             
             </div>
             {
               <div className="col-span-2 flex flex-col gap-2">
@@ -370,12 +423,17 @@ export const OpportunityForm = ({
                   }}
                   dropzoneOptions={{
                     maxFiles: 1,
-                    maxSize: 1024 * 1024 * 1,
+                    maxSize: 1024 * 1024 * 5,
                     multiple: false,
                     accept: {
                       'image/png': ['.png'],
                       'image/jpg': ['.jpg'],
                       'image/jpeg': ['.jpeg'],
+                      'application/pdf': ['.pdf'],
+                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                        '.docx',
+                      ],
                     },
                   }}
                   className="relative rounded-lg bg-white p-2"
@@ -384,7 +442,7 @@ export const OpportunityForm = ({
                     <div className="flex w-full flex-col pb-2 pt-3">
                       <FileUploadText
                         label={'Browse File'}
-                        description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                        description="Max file size is 5MB,  Suitable files are  .jpg, .png, .jpeg, .pdf, .xlxs"
                       />
                     </div>
                   </FileInput>

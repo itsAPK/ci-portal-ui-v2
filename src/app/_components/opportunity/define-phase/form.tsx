@@ -188,7 +188,7 @@ export const DefinePhaseForm = ({
                <SelectField
                 control={form.control}
                 name="abnormalities"
-                label="21. Any abnormalities in the process audit?"
+                label="21. Any abnormality in the process audit?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
@@ -205,7 +205,7 @@ export const DefinePhaseForm = ({
                 <SelectField
                 control={form.control}
                 name="abnormalities_audited_tool_conditions"
-                label="23. Any abnormalities  audited the machine and tool condition?"
+                label="23. Any abnormalities audited the machine and tool condition?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },

@@ -76,7 +76,7 @@ const chartConfig = {
   },
   'green-belt': {
     label: 'Green Belt',
-    color: 'hsl(var(--chart-2))',
+    color: '#119b1d',
   },
  
 } satisfies ChartConfig;
@@ -178,8 +178,10 @@ export const CategoryWiseTrainingGraph = () => {
     return chartData.reduce((acc: any, curr: { count: any }) => acc + curr.count, 0);
   }, []);
   return (
-    <Card className="flex min-h-[420px] flex-col rounded-xl border-none shadow-none">
-    
+    <Card className="flex min-h-[420px] flex-col rounded-xl border-primary/50">
+     <CardHeader>
+        <CardTitle>Category wise Certified Belts</CardTitle>
+      </CardHeader>
       <CardContent className="flex-1 pb-0 pt-10">
         {!totalOpportunities.isLoading ? (
           <ChartContainer config={chartConfig} className="aspect-square max-h-[290px] w-full">
