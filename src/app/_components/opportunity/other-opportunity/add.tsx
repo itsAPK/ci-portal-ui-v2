@@ -61,20 +61,33 @@ export const AddOpportunity = () => {
       }
 
       if (file && file.length > 0) {
-        const formData = new FormData();
-        formData.append('file', file![0]);
-        await api
-          .post(`/opportunity/upload/${res.data._id}`, formData)
-          .then((res) => {
-            return res.data;
-          })
-          .then((res) => {
+        // Iterate over each file
+    
+          try {
+            const formData = new FormData();
+            file.forEach((f) => {
+              formData.append('files', f); // Use 'files' as the key for multiple files
+          });
+      
+            // Await the file upload API call
+            const r = await api.post(`/opportunity/upload/${res.data._id}`, formData);
+            
+            // Handle success response
             toast.success('Document uploaded successfully', {
               icon: <CheckCircle className="h-4 w-4" />,
             });
-            return res.data;
-          });
+      
+            // Optionally, handle the response data if needed
+            return r.data;
+      
+          } catch (error) {
+            // Handle error (file upload failed)
+            toast.error('Failed to upload document');
+            console.error("Error uploading file:", error);
+          }
+        
       }
+      
 
       return res;
     },
@@ -87,7 +100,7 @@ export const AddOpportunity = () => {
       toast.success('Opportunity Created successfully', {
         icon: <AlertTriangle className="h-4 w-4" />,
       });
-      setOpen(false);
+     setOpen(false);
       queryClient.refetchQueries({
         queryKey: ['get-other-opportunities'],
       });

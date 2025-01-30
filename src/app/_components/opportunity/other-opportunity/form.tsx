@@ -422,7 +422,7 @@ export const OpportunityForm = ({
                     setFile?.(file);
                   }}
                   dropzoneOptions={{
-                    maxFiles: 1,
+                    maxFiles: 10,
                     maxSize: 1024 * 1024 * 5,
                     multiple: false,
                     accept: {

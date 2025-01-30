@@ -218,17 +218,15 @@ export const Overview = ({
         />
       )}
       {opportunity.category !== 'Black Belt' && !isReport && (
-        <div className="py-4">
-          {' '}
-          <DocumentCard
-            documentName="Uploaded Document"
-            onDelete={() => {}}
-            bucket={opportunity.file}
-          />{' '}
+        <div className="py-4 grid grid-cols-4 gap-4">
+          {opportunity.file &&
+            opportunity.file.length > 0 &&
+            opportunity.file.map((file: any) => {
+              return <DocumentCard documentName={file.split('/')[file.split('/').length - 1]} onDelete={() => {}} bucket={file} />;
+            })}
         </div>
       )}
       {/* <ProjectSchedule isReport={isReport} /> */}
-     
     </div>
   );
 };

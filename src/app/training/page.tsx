@@ -18,7 +18,9 @@ function Page() {
             <div className="pt-2 text-base font-semibold">Certified Belts Details</div>
           </div>
           <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-1">
-            <div ><CategoryWiseTrainingGraph /></div>
+            <div>
+              <CategoryWiseTrainingGraph />
+            </div>
             <CompanyWiseBBGraph />
             <CompanyWiseGBGraph />
           </div>
