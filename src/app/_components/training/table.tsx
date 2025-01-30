@@ -59,7 +59,7 @@ export const TrainingTable = ({
       })),
     },
     {
-      label: 'Bussiness Unit',
+      label: 'Division',
       value: 'bussiness_unit',
     },
     {

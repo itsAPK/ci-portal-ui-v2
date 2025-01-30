@@ -36,7 +36,7 @@ import {
       },
       onSuccess: () => {
         setOpen(false);
-        toast.success('Bussiness Unit added successfully', {
+        toast.success('Division added successfully', {
           icon: <CheckCircle className="h-4 w-4" />,
         });
         queryClient.refetchQueries({
@@ -55,12 +55,12 @@ import {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button size={'sm'}>
-            <RiAddCircleFill className="mr-2 h-4 w-4" /> Add Bussiness Unit
+            <RiAddCircleFill className="mr-2 h-4 w-4" /> Add Division
           </Button>
         </DialogTrigger>
         <DialogContent className="min-w-xl   max-w-[425px] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add Bussiness Unit</DialogTitle>
+            <DialogTitle>Add Division</DialogTitle>
           </DialogHeader>
           <BussinessUnitForm onSubmit={handleSubmit} />
         </DialogContent>

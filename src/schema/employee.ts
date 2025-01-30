@@ -4,8 +4,6 @@ export const employeeSchema = z.object({
   employee_id: z.string(),
   name: z.string(),
   email: z.string(),
-  date_of_birth: z.string().optional(),
-  date_of_joining: z.string().optional(),
   grade: z.string(),
   role: z.string(),
   designation: z.string(),

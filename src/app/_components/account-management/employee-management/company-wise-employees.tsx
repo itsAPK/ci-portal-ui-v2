@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import api from "@/lib/api"
@@ -35,6 +35,9 @@ export function CompanyWiseEmployee() {
                   },
                 },
               },
+              {
+                "$sort": { "employee_count": -1 }
+              }
             
           ],
         })
@@ -48,9 +51,9 @@ export function CompanyWiseEmployee() {
   })
 
   return (
-    <Card className="border-primary/50">
+    <Card className="border-primary/50 mb-10">
       <CardHeader>
-        <CardTitle>Company Wise Employee</CardTitle>
+        <CardTitle>Company Wise Employees</CardTitle>
       </CardHeader>
       <CardContent>
         {!employeeQuery.isLoading ? (
@@ -63,7 +66,12 @@ export function CompanyWiseEmployee() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="_id" tickLine={false} tickMargin={10} axisLine={false} />
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-              <Bar dataKey="employee_count" fill="var(--color-employee_count)" radius={4} barSize={30} />
+              <Bar dataKey="employee_count" fill="var(--color-employee_count)" radius={4} barSize={30} ><LabelList
+                position="top"
+               
+                className="fill-foreground"
+                fontSize={12}
+              /></Bar>
             </BarChart>
           </ChartContainer>
         ) : (

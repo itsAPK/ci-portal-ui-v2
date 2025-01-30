@@ -144,18 +144,19 @@ export const ExportEmployee = () => {
             throw new Error(res.data.message);
           }
           const fetchedData = res.data.data.data;
-
+       
           if (key === 'sheet') {
             if (fetchedData.length > 0) {
               exportToExcel(
                 fetchedData.map((i: any) => {
+                  const division = i.bussiness_unit;
                   delete i.password;
                   delete i._id;
-
+                  delete i.bussiness_unit;
                   return {
                     ...i,
-                    date_of_birth: i.date_of_birth.$date,
-                    date_of_joining: i.date_of_joining.$date,
+                   
+                    division: division,
                   };
                 }),
                 'employee',
@@ -170,14 +171,12 @@ export const ExportEmployee = () => {
               [
                 { header: 'Employee Name', dataKey: 'name' },
                 { header: 'Employee ID', dataKey: 'employee_id' },
-                { header: 'Business Unit', dataKey: 'bussiness_unit' },
+                { header: 'Division', dataKey: 'bussiness_unit' },
                 { header: 'Plant', dataKey: 'plant' },
                 { header: 'Designation', dataKey: 'designation' },
                 { header: 'Department', dataKey: 'department' },
                 { header: 'Grade', dataKey: 'grade' },
                 { header: 'Working Location', dataKey: 'working_location' },
-                { header: 'Date of Joining', dataKey: 'date_of_joining' },
-                { header: 'Date of Birth', dataKey: 'date_of_birth' },
                 { header: 'Email', dataKey: 'email' },
               ],
               fetchedData.map((i: any) => {
@@ -186,8 +185,7 @@ export const ExportEmployee = () => {
 
                 return {
                   ...i,
-                  date_of_birth: i.date_of_birth.$date,
-                  date_of_joining: i.date_of_joining.$date,
+               
                 };
               }),
               'employees',
@@ -196,7 +194,7 @@ export const ExportEmployee = () => {
           return fetchedData;
         })
         .catch((err) => {
-          console.log(err.response.data.data);
+          console.log(err);
           throw err;
         });
     },

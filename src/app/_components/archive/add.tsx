@@ -28,6 +28,11 @@ import {
   FileUploaderItem,
   FileInput,
 } from '@/components/ui/file-upload';
+import { AutoComplete } from '@/components/ui/autocomplete';
+import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
+import { cn } from '@/lib/utils';
+import { CaretSortIcon } from '@radix-ui/react-icons';
+import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 
 export const AddArchive = () => {
   const [open, setOpen] = useState(false);
@@ -35,13 +40,14 @@ export const AddArchive = () => {
   const params = useSearchParams();
   const router = useRouter();
   const [file, setFile] = useState<File[] | null>([]);
+  const [employeeId, setEmployeeId] = useState<any>();
 
   const form = useForm<ArchiveSchema>({
     resolver: zodResolver(archiveSchema),
   });
 
   console.log(form.formState.errors);
-  const [company, department, plant, employee] = useQueries({
+  const [company, department, plant] = useQueries({
     queries: [
       {
         queryKey: ['get-company'],
@@ -91,32 +97,7 @@ export const AddArchive = () => {
             });
         },
       },
-      {
-        queryKey: ['get-employee-by-role'],
-        queryFn: async (): Promise<any> => {
-          return await api
-            .post('/employee/export', {
-              filter: [
-                {
-                  $match: {
-                    role: {
-                      $in: ['project_leader', 'ci_head', 'ci_team', 'cs_head', 'lof', 'admin'],
-                    },
-                  },
-                },
-              ],
-            })
-            .then((res) => {
-              if (!res.data.success) {
-                throw new Error(res.data.message);
-              }
-              return res.data.data.data;
-            })
-            .catch((err) => {
-              throw err;
-            });
-        },
-      },
+     
     ],
   });
 
@@ -157,6 +138,37 @@ export const AddArchive = () => {
   const onSubmit = async (data: ArchiveSchema) => {
     await addArchive.mutateAsync(data);
   };
+
+  const employee = useMutation({
+    mutationKey: ['get-employee'],
+    mutationFn: async (search: string) => {
+      return await api
+        .post(`/employee/export`, {
+          filter: [
+            {
+              $match: {
+                $or: [
+                  { employee_id: { $regex: search, $options: 'i' } },
+                  { name: { $regex: search, $options: 'i' } },
+                ],
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) throw new Error(res.data.message);
+          return res.data.data.data;
+        });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        icon: <AlertTriangle className="h-4 w-4" />,
+      });
+    },
+    onSuccess: () => {},
+  });
+
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -214,18 +226,52 @@ export const AddArchive = () => {
                   }
                 />
 
-                <SelectField
+              
+
+<FormField
                   control={form.control}
-                  name="project_leader"
-                  label="Project Leader"
-                  options={
-                    employee.data
-                      ? employee.data.map((i: any) => ({
-                          value: i._id.$oid,
-                          label: `${i.employee_id} - ${i.name}`,
-                        }))
-                      : []
-                  }
+                  name={'project_leader'}
+                  render={({ field }) => (
+                    <FormItem className="col-span-1">
+                      <FormLabel>Project Leader</FormLabel>
+                      <Popover modal>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <button
+                              type="button"
+                              role="combobox"
+                              className={cn(
+                                'flex h-12 w-full items-center rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-[#099bab] focus-visible:ring-1 focus-visible:ring-[#099bab] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                              )}
+                            >
+                              {employeeId ? employeeId.label : ''}
+                              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="h-full w-full bg-white">
+                          <AutoComplete
+                            options={
+                              employee.data
+                                ? employee.data.map((i: any) => ({
+                                    value: String(i._id.$oid),
+                                    label: `${i.employee_id} | ${i.name} | (${i.designation && i.designation.split('-')[0]} - ${i.department})`,
+                                  }))
+                                : []
+                            }
+                            onSearch={async (e) => await employee.mutateAsync(e)}
+                            value={employeeId}
+                            emptyMessage="No Employee Found."
+                            isLoading={employee.isPending}
+                            onValueChange={(e) => {
+                              setEmployeeId(e);
+                              field.onChange(e.value);
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>{' '}
+                    </FormItem>
+                  )}
                 />
 
                 <SelectField

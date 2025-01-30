@@ -50,7 +50,7 @@ export const EmployeeTable = ({
     },
     {
       value: 'bussiness_unit',
-      label: 'Business Unit',
+      label: 'Division',
     },
     {
       value: 'plant',

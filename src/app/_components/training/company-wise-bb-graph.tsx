@@ -1,6 +1,6 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   type ChartConfig,
@@ -42,6 +42,9 @@ export function CompanyWiseBBGraph() {
                 },
               },
             },
+            {
+              $sort: { count: -1 },
+            }
           ],
         })
         .then((res) => {
@@ -56,7 +59,7 @@ export function CompanyWiseBBGraph() {
   return (
     <Card className="border-primary/50">
       <CardHeader>
-        <CardTitle>Company Wise Black Belt Certified Belts</CardTitle>
+        <CardTitle>Company Wise Certified Black Belts</CardTitle>
       </CardHeader>
       <CardContent>
         {!beltsQuery.isLoading ? (
@@ -74,7 +77,13 @@ export function CompanyWiseBBGraph() {
                 fill="var(--color-count)"
                 radius={4}
                 barSize={30}
-              />
+              >
+                <LabelList
+                  position="top"
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
             </BarChart>
           </ChartContainer>
         ) : (

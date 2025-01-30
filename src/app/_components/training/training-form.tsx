@@ -141,8 +141,8 @@ export const TrainingForm = ({ onSubmit, defaultValues, mode = 'create' }: Train
           <FormFieldInput
             control={form.control}
             name="bussiness_unit"
-            label="Bussiness Unit"
-            placeholder="Enter Bussiness Unit"
+            label="Division"
+            placeholder="Enter Division"
             type="text"
             disabled
           />

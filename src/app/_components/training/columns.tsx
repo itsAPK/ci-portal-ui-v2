@@ -43,7 +43,7 @@ export const trainingColumns = (): ColumnDef<any>[] => {
           accessorKey: "bussiness_unit",
           header: ({ column }) => (
             <div className="text-xs flex  justify-center font-medium text-center ">
-              Bussiness Unit
+             Division
             </div>
           ),
         },

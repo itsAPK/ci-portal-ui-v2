@@ -39,7 +39,7 @@ function AddItem() {
               </TabsTrigger>
               {role === 'admin' && (
                 <TabsTrigger className="px-5" value="4">
-                  Employee Management
+                  Employees Management
                 </TabsTrigger>
               )}
             </TabsList>

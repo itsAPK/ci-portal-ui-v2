@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer ,LabelList} from 'recharts';
 import { Loading } from '@/components/ui/loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -58,6 +58,9 @@ export function TotalEmployees({
                 count: { $sum: 1 },
               },
             },
+            {
+              "$sort": { "count": -1 }
+            }
           ],
         })
         .then((res) => {
@@ -80,12 +83,14 @@ export function TotalEmployees({
 
   return (
     <Card className={cn('border-primary/50')}>
-      <CardHeader className="">{isDashboard && <CardTitle>Total Employees</CardTitle>}</CardHeader>
+      <CardHeader className="">{isDashboard && <CardTitle>Role Wise Employees</CardTitle>}</CardHeader>
       <CardContent>
         {!getEmployeesByRole.isLoading ? (
           <ChartContainer config={chartConfig} className="h-[200px]">
-            <ResponsiveContainer width="140%" height="100%">
-              <BarChart data={chartData} >
+            <ResponsiveContainer  height="100%">
+              <BarChart data={chartData} margin={{
+              top: 20,
+            }} >
                 <CartesianGrid strokeDasharray="4 4" />
                 <XAxis
                   dataKey="role"
@@ -97,7 +102,12 @@ export function TotalEmployees({
                 />
                
                 <ChartTooltip cursor={true} content={<ChartTooltipContent indicator="dashed" />} />
-                <Bar dataKey="total" fill="var(--color-total)" barSize={30} radius={4}  />
+                <Bar dataKey="total" fill="var(--color-total)" barSize={30} radius={4}  ><LabelList
+                position="top"
+               
+                className="fill-foreground"
+                fontSize={12}
+              /></Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

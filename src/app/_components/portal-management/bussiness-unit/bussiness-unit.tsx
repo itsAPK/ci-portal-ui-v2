@@ -74,7 +74,7 @@ export function BussinessUnit() {
     <div className="py-4">
       <Card className="min-h-[60vh] border-gray-500/20 bg-background pb-4">
         <div className="flex justify-between p-4">
-          <div className="pt-2 text-base font-semibold">Business Unit</div>
+          <div className="pt-2 text-base font-semibold">Division</div>
           {role === 'admin' && (
             <div className="flex gap-2 pt-1">
               <AddBussinessUnit />
@@ -82,7 +82,7 @@ export function BussinessUnit() {
                 onUpload={onUpload}
                 onDownloadSample={onDownloadSample}
                 triggerButtonText="Upload"
-                dialogTitle="Upload Bussiness Unit"
+                dialogTitle="Upload Division"
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
             </div>
@@ -107,7 +107,7 @@ export function BussinessUnit() {
             ) : (
               <div className="flex h-full items-center justify-center">
                 <div className="text-center">
-                  <p className="text-base font-semibold text-gray-500">No BussinessUnit found</p>
+                  <p className="text-base font-semibold text-gray-500">No Division found</p>
                 </div>
               </div>
             )}

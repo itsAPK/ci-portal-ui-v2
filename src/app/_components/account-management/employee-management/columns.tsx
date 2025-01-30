@@ -49,7 +49,7 @@ export const employeeColumns = (): ColumnDef<Employee>[] => {
     {
       accessorKey: 'bussiness_unit',
       header: ({ column }) => (
-        <div className="flex justify-center text-center text-xs font-medium  w-[100px]">Business Unit</div>
+        <div className="flex justify-center text-center text-xs font-medium  w-[100px]">Division</div>
       ),
     },
     {

@@ -156,8 +156,8 @@ export const EmployeeForm = ({ defaultValues, onSubmit, mode = 'add' }: Employee
               <SelectField
                 control={form.control}
                 name="bussiness_unit"
-                label="Bussiness Unit"
-                placeholder="Select Bussiness Unit"
+                label="Division"
+                placeholder="Select Division"
                 options={
                   bussinessUnit.data
                     ? bussinessUnit.data.map((i: any) => ({
@@ -218,7 +218,7 @@ export const EmployeeForm = ({ defaultValues, onSubmit, mode = 'add' }: Employee
               placeholder="Enter Working Location"
               className="col-span-1"
             />
-            <DatePickerWrapper
+            {/* <DatePickerWrapper
               control={form.control}
               name="date_of_birth"
               label="Date of Birth"
@@ -230,7 +230,7 @@ export const EmployeeForm = ({ defaultValues, onSubmit, mode = 'add' }: Employee
               name="date_of_joining"
               label="Date of Joining"
               placeholder="Pick Date of Joining"
-            />
+            /> */}
           </div>
           <div className="flex justify-center py-10">
             <Button type="submit" size="lg" className="w-[200px] gap-2">

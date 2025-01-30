@@ -186,14 +186,14 @@ export default function Employee() {
       <div className="py-4">
         <Card className="border-gray-500/20 bg-background">
           <div className="flex justify-between p-4">
-            <div className="pt-2 text-base font-semibold">Employee Management</div>
+            <div className="pt-2 text-base font-semibold">Employees Management</div>
           </div>
           <CardContent className="overflow-y-auto p-4 pt-0">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-              <div className="pb-8 col-span-5">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
+              <div className="pb-8">
                 <TotalEmployees isDashboard />
               </div>
-              <div className='col-span-7'>
+              <div className=''>
                 <CompanyWiseEmployee />
               </div>
             </div>

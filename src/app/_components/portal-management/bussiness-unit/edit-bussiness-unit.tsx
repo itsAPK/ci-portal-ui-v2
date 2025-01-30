@@ -63,7 +63,7 @@ export const EditBussinessUnit = ({data} : {data : BussinessUnit}) => {
       </DialogTrigger>
       <DialogContent className="min-w-xl max-w-[425px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Bussiness Unit</DialogTitle>
+          <DialogTitle>Edit Division</DialogTitle>
         </DialogHeader>
         <BussinessUnitForm onSubmit={handleSubmit} defaultValues={data} />
       </DialogContent>
