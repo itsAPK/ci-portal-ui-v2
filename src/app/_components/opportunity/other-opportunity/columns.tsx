@@ -48,7 +48,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
       accessorKey: 'bussiness_unit',
       header: ({ column }) => (
         <div className="flex w-[150px] justify-center text-center text-xs font-medium">
-          Business Unit
+          Division
         </div>
       ),
       cell: ({ cell }) => ((cell.getValue() as any) ? cell.getValue() : '---'),

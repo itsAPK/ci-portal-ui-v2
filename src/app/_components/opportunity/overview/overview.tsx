@@ -66,6 +66,12 @@ export const Overview = ({
             <ContentCard
               isReport={isReport}
               title={'Division'}
+              value={opportunity.bussiness_unit}
+              icon={<RiBuildingFill className="h-4 w-4" />}
+            />
+            <ContentCard
+              isReport={isReport}
+              title={'Plant'}
               value={opportunity.plant.name}
               icon={<RiBuildingFill className="h-4 w-4" />}
             />

@@ -224,7 +224,7 @@ export const OpportunityForm = ({
             <SelectField
               control={form.control}
               name="bussiness_unit"
-              label="Business Unit"
+              label="Division"
               disabled={mode === 'update' || role !== 'admin'}
               options={
                 bussinessUnit.data

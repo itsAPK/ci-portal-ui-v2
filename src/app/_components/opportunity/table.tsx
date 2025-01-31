@@ -48,6 +48,10 @@ export const OpportunityTable = ({
       value: 'plant',
     },
     {
+      label: 'Division',
+      value : 'division'
+    },
+    {
       label: 'Employee (PL) ID',
       value: 'employee_id',
     },

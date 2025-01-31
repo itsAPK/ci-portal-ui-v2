@@ -24,7 +24,7 @@ function PortalManagement() {
                 Company
               </TabsTrigger>
               <TabsTrigger className="px-5" value="2">
-                Bussiness Unit
+                Division
               </TabsTrigger>
               <TabsTrigger className="px-5" value="3">
                  Plant
