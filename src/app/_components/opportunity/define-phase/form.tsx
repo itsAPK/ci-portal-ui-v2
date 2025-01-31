@@ -49,9 +49,9 @@ export const DefinePhaseForm = ({
   });
   console.log(form.formState.errors);
   const [file, setFile] = useState<File[] | null>([]);
-  const [is_iso_plot, is_p_chart_done, is_conecentration,is_audited_tool_conditions,abnormalities] = useWatch({
+  const [is_iso_plot, is_p_chart_done, is_conecentration,abnormalities_audited_tool_conditions,abnormalities] = useWatch({
     control: form.control,
-    name: ['is_iso_plot', 'is_p_chart_done', 'is_conecentration','is_audited_tool_conditions','abnormalities'],
+    name: ['is_iso_plot', 'is_p_chart_done', 'is_conecentration','abnormalities_audited_tool_conditions','abnormalities'],
   });
   return (
     <FormWrapper form={form} onSubmit={form.handleSubmit(onSubmit)}>
@@ -552,7 +552,7 @@ export const DefinePhaseForm = ({
            )
          }
          {
-           is_audited_tool_conditions === 'Yes' && (
+           abnormalities_audited_tool_conditions === 'Yes' && (
             <div className="flex flex-col gap-2">
                <Label className="-mb-2 px-2">Quick Win of Audited Machine & Tool Conditions </Label>
                <FileUploader
