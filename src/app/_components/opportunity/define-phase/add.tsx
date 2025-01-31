@@ -54,7 +54,7 @@ export const AddDefinePhase = ({ opportunityId }: any) => {
         throw new Error('Please upload Pchart file');
       }
 
-      if (data.is_audited_tool_conditions === 'Yes' && (!quickWinForToolConditions[0] || quickWinForToolConditions[0].length === 0)) {
+      if (data.abnormalities_audited_tool_conditions === 'Yes' && (!quickWinForToolConditions[0] || quickWinForToolConditions[0].length === 0)) {
         throw new Error('Please upload Quick Win of Audited Machine & Tool Conditions file');
       }
 
