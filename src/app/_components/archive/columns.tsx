@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Archive } from "@/schema/archive";
 import { BASEURL } from "@/lib/api";
 import { DeleteArchive } from "./delete";
+import { getCookie } from "cookies-next";
 export const archiveColumns = (): ColumnDef<Archive>[] => {
     return [
       {
@@ -99,12 +100,13 @@ export const archiveColumns = (): ColumnDef<Archive>[] => {
         id: "actions",
         cell: function Cell({ row }) {
         const router = useRouter();
+        const role = getCookie('ci-portal.role');
           return (
             <div className="flex justify-center space-x-2 pl-2 pt-[3px]">
                <Button variant="edit" size={"sm"} className="text-xs gap-2" onClick={() => router.push(`${BASEURL}/files/download/${row.original.file_path}`)}>
            <RiDownload2Fill className="h-3 w-3" /> Download
                </Button>
-               <DeleteArchive id={row.original._id.$oid} />
+               {role === 'admin' && <DeleteArchive id={row.original._id.$oid} />}
               
             </div>
           );

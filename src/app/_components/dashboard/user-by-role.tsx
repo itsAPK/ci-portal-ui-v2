@@ -86,8 +86,8 @@ export function TotalEmployees({
       <CardHeader className="">{isDashboard && <CardTitle>Role Wise Employees</CardTitle>}</CardHeader>
       <CardContent>
         {!getEmployeesByRole.isLoading ? (
-          <ChartContainer config={chartConfig} className="h-[200px]">
-            <ResponsiveContainer  height="100%">
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <ResponsiveContainer  height="100%" width={'100%'}>
               <BarChart data={chartData} margin={{
               top: 20,
             }} >

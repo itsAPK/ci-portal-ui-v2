@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditTraining } from "./edit";
 import { DeleteTraining } from "./delete";
+import { getCookie } from "cookies-next";
 
 export const trainingColumns = (): ColumnDef<any>[] => {
     return [
@@ -111,11 +112,10 @@ export const trainingColumns = (): ColumnDef<any>[] => {
       {
         id: "actions",
         cell: function Cell({ row }) {
-        
+         const role = getCookie('vrkjobs.role')
           return (
             <div className="flex justify-center space-x-2 pl-2">
-              <EditTraining training={row.original} />
-               <DeleteTraining id={row.original._id.$oid} />
+              {role === 'admin' && <><EditTraining training={row.original} /><DeleteTraining id={row.original._id.$oid} /></>}
             </div>
           );
         },

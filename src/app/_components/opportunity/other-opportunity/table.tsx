@@ -123,7 +123,7 @@ export const OpportunityTable = ({
             }}
             className="h-8"
           />
-          {(role === 'admin' || role === 'ci_head') && (
+          {(role === 'admin' || role === 'ci_head' || role === 'ci_team') && (
             <>
               <AddOpportunity />
               <ExportOppurtunity />

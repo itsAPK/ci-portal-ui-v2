@@ -27,6 +27,7 @@ import { ExportTraining } from './export';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import { FileUploadDialog } from '@/components/file-upload-dialog';
+import { getCookie } from 'cookies-next';
 export const TrainingTable = ({
   data,
   pageCount,
@@ -129,7 +130,7 @@ export const TrainingTable = ({
 
   const queryClient = useQueryClient();
   const params = useSearchParams();
-
+  const role = getCookie('ci-portal.role');
   const upload = useMutation({
     mutationKey: ['upload-employee'],
     mutationFn: async (file: File) => {
@@ -177,17 +178,19 @@ export const TrainingTable = ({
           isServer
           refetchFn={refetchFn}
         >
-          <AddTraining />
-
-          <FileUploadDialog
-            onUpload={onUpload}
-            onDownloadSample={onDownloadSample}
-            triggerButtonText="Upload Certified Belts"
-            dialogTitle="Upload Certified Belts"
-            allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          />
-
-          <ExportTraining />
+          {role === 'admin' && (
+            <>
+              <AddTraining />
+              <FileUploadDialog
+                onUpload={onUpload}
+                onDownloadSample={onDownloadSample}
+                triggerButtonText="Upload Certified Belts"
+                dialogTitle="Upload Certified Belts"
+                allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              />
+              <ExportTraining />
+            </>
+          )}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

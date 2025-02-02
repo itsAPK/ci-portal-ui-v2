@@ -8,9 +8,14 @@ import { DataTableFilterField } from '@/types';
 import { DataTableAdvancedToolbar } from '@/components/data-table/toolbar';
 // import { AddTools } from './add-tools';
 import { getCookie } from 'cookies-next';
-import { QueryObserverResult, RefetchOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Employee } from '@/schema/employee';
-import {AddEmployee} from './add-employee'
+import { AddEmployee } from './add-employee';
 import { ExportEmployee } from './export';
 import { FileUploadDialog } from '@/components/file-upload-dialog';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -39,10 +44,12 @@ export const EmployeeTable = ({
     {
       value: 'role',
       label: 'Role',
-      options: ['Admin', 'Employee', 'Project Leader', 'HOD', 'LOF', 'CI Head', 'CI Team'].map((i: any) => ({
-        value: i.replace(' ', '_').toLowerCase(),
-        label: i,
-      })),
+      options: ['Admin', 'Employee', 'Project Leader', 'HOD', 'LOF', 'CI Head', 'CI Team'].map(
+        (i: any) => ({
+          value: i.replace(' ', '_').toLowerCase(),
+          label: i,
+        }),
+      ),
     },
     {
       value: 'company',
@@ -91,17 +98,15 @@ export const EmployeeTable = ({
   const role = getCookie('ci-portal.role');
 
   const upload = useMutation({
-    mutationKey : ['upload-employee'],
+    mutationKey: ['upload-employee'],
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await api.post(
-        '/employee/upload',formData,{
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
+      const response = await api.post('/employee/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     },
     onError: (error: any) => {
@@ -110,7 +115,6 @@ export const EmployeeTable = ({
       });
     },
     onSuccess: () => {
-      
       toast.success('Upload is in progress. It will take sometime', {
         icon: <CheckCircle className="h-4 w-4" />,
       });
@@ -119,31 +123,42 @@ export const EmployeeTable = ({
       });
       router.push(`${pathname}?${params.toString()}`);
       router.refresh();
-
     },
-  })
+  });
 
   const onUpload = async (file: File) => {
     const { data } = await upload.mutateAsync(file);
     console.log(data);
-  }
+  };
 
   const onDownloadSample = () => {
-     router.push(`${process.env.NEXT_PUBLIC_EMPLOYEE_TEMPLATE_URL}`);
-  }
+    router.push(`${process.env.NEXT_PUBLIC_EMPLOYEE_TEMPLATE_URL}`);
+  };
 
   return (
     <Shell className="w-full gap-2">
-      <DataTable table={table}  pagination={true} isServer refetchFn={refetch}>
+      <DataTable table={table} pagination={true} isServer refetchFn={refetch}>
         <DataTableAdvancedToolbar
           table={table}
           filterFields={filterFields}
           isServer
           refetchFn={refetch}
         >
-          <FileUploadDialog onUpload={onUpload} onDownloadSample={onDownloadSample} triggerButtonText="Upload" dialogTitle="Upload Employee" allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-          <AddEmployee/>
-          <ExportEmployee/>
+          {role === 'admin' && (
+            <>
+              <FileUploadDialog
+                onUpload={onUpload}
+                onDownloadSample={onDownloadSample}
+                triggerButtonText="Upload"
+                dialogTitle="Upload Employee"
+                allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              />
+              <AddEmployee />
+            </>
+          )}
+          {role && ['admin', 'ci_head', 'ci_team', 'hod', 'lof'].includes(role.toString()) && (
+            <ExportEmployee />
+          )}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>
