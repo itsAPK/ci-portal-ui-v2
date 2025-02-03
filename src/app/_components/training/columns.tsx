@@ -112,7 +112,7 @@ export const trainingColumns = (): ColumnDef<any>[] => {
       {
         id: "actions",
         cell: function Cell({ row }) {
-         const role = getCookie('vrkjobs.role')
+         const role = getCookie('ci-portal.role')
           return (
             <div className="flex justify-center space-x-2 pl-2">
               {role === 'admin' && <><EditTraining training={row.original} /><DeleteTraining id={row.original._id.$oid} /></>}
