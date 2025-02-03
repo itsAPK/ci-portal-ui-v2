@@ -16,6 +16,8 @@ import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { AddTemplate } from './add';
 import { getCookie } from 'cookies-next';
 import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
+import { DeleteButton } from '@/components/delete-all-button';
+import { toast } from 'sonner';
 
 export const DocumentTable = ({
   data,
@@ -32,7 +34,7 @@ export const DocumentTable = ({
     columns,
     pageCount,
     enableAdvancedFilter: false,
-    
+
     defaultPerPage: 50,
   });
 
@@ -49,8 +51,19 @@ export const DocumentTable = ({
   return (
     <Shell className="w-full gap-2">
       <DataTable table={table} size={'w-full'} pagination={false} isServer refetchFn={refetchFn}>
-        <DataTableAdvancedToolbar table={table }  isServer refetchFn={refetchFn}>
-          {role === 'admin' && <AddTemplate />}
+        <DataTableAdvancedToolbar table={table} isServer refetchFn={refetchFn}>
+          {role === 'admin' && (
+            <>
+              <AddTemplate />
+              <DeleteButton
+                title="Delete Template"
+                deleteUrl="/documents/earse-all"
+                onDeleteSuccess={() => {
+                  toast.success('Templates Deleted Successfully');
+                }}
+              />
+            </>
+          )}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

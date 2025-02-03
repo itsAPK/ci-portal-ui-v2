@@ -28,6 +28,7 @@ import api from '@/lib/api';
 import { toast } from 'sonner';
 import { FileUploadDialog } from '@/components/file-upload-dialog';
 import { getCookie } from 'cookies-next';
+import { DeleteButton } from '@/components/delete-all-button';
 export const TrainingTable = ({
   data,
   pageCount,
@@ -130,7 +131,7 @@ export const TrainingTable = ({
 
   const queryClient = useQueryClient();
   const params = useSearchParams();
-  const role = getCookie('ci-portal.role');
+  const role : any = getCookie('ci-portal.role');
   const upload = useMutation({
     mutationKey: ['upload-employee'],
     mutationFn: async (file: File) => {
@@ -169,6 +170,11 @@ export const TrainingTable = ({
     router.push(`${process.env.NEXT_PUBLIC_TRAINING_TEMPLATE_URL}`);
   };
 
+  const onDeleteSuccess = () => {
+    toast.success('All trainings deleted successfully');
+    refetchFn();
+  };
+
   return (
     <Shell className="w-full gap-2">
       <DataTable table={table} size={'140%'} pagination={true} isServer refetchFn={refetchFn}>
@@ -188,9 +194,12 @@ export const TrainingTable = ({
                 dialogTitle="Upload Certified Belts"
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
-              <ExportTraining />
+              <DeleteButton title="Delete Certified Belts" deleteUrl="/training/erase-all" onDeleteSuccess={onDeleteSuccess} />
             </>
           )}
+          {
+            ['admin', 'ci_team', 'ci_head','hod','lof'].includes(role) && <ExportTraining />
+          }
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

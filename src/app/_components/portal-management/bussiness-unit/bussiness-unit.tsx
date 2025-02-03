@@ -13,6 +13,7 @@ import { AddBussinessUnit } from './add-bussiness-unit';
 import { EditBussinessUnit } from './edit-bussiness-unit';
 import { DeleteBussinessUnit } from './delete-bussiness-unit';
 import { getCookie } from 'cookies-next';
+import { DeleteButton } from '@/components/delete-all-button';
 
 export function BussinessUnit() {
   const queryClient = useQueryClient();
@@ -70,6 +71,10 @@ export function BussinessUnit() {
   const onDownloadSample = () => {
     router.push(`${process.env.NEXT_PUBLIC_BUSSINESS_UNIT_TEMPLATE_URL}`);
   };
+
+  const onDeleteSuccess = () => {
+    toast.success("All Divisions Deleted Successfully")
+  }
   return (
     <div className="py-4">
       <Card className="min-h-[60vh] border-gray-500/20 bg-background pb-4">
@@ -85,6 +90,8 @@ export function BussinessUnit() {
                 dialogTitle="Upload Division"
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
+            <DeleteButton title="Delete Division" deleteUrl="/division/erase-all" onDeleteSuccess={onDeleteSuccess} />
+              
             </div>
           )}
         </div>

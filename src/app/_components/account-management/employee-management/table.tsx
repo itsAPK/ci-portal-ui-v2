@@ -22,6 +22,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
+import { DeleteButton } from '@/components/delete-all-button';
 
 export const EmployeeTable = ({
   data,
@@ -135,6 +136,10 @@ export const EmployeeTable = ({
     router.push(`${process.env.NEXT_PUBLIC_EMPLOYEE_TEMPLATE_URL}`);
   };
 
+  const onDeleteSuccess = () => {
+    toast.success('Employees deleted successfully');
+  };
+
   return (
     <Shell className="w-full gap-2">
       <DataTable table={table} pagination={true} isServer refetchFn={refetch}>
@@ -154,6 +159,11 @@ export const EmployeeTable = ({
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
               <AddEmployee />
+              <DeleteButton
+                title="Delete Employees"
+                deleteUrl="/employee/erase-all"
+                onDeleteSuccess={onDeleteSuccess}
+              />
             </>
           )}
           {role && ['admin', 'ci_head', 'ci_team', 'hod', 'lof'].includes(role.toString()) && (

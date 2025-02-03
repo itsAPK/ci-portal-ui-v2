@@ -14,6 +14,8 @@ import { getCookie } from 'cookies-next';
 import { categories } from '@/lib/data';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { Tools } from '@/schema/tools';
+import { DeleteButton } from '@/components/delete-all-button';
+import { toast } from 'sonner';
 
 export const ToolsTable = ({
   data,
@@ -60,12 +62,29 @@ export const ToolsTable = ({
 
   const role = getCookie('ci-portal.role');
 
-
+  const onDeleteSuccess = () => {
+    toast.success('Tools deleted successfully');
+  };
   return (
     <Shell className="w-full gap-2">
       <DataTable table={table} size={'w-full'} pagination={true} isServer refetchFn={refetch}>
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields} isServer refetchFn={refetch}>
-          {role === 'admin' && <AddTools />}
+        <DataTableAdvancedToolbar
+          table={table}
+          filterFields={filterFields}
+          isServer
+          refetchFn={refetch}
+        >
+          {role === 'admin' && (
+            <>
+              {' '}
+              <AddTools />{' '}
+              <DeleteButton
+                title="Delete Tools"
+                deleteUrl="/tools/erase-all"
+                onDeleteSuccess={onDeleteSuccess}
+              />
+            </>
+          )}
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

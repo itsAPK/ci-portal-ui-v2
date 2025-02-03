@@ -12,6 +12,7 @@ import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getCookie } from 'cookies-next';
+import { DeleteButton } from '@/components/delete-all-button';
 export function Plant() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -68,6 +69,11 @@ export function Plant() {
   const onDownloadSample = () => {
     router.push(`${process.env.NEXT_PUBLIC_PLANT_TEMPLATE_URL}`);
   };
+
+  const onDeleteSuccess = () => {
+    toast.success('Plant deleted successfully');
+    queryClient.invalidateQueries();
+  };
   return (
     <div className="py-4">
       <Card className="min-h-[60vh] border-gray-500/20 bg-background pb-4">
@@ -83,6 +89,8 @@ export function Plant() {
                 dialogTitle="Upload Plant"
                 allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
+              <DeleteButton title="Delete Plants" deleteUrl="/plant/erase-all" onDeleteSuccess={onDeleteSuccess} />
+              
             </div>
           )}
         </div>

@@ -12,6 +12,7 @@ import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { useRouter }  from 'next/navigation';
 import { toast } from 'sonner';
 import { getCookie } from 'cookies-next';
+import { DeleteButton } from '@/components/delete-all-button';
 
 export function Department() {
   const queryClient = useQueryClient();
@@ -69,6 +70,13 @@ export function Department() {
   const onDownloadSample = () => {
     router.push(`${process.env.NEXT_PUBLIC_DEPARTMENT_TEMPLATE_URL}`);
   };
+
+
+  const onDeleteSuccess = () => {
+    toast.success('Department deleted successfully');
+    queryClient.invalidateQueries();
+  };
+
   return (
     <div className="py-4">
       <Card className="min-h-[60vh] border-gray-500/20 bg-background">
@@ -83,6 +91,8 @@ export function Department() {
               dialogTitle="Upload Department"
               allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             />
+                      <DeleteButton title="Delete Departments" deleteUrl="/department/erase-all" onDeleteSuccess={onDeleteSuccess} />
+            
           </div>}
         </div>
         {!department.isLoading ? (

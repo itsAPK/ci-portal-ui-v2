@@ -12,6 +12,7 @@ import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { useRouter }  from 'next/navigation';
 import { toast } from 'sonner';
 import { getCookie } from 'cookies-next';
+import { DeleteButton } from '@/components/delete-all-button';
 
 export function Company() {
   const role = getCookie('ci-portal.role');
@@ -69,6 +70,10 @@ export function Company() {
   const onDownloadSample = () => {
     router.push(`${process.env.NEXT_PUBLIC_COMPANY_TEMPLATE_URL}`);
   };
+
+  const onDeleteSuccess = () => {
+    toast.success("All Companies Deleted Successfully")
+  }
   return (
     <div className="py-4">
       <Card className="min-h-[60vh] border-gray-500/20 bg-background pb-4">
@@ -83,6 +88,8 @@ export function Company() {
               dialogTitle="Upload Company"
               allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             />
+          <DeleteButton title="Delete Company" deleteUrl="/company/erase-all" onDeleteSuccess={onDeleteSuccess} />
+            
           </div>}
         </div>
         {!company.isLoading ? (
