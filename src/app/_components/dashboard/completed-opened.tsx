@@ -147,7 +147,7 @@ export function CompletedVsOpened({
 
   console.log(totalData.data);
   return (
-    <Card className="border-primary/50">
+    <Card className="h-[350px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
       <CardHeader>
         <CardTitle>Total Project Completed vs Ongoing</CardTitle>
       </CardHeader>
