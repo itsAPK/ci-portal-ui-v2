@@ -148,7 +148,7 @@ export function CategoryWiseOpportunity({
       </CardHeader>
       <CardContent>
         {!category.isLoading ? (
-          <ChartContainer config={chartConfig} className=' h-[400px] w-full'>
+          <ChartContainer config={chartConfig} className=' h-[200px] w-full'>
             <BarChart
               accessibilityLayer
               data={
@@ -172,8 +172,8 @@ export function CategoryWiseOpportunity({
                 axisLine={false}
                 tickFormatter={(value) => value} />
               <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
-              <Bar dataKey="ongoing" fill="var(--color-ongoing)" radius={4} />
-              <Bar dataKey="completed" fill="var(--color-completed)" radius={4} />
+              <Bar dataKey="ongoing" fill="var(--color-ongoing)" radius={4} barSize={30} />
+              <Bar dataKey="completed" fill="var(--color-completed)" radius={4}  barSize={30} />
             </BarChart>
           </ChartContainer>
         ) : (

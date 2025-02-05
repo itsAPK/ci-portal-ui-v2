@@ -11,6 +11,7 @@ import {
   UsersRound,
   WalletCardsIcon,
 } from 'lucide-react';
+import { RiMoneyRupeeCircleFill,RiFileMarkedFill, RiDownload2Fill } from '@remixicon/react';
 import { ContentLayout } from '@/components/content-layout';
 import api from '@/lib/api';
 import { toast } from 'sonner';
@@ -25,7 +26,7 @@ import { CategoryWiseOpportunity } from './_components/dashboard/category-wise-o
 import { TotalEmployees } from './_components/dashboard/user-by-role';
 import { EstimatedSavingsOpportunities } from './_components/dashboard/estimated-savings';
 import { TopEmployees } from './_components/dashboard/top-employess';
-import React from 'react';
+import React, { useRef } from 'react';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { withAuth } from '@/hooks/use-auth';
@@ -40,6 +41,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RiCloseCircleFill } from '@remixicon/react';
+import { PDFExport, savePDF } from '@progress/kendo-react-pdf';
 
 function Page() {
   const [date, setDate] = React.useState<DateRange>({
@@ -108,6 +110,11 @@ function Page() {
                     $count: 'totalOngoing',
                   },
                 ],
+                totalOpportunites : [
+                  {
+                    "$count": "total_opportunities"
+                  }
+                ],
                 totalCompleted: [
                   {
                     $match: {
@@ -162,6 +169,9 @@ function Page() {
                 totalEstimatedSavings: {
                   $arrayElemAt: ['$totalEstimatedSavings.total_estimated', 0],
                 },
+                totalOpportunites: {
+                  $arrayElemAt: ['$totalOpportunites.total_opportunities', 0],
+                },
               },
             },
 
@@ -172,6 +182,71 @@ function Page() {
                 totalOpenForAssign: { $ifNull: ['$totalOpenForAssign', 0] },
                 totalProjectClosure: { $ifNull: ['$totalProjectClosure', 0] },
                 totalEstimatedSavings: { $ifNull: ['$totalEstimatedSavings', 0] },
+                totalOpportunites: { $ifNull: ['$totalOpportunites', 0] },
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data.data;
+        });
+    },
+  });
+
+  const totalMonthlySavings = useQuery({
+    queryKey: ['total-monthly-savings-dashboard'],
+    queryFn: async () => {
+      const match: any = {
+        formatted_date: {
+          ...(date?.from && { $gte: new Date(date.from) }),
+          ...(date?.to && { $lte: new Date(date.to) }),
+        },
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
+
+      return await api
+        .post(`/opportunity/export`, {
+          filter: [
+            {
+              $addFields: {
+                formatted_date: {
+                  $dateToString: {
+                    format: '%Y-%m-%d',
+                    date: '$created_at',
+                  },
+                },
+              },
+            },
+            {
+              $unwind: '$monthly_savings',
+            },
+            {
+              $match: { ...match, 'monthly_savings.is_approved': true },
+            },
+
+            {
+              $project: {
+                savings_int: {
+                  $toInt: {
+                    $replaceAll: {
+                      input: '$monthly_savings.savings',
+                      find: ',',
+                      replacement: '',
+                    },
+                  },
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                total_approved_savings: {
+                  $sum: '$savings_int',
+                },
               },
             },
           ],
@@ -249,6 +324,18 @@ function Page() {
     },
   });
 
+    const container = useRef<HTMLDivElement>(null);
+  const pdfExportComponent = useRef<PDFExport>(null);
+  const exportPDFWithMethod = () => {
+    let element = container.current || document.body;
+    savePDF(element, {
+      paperSize: 'auto',
+      margin: 40,
+      fileName: `CI-Portal-Report-${new Date().toISOString().slice(0, 10)}`,
+    });
+  };
+
+
   const queryClient = useQueryClient();
   console.log(totalEmployee.data);
   return (
@@ -264,6 +351,7 @@ function Page() {
                 setTimeout(() => {
                   totalData.refetch();
                   totalEmployee.refetch();
+                  totalMonthlySavings.refetch()
                   queryClient.refetchQueries({
                     queryKey: [
                       'total-opportunities',
@@ -311,6 +399,8 @@ function Page() {
                 setTimeout(() => {
                   totalData.refetch();
                   totalEmployee.refetch();
+                  totalMonthlySavings.refetch()
+
                   queryClient.refetchQueries({
                     queryKey: [
                       'total-opportunities',
@@ -370,6 +460,8 @@ function Page() {
                   setTimeout(() => {
                     totalData.refetch();
                     totalEmployee.refetch();
+                    totalMonthlySavings.refetch()
+
                     queryClient.refetchQueries({
                       queryKey: [
                         'total-opportunities',
@@ -404,53 +496,69 @@ function Page() {
             </div>
             <div>
               {(selectedPlant || selectedCompany) && (
-                <Button variant="destructive" size="sm" className="gap-2" onClick={() => {
-                  setSelectedCompany('');
-                  setSelectedPlant('');
-                  setTimeout(() => {
-                    totalData.refetch();
-                    totalEmployee.refetch();
-                    queryClient.refetchQueries({
-                      queryKey: [
-                        'total-opportunities',
-                        date,
-                        selectedPlant,
-                        selectedCompany,
-                        'top-estimated-savings',
-                        date,
-                        selectedPlant,
-                        selectedCompany,
-                        'category-wise-opportunity',
-                        date,
-                        selectedPlant,
-                        selectedCompany,
-                        'estimated-savings',
-                        date,
-                        selectedPlant,
-                        selectedCompany,
-                        'top-employees',
-                        date,
-                        selectedPlant,
-                        selectedCompany,
-                        'completed-vs-ongoing',
-                        selectedCompany,
-                        selectedPlant,
-                      ],
-                    });
-                  }, 1000);
-
-                }}>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => {
+                    setSelectedCompany('');
+                    setSelectedPlant('');
+                    setTimeout(() => {
+                      totalData.refetch();
+                      totalEmployee.refetch();
+                      queryClient.refetchQueries({
+                        queryKey: [
+                          'total-opportunities',
+                          date,
+                          selectedPlant,
+                          selectedCompany,
+                          'top-estimated-savings',
+                          date,
+                          selectedPlant,
+                          selectedCompany,
+                          'category-wise-opportunity',
+                          date,
+                          selectedPlant,
+                          selectedCompany,
+                          'estimated-savings',
+                          date,
+                          selectedPlant,
+                          selectedCompany,
+                          'top-employees',
+                          date,
+                          selectedPlant,
+                          selectedCompany,
+                          'completed-vs-ongoing',
+                          selectedCompany,
+                          selectedPlant,
+                        ],
+                      });
+                    }, 1000);
+                  }}
+                >
                   <RiCloseCircleFill className="h-4 w-4" /> Clear
                 </Button>
               )}
             </div>
+           
           </div>
         </div>
-        <div className="mt-4 flex min-h-[80vh] items-center justify-center">
+       
+        <div className="mt-4 flex min-h-[80vh] items-center justify-center" >
           <div className="grid grid-cols-1 gap-6 md:grid-cols-12 lg:px-0">
             <div className="col-span-12 flex justify-end pb-3 md:hidden"></div>
             <div className="col-span-12 md:col-span-8">
               <div className="flex w-full grid-cols-1 flex-col gap-5 px-4 md:grid md:grid-cols-2">
+              <CountCard
+                  icon={<RiFileMarkedFill className="h-7 w-7 text-fuchsia-600" />}
+                  name={'Total Projects '}
+                  color="bg-fuchsia-600/10"
+                  count={
+                    totalData.data && totalData.data.length > 0
+                      ? formatToIndianNumber(totalData.data[0].totalOpportunites)
+                      : 0
+                  }
+                />
                 <CountCard
                   icon={<FileBoxIcon className="h-7 w-7 text-purple-500" />}
                   name={' Projects Completed'}
@@ -473,7 +581,7 @@ function Page() {
                 />
                 <CountCard
                   icon={<BoxesIcon className="h-7 w-7 text-orange-600" />}
-                  name={'Projects Waiting for Closure.'}
+                  name={'Projects Waiting for Closure'}
                   color="bg-orange-600/10"
                   count={
                     totalData.data && totalData.data.length > 0
@@ -491,12 +599,7 @@ function Page() {
                       : 0
                   }
                 />
-                <CountCard
-                  icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
-                  name={'Total Savings'}
-                  color="bg-red-600/10"
-                  count={`Rs ${totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalEstimatedSavings) : 0}`}
-                />
+              
                 <CountCard
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
                   name={'Total Employees'}
@@ -507,6 +610,7 @@ function Page() {
                       : 0
                   }
                 />
+               
               </div>
             </div>
             <div className="md:col-span-4">
@@ -516,6 +620,26 @@ function Page() {
                 selectedPlant={selectedPlant}
               />
             </div>
+            <div className="col-span-6 px-4">
+            <CountCard
+                  icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
+                  name={'Total Estimated Savings'}
+                  color="bg-red-600/10"
+                  count={`Rs ${totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalEstimatedSavings) : 0}`}
+                />
+              </div>
+            <div className="col-span-6">
+                   <CountCard
+                  icon={<RiMoneyRupeeCircleFill className="h-7 w-7 text-green-600" />}
+                  name={'Total Black Belt Approved Savings'}
+                  color="bg-green-600/10"
+                
+                  count={
+                    `Rs ${totalMonthlySavings.data  && totalMonthlySavings.data.length > 0
+                      ? formatToIndianNumber(totalMonthlySavings.data[0].total_approved_savings ?? 0)
+                      : 0}`
+                  }
+                /></div>
             <div className="pl-3 md:col-span-6">
               <CompletedVsOpened selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
             </div>
@@ -526,7 +650,7 @@ function Page() {
                 selectedPlant={selectedPlant}
               />
             </div>
-            <div className="md:col-span-12 px-4">
+            <div className="px-4 md:col-span-12">
               <CategoryWiseOpportunity
                 dateRange={date}
                 selectedPlant={selectedPlant}
@@ -536,7 +660,7 @@ function Page() {
             {/* <div className="md:col-span-6">
               <TotalEmployees selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
             </div> */}
-            <div className="md:col-span-6">
+            <div className="md:col-span-6 px-4">
               <EstimatedSavingsOpportunities
                 dateRange={date}
                 selectedCompany={selectedCompany}

@@ -1,87 +1,101 @@
-'use client';
+"use client"
 
-import * as React from 'react';
-import { Label, Pie, PieChart } from 'recharts';
+import * as React from "react"
+import { Label, Pie, PieChart } from "recharts"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart';
-import api from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
-import { Loading } from '@/components/ui/loading';
-import { DateRange } from 'react-day-picker';
+} from "@/components/ui/chart"
+import api from "@/lib/api"
+import { useQuery } from "@tanstack/react-query"
+import { Loading } from "@/components/ui/loading"
+import type { DateRange } from "react-day-picker"
 
 const chartConfig = {
-  count: {
-    label: 'Opportunities',
+  total_estimated_savings: {
+    label: "Estimated Savings",
   },
-  opened: {
-    label: 'Opened',
-    color: 'hsl(var(--chart-1))',
+  "black-belt": {
+    label: "Black Belt",
+    color: "#393939ff",
   },
-  completed: {
-    label: 'Completed',
-    color: 'hsl(var(--chart-2))',
+  "green-belt": {
+    label: "Green Belt",
+    color: "#119b1d",
   },
-  waiting_for_closuer: {
-    label: 'Waiting for Closuer',
-    color: 'hsl(var(--destructive))',
+  sitg: {
+    label: "SITG",
+    color: "hsl(var(--chart-1))",
   },
-  ongoing: {
-    label: 'Ongoing',
-    color: 'hsl(var(--chart-4))',
+  kaizen: {
+    label: "Kaizen",
+    color: "hsl(var(--destructive))",
   },
-} satisfies ChartConfig;
+  "poka-yoke": {
+    label: "Poka-Yoke",
+    color: "hsl(var(--chart-3))",
+  },
+  "3m": {
+    label: "3M",
+    color: "hsl(var(--chart-4))",
+  },
+  smed: {
+    label: "SMED",
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig
 
 export const OverallReport = ({
   dateRange,
   selectedCompany,
   selectedPlant,
 }: {
-  dateRange?: DateRange;
-  selectedCompany?: string;
-  selectedPlant?: string;
+  dateRange?: DateRange
+  selectedCompany?: string
+  selectedPlant?: string
 }) => {
   const chartData: any = [
     {
-      status: 'opened',
+      status: "opened",
       count: 33,
-      fill: 'var(--color-opened)',
+      fill: "var(--color-opened)",
     },
     {
-      status: 'completed',
+      status: "completed",
       count: 33,
-      fill: 'var(--color-completed)',
+      fill: "var(--color-completed)",
     },
     {
-      status: 'ongoing',
+      status: "ongoing",
       count: 54,
-      fill: 'var(--color-ongoing)',
+      fill: "var(--color-ongoing)",
     },
     {
-      status: 'waiting_for_closuer',
+      status: "waiting_for_closuer",
       count: 22,
-      fill: 'var(--color-waiting_for_closuer)',
+      fill: "var(--color-waiting_for_closuer)",
     },
-  ];
+  ]
+
+
 
   const totalOpportunities = useQuery({
-    queryKey: ['total-opportunities', dateRange, selectedCompany, selectedPlant],
+    queryKey: ["estimated-savings-by-categroy", dateRange, selectedCompany, selectedPlant],
     queryFn: async () => {
       const match: any = {
         formatted_date: {
           ...(dateRange?.from && { $gte: new Date(dateRange.from) }),
           ...(dateRange?.to && { $lte: new Date(dateRange.to) }),
         },
-        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
-        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
-      };
+        ...(selectedPlant && { "plant.name": { $regex: selectedPlant, $options: "i" } }),
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: "i" } }),
+      }
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -99,103 +113,31 @@ export const OverallReport = ({
               $match: match,
             },
             {
-              $facet: {
-                totalOngoing: [
-                  {
-                    $match: {
-                      status: {
-                        $nin: [
-                          'Open for Assigning',
-                          'Project Closure Pending (CIHead)',
-                          'Project Closure Pending (HOD)',
-                          'Project Closure Pending (Costing Head)',
-                          'Project Closure Pending (LOF)',
-                          'Opportunity Completed',
-                        ],
-                      },
-                    },
-                  },
-                  {
-                    $count: 'totalOngoing',
-                  },
-                ],
-                totalCompleted: [
-                  {
-                    $match: {
-                      status: 'Opportunity Completed',
-                    },
-                  },
-                  {
-                    $count: 'totalCompleted',
-                  },
-                ],
-                totalOpenForAssign: [
-                  {
-                    $match: {
-                      status: 'Open for Assigning',
-                    },
-                  },
-                  {
-                    $count: 'totalOpenForAssign',
-                  },
-                ],
-                totalProjectClosure: [
-                  {
-                    $match: {
-                      status: {
-                        $in: [
-                          'Project Closure Pending (CIHead)',
-                          'Project Closure Pending (HOD)',
-                          'Project Closure Pending (Costing Head)',
-                          'Project Closure Pending (LOF)',
-                        ],
-                      },
-                    },
-                  },
-                  {
-                    $count: 'totalProjectClosure',
-                  },
-                ],
-              },
-            },
-            {
-              $project: {
-                totalOngoing: { $arrayElemAt: ['$totalOngoing.totalOngoing', 0] },
-                totalCompleted: { $arrayElemAt: ['$totalCompleted.totalCompleted', 0] },
-                totalOpenForAssign: { $arrayElemAt: ['$totalOpenForAssign.totalOpenForAssign', 0] },
-                totalProjectClosure: {
-                  $arrayElemAt: ['$totalProjectClosure.totalProjectClosure', 0],
-                },
-              },
-            },
-            {
-              $addFields: {
-                totalOngoing: { $ifNull: ['$totalOngoing', 0] },
-                totalCompleted: { $ifNull: ['$totalCompleted', 0] },
-                totalOpenForAssign: { $ifNull: ['$totalOpenForAssign', 0] },
-                totalProjectClosure: { $ifNull: ['$totalProjectClosure', 0] },
+              $group: {
+                _id: "$category",
+                total_estimated_savings: { $sum: "$estimated_savings" },
               },
             },
           ],
         })
         .then((res) => {
           if (!res.data.success) {
-            throw new Error(res.data.message);
+            throw new Error(res.data.message)
           }
-          return res.data.data.data;
-        });
+          return res.data.data
+        })
     },
-  });
+  })
 
-  console.log(totalOpportunities.data);
+  console.log("API Response:", totalOpportunities.data)
 
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc: any, curr: { count: any }) => acc + curr.count, 0);
-  }, []);
+    return chartData.reduce((acc: any, curr: { count: any }) => acc + curr.count, 0)
+  }, [])
   return (
     <Card className="flex min-h-[420px] flex-col rounded-xl border-primary/50 shadow-none">
       <CardHeader className="pb-0">
-        <CardTitle className="text-lg">Opportunities Status Report</CardTitle>
+        <CardTitle className="text-lg">Estimated Savings by Category</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0 pt-10">
         {!totalOpportunities.isLoading ? (
@@ -211,7 +153,7 @@ export const OverallReport = ({
                           className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-[--color-bg]"
                           style={
                             {
-                              '--color-bg': `var(--color-${name})`,
+                              "--color-bg": `var(--color-${name})`,
                             } as React.CSSProperties
                           }
                         />
@@ -228,76 +170,43 @@ export const OverallReport = ({
                 }
               />
               <Pie
-                data={[
-                  {
-                    status: 'waiting_for_closuer',
-                    count:
-                      totalOpportunities.data && totalOpportunities.data.length > 0
-                        ? totalOpportunities.data[0].totalProjectClosure
-                        : 0,
-                    fill: 'var(--color-waiting_for_closuer)',
-                  },
-                  {
-                    status: 'ongoing',
-                    count:
-                      totalOpportunities.data && totalOpportunities.data.length > 0
-                        ? totalOpportunities.data[0].totalOngoing
-                        : 0,
-                    fill: 'var(--color-ongoing)',
-                  },
-                  {
-                    status: 'completed',
-                    count:
-                      totalOpportunities.data && totalOpportunities.data.length > 0
-                        ? totalOpportunities.data[0].totalCompleted
-                        : 0,
-                    fill: 'var(--color-completed)',
-                  },
-                  {
-                    status: 'opened',
-                    count:
-                      totalOpportunities.data && totalOpportunities.data.length > 0
-                        ? totalOpportunities.data[0].totalOpenForAssign
-                        : 0,
-                    fill: 'var(--color-opened)',
-                  },
-                ]}
+                data={
+                  Array.isArray(totalOpportunities.data?.data)
+                    ? totalOpportunities.data?.data?.map((item: any) => ({
+                        status: item._id.toLowerCase().replace(/\s+/g, "-"),
+                        count: item.total_estimated_savings,
+                        fill: `var(--color-${item._id.toLowerCase().replace(/\s+/g, "-")})`,
+                      }))
+                    : []
+                }
                 dataKey="count"
                 nameKey="status"
-                innerRadius={60}
+                innerRadius={70}
                 strokeWidth={5}
               >
                 <Label
                   content={({ viewBox }) => {
-                    if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      const total = Array.isArray(totalOpportunities.data?.data)
+                        ? totalOpportunities.data?.data?.reduce(
+                            (acc: number, curr: any) => acc + curr.total_estimated_savings,
+                            0,
+                          )
+                        : 0
                       return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-2xl font-bold"
-                          >
-                            {totalOpportunities.data && totalOpportunities.data.length > 0
-                              ? totalOpportunities.data[0].totalOngoing +
-                                totalOpportunities.data[0].totalCompleted +
-                                totalOpportunities.data[0].totalOpenForAssign +
-                                totalOpportunities.data[0].totalProjectClosure
-                              : 0}
+                        <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                          <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-[16px] font-bold">
+                            {new Intl.NumberFormat("en-IN", {
+                              style: "currency",
+                              currency: "INR",
+                              maximumFractionDigits: 0,
+                            }).format(total)}
                           </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground"
-                          >
-                            Opportunities
+                          <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
+                            Total Savings
                           </tspan>
                         </text>
-                      );
+                      )
                     }
                   }}
                 />
@@ -315,5 +224,6 @@ export const OverallReport = ({
         )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}
+

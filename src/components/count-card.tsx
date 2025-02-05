@@ -13,7 +13,7 @@ export const CountCard = ({
   color: string;
 }) => {
   return (
-    <div className="flex h-full w-full grid-cols-2 border border-primary/50  items-center space-x-6 rounded-xl bg-background px-10  align-middle shadow md:grid md:h-32 md:grid-cols-4 md:px-8">
+    <div className="flex h-full w-full  border border-primary/50  items-center space-x-6 rounded-xl bg-background px-10  align-middle shadow md:h-32 md:px-8">
       <div
         className={cn(
           `${color} col-span-1 flex h-[64px] w-[64px] items-center justify-center rounded-full`,
@@ -22,7 +22,7 @@ export const CountCard = ({
         {icon}
       </div>
       <div className="col-span-3">
-        <div className="v text-[15px] font-semibold text-muted-foreground">{name}</div>
+        <div className=" text-[15px] font-semibold text-muted-foreground">{name}</div>
         <div className="px-1 py-1 text-xl font-semibold">{count}</div>
       </div>
     </div>
