@@ -16,6 +16,7 @@ import api from "@/lib/api"
 import { useQuery } from "@tanstack/react-query"
 import { Loading } from "@/components/ui/loading"
 import type { DateRange } from "react-day-picker"
+import { formatToIndianNumber } from "@/lib/utils"
 
 const chartConfig = {
   total_estimated_savings: {
@@ -146,7 +147,7 @@ export const OverallReport = ({
               <ChartTooltip
                 content={
                   <ChartTooltipContent
-                    hideLabel
+                    className="w-[200px]"
                     formatter={(value, name) => (
                       <>
                         <div
@@ -157,11 +158,11 @@ export const OverallReport = ({
                             } as React.CSSProperties
                           }
                         />
-                        <div className="flex w-[100px] text-xs text-muted-foreground">
+                        <div className="flex gap-10 justify-between items-center w-[100px] text-xs text-muted-foreground">
                           {chartConfig[name as keyof typeof chartConfig]?.label || name}
 
-                          <div className="ml-auto flex items-center gap-0.5 font-mono font-medium tabular-nums text-foreground">
-                            {Number(value)}
+                          <div className=" flex flex-col items-center gap-5 font-mono font-medium tabular-nums text-foreground">
+                          ₹{formatToIndianNumber(Number(value))}
                           </div>
                         </div>
                       </>
