@@ -388,7 +388,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                     }}
                     dropzoneOptions={{
                       maxFiles: 1,
-                      maxSize: 1024 * 1024 * 1,
+                      maxSize: 1024 * 1024 * 5,
                       multiple: false,
                       accept: {
                         'image/png': ['.png'],
@@ -407,7 +407,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                       <div className="flex w-full flex-col pb-2 pt-3">
                         <FileUploadText
                           label={'Browse File'}
-                          description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                          description="Max file size is 5MB,  Suitable files are  .jpg, .png, .jpeg, .pdf, .xlxs"
                         />
                       </div>
                     </FileInput>
