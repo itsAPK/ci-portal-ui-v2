@@ -351,9 +351,7 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                         'image/jpg': ['.jpg'],
                         'image/jpeg': ['.jpeg'],
                         'application/pdf': ['.pdf'],
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
-                          '.xlsx',
-                        ],
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
                         'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
                           '.docx',
                         ],
@@ -396,6 +394,11 @@ export const ProjectClosure = ({ opportunities }: { opportunities: any }) => {
                         'image/png': ['.png'],
                         'image/jpg': ['.jpg'],
                         'image/jpeg': ['.jpeg'],
+                        'application/pdf': ['.pdf'],
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                          '.docx',
+                        ],
                       },
                     }}
                     className="relative rounded-lg bg-white p-2"

@@ -182,7 +182,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="company"
               label="Company"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update'}
               options={
                 company.data
                   ? company.data.map((i: any) => ({
@@ -197,7 +197,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="bussiness_unit"
               label="Division"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update'}
               options={
                 bussinessUnit.data
                   ? bussinessUnit.data.map((i: any) => ({
@@ -211,7 +211,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="plant"
               label="Plant"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update'}
               options={
                 plant.data
                   ? plant.data.map((i: any) => ({
@@ -225,7 +225,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="department"
               label="Department"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update'}
               options={
                 department.data
                   ? department.data.map((i: any) => ({

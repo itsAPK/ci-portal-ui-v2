@@ -27,11 +27,16 @@ export const AddOpportunity = () => {
   const [impactScore, setImpactScore] = useState<number>(0);
   const [projectLeader, setProjectLeader] = useState<any>();
   const [file, setFile] = useState<File[] | null>([]);
+  const [a3File, setA3File] = useState<File[] | null>([]);
   const addOpportunity = useMutation({
     mutationKey: ['add-opportunity'],
     mutationFn: async (data: OpportunitySchema) => {
       if (data.category !== 'Black Belt' && (!file || file.length === 0)) {
-        throw new Error('Please upload a document for non-Black Belt categories.');
+        throw new Error('Please upload a document.');
+      }
+
+      if (data.category === 'Green Belt' && (!a3File || a3File.length === 0)) {
+        throw new Error('Please upload a A3 signed project charter.');
       }
 
       const res = await api
@@ -59,6 +64,25 @@ export const AddOpportunity = () => {
       } else {
         throw new Error('Project Leader is required');
       }
+
+      if(a3File && a3File.length > 0) {
+        const formData = new FormData();
+        a3File.forEach((f) => {
+          formData.append('file', f); // Use 'files' as the key for multiple files
+        });
+
+        // Await the file upload API call
+        const r = await api.post(`/opportunity/upload_a3/${res.data._id}`, formData);
+
+        // Handle success response
+        toast.success('A3 Signed Project Charter uploaded successfully', {
+          icon: <CheckCircle className="h-4 w-4" />,
+        });
+
+        // Optionally, handle the response data if needed
+      
+      }
+      
 
       if (file && file.length > 0) {
         // Iterate over each file
@@ -129,6 +153,8 @@ export const AddOpportunity = () => {
           setImpactScore={setImpactScore}
           projectLeader={projectLeader}
           setProjectLeader={setProjectLeader}
+          setA3File={setA3File}
+          a3File={a3File}
         />
       </DialogContent>
     </Dialog>

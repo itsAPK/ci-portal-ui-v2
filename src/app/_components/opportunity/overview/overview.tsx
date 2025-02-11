@@ -223,6 +223,13 @@ export const Overview = ({
           teamMember={opportunity.team_members.length > 0 ? opportunity.team_members : []}
         />
       )}
+       {opportunity.category === 'Green Belt' && !isReport && (
+        <div className="py-4 grid grid-cols-1 gap-4">
+          {opportunity.a3_file &&
+             <DocumentCard documentName={`A3 Signed Project Charter (${opportunity.a3_file.split('/')[opportunity.a3_file.split('/').length - 1]})`} onDelete={() => {}} bucket={opportunity.a3_file} />
+          }
+        </div>
+      )}
       {opportunity.category !== 'Black Belt' && !isReport && (
         <div className="py-4 grid grid-cols-4 gap-4">
           {opportunity.file &&

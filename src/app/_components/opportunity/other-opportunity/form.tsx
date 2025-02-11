@@ -45,6 +45,8 @@ interface OpportunityFormProps {
   setFile?: React.Dispatch<React.SetStateAction<File[] | null>>;
   projectLeader: any | undefined;
   setProjectLeader: React.Dispatch<React.SetStateAction<any | undefined>>;
+  setA3File: React.Dispatch<React.SetStateAction<File[] | null>>;
+  a3File: File[] | null;
 }
 
 export const OpportunityForm = ({
@@ -56,6 +58,8 @@ export const OpportunityForm = ({
   setFile,
   projectLeader,
   setProjectLeader,
+  setA3File,
+  a3File,
 }: OpportunityFormProps) => {
   const form = useForm<OpportunitySchema>({
     defaultValues: {
@@ -210,7 +214,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="company"
               label="Company"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update' }
               options={
                 company.data
                   ? company.data.map((i: any) => ({
@@ -225,7 +229,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="bussiness_unit"
               label="Division"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update' }
               options={
                 bussinessUnit.data
                   ? bussinessUnit.data.map((i: any) => ({
@@ -239,7 +243,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="plant"
               label="Plant"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update' }
               options={
                 plant.data
                   ? plant.data.map((i: any) => ({
@@ -253,7 +257,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="department"
               label="Department"
-              disabled={mode === 'update' || role !== 'admin'}
+              disabled={mode === 'update' }
               options={
                 department.data
                   ? department.data.map((i: any) => ({
@@ -458,6 +462,52 @@ export const OpportunityForm = ({
                   </FileUploaderContent>
                 </FileUploader>
               </div>
+            }
+              { category === 'Green Belt' && (
+              <div className="col-span-2 flex flex-col gap-2">
+                <Label className="-mb-2 px-2">Upload A3 Signed Project Charter </Label>
+                <FileUploader
+                  value={a3File ? a3File : []}
+                  onValueChange={async (file: any) => {
+                    setA3File?.(file);
+                  }}
+                  dropzoneOptions={{
+                    maxFiles: 1,
+                    maxSize: 1024 * 1024 * 5,
+                    multiple: false,
+                    accept: {
+                      'image/png': ['.png'],
+                      'image/jpg': ['.jpg'],
+                      'image/jpeg': ['.jpeg'],
+                      'application/pdf': ['.pdf'],
+                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                        '.docx',
+                      ],
+                    },
+                  }}
+                  className="relative rounded-lg bg-white p-2"
+                >
+                  <FileInput className="outline-dashed outline-1 outline-white">
+                    <div className="flex w-full flex-col pb-2 pt-3">
+                      <FileUploadText
+                        label={'Browse File'}
+                        description="Max file size is 5MB,  Suitable files are  .jpg, .png, .jpeg, .pdf, .xlxs"
+                      />
+                    </div>
+                  </FileInput>
+                  <FileUploaderContent>
+                    {a3File &&
+                      a3File.length > 0 &&
+                      a3File.map((file, i) => (
+                        <FileUploaderItem key={i} index={i}>
+                          <Paperclip className="h-4 w-4 stroke-current" />
+                          <span>{file.name}</span>
+                        </FileUploaderItem>
+                      ))}
+                  </FileUploaderContent>
+                </FileUploader>
+              </div>)
             }
           </div>
           <div className="flex justify-end pt-5">
