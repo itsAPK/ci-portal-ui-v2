@@ -5,7 +5,8 @@ import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { parseFilterInput, buildFilter, parseSort } from '@/lib/filter-parser';
-
+import { CumulativeArchives } from './cumulative/cumulative';
+import { TotalCumulative } from './cumulative/total-cumulative';
 export function Archive() {
   const params = useSearchParams();
 
@@ -155,7 +156,10 @@ export function Archive() {
   });
   return (
     <>
-      <div className="p-3 text-xl font-semibold text-gray-800 dark:text-white">Archive</div>
+    <div className="flex justify-between items-center"> <div className="p-3 text-xl font-semibold text-gray-800 dark:text-white">Archive</div>
+    <CumulativeArchives/>
+    </div> 
+    <TotalCumulative/>
       <ArchiveTable
         refetchFn={archive.refetch}
         data={archive.data ? archive.data.data : []}

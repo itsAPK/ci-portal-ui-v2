@@ -233,6 +233,69 @@ function Page() {
                 savings_int: {
                   $toInt: {
                     $replaceAll: {
+                      input: '$monthly_savings.actual',
+                      find: ',',
+                      replacement: '',
+                    },
+                  },
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                total_approved_savings: {
+                  $sum: '$savings_int',
+                },
+              },
+            },
+          ],
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          return res.data.data.data;
+        });
+    },
+  });
+
+  const totalEstimatedSavings = useQuery({
+    queryKey: ['total-monthly-estimated-dashboard'],
+    queryFn: async () => {
+      const match: any = {
+        formatted_date: {
+          ...(date?.from && { $gte: new Date(date.from) }),
+          ...(date?.to && { $lte: new Date(date.to) }),
+        },
+        ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
+        ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
+      };
+
+      return await api
+        .post(`/opportunity/export`, {
+          filter: [
+            {
+              $addFields: {
+                formatted_date: {
+                  $dateToString: {
+                    format: '%Y-%m-%d',
+                    date: '$created_at',
+                  },
+                },
+              },
+            },
+            {
+              $unwind: '$monthly_savings',
+            },
+            {
+              $match: { ...match},
+            },
+            {
+              $project: {
+                savings_int: {
+                  $toInt: {
+                    $replaceAll: {
                       input: '$monthly_savings.savings',
                       find: ',',
                       replacement: '',
@@ -259,6 +322,7 @@ function Page() {
         });
     },
   });
+
 
   const totalEmployee = useQuery({
     queryKey: ['total-employees'],
@@ -352,6 +416,7 @@ function Page() {
                   totalData.refetch();
                   totalEmployee.refetch();
                   totalMonthlySavings.refetch()
+                  totalEstimatedSavings.refetch()
                   queryClient.refetchQueries({
                     queryKey: [
                       'total-opportunities',
@@ -400,6 +465,7 @@ function Page() {
                   totalData.refetch();
                   totalEmployee.refetch();
                   totalMonthlySavings.refetch()
+                  totalEstimatedSavings.refetch()
 
                   queryClient.refetchQueries({
                     queryKey: [
@@ -461,6 +527,7 @@ function Page() {
                     totalData.refetch();
                     totalEmployee.refetch();
                     totalMonthlySavings.refetch()
+                    totalEstimatedSavings.refetch()
 
                     queryClient.refetchQueries({
                       queryKey: [
@@ -545,10 +612,10 @@ function Page() {
         </div>
        
         <div className="mt-4 flex min-h-[80vh] items-center justify-center" >
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-12 lg:px-0">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-12 lg:px-0">
             <div className="col-span-12 flex justify-end pb-3 md:hidden"></div>
             <div className="col-span-12 md:col-span-8">
-              <div className="flex w-full grid-cols-1 flex-col gap-5 px-4 md:grid md:grid-cols-2">
+              <div className="flex w-full grid-cols-1 flex-col gap-4 px-4 md:grid md:grid-cols-2">
               <CountCard
                   icon={<RiFileMarkedFill className="h-7 w-7 text-fuchsia-600" />}
                   name={'Total Projects '}
@@ -623,10 +690,13 @@ function Page() {
             <div className="col-span-6 px-4">
             <CountCard
                   icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
-                  name={'Total Estimated Savings'}
+                  name={'Total Black Belt Estimated Savings'}
                   color="bg-red-600/10"
-                  count={`Rs ${totalData.data && totalData.data.length > 0 ? formatToIndianNumber(totalData.data[0].totalEstimatedSavings) : 0}`}
-                />
+                  count={
+                    `Rs ${totalEstimatedSavings.data  && totalEstimatedSavings.data.length > 0
+                      ? formatToIndianNumber(totalEstimatedSavings.data[0].total_approved_savings ?? 0)
+                      : 0}`
+                  }                />
               </div>
             <div className="col-span-6">
                    <CountCard

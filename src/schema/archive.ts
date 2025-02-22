@@ -21,4 +21,21 @@ export interface Archive extends ArchiveSchema {
   _id: {$oid: string};
   file_path     : string;
   uploaded_by   : Employee;
+
+
+
+}
+
+
+export const cumulativeArchiveSchema = z.object({
+  year: z.string({required_error: 'Year is required'}),
+  cumulative: z.number({required_error: 'Cumulative is required'}),
+  projects: z.number({required_error: 'Projects is required'}),
+});
+
+export type CumulativeArchiveSchema = z.infer<typeof cumulativeArchiveSchema>;
+
+export interface CumulativeArchive extends CumulativeArchiveSchema {
+  _id: {$oid: string};
+
 }

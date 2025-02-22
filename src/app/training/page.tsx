@@ -9,6 +9,8 @@ import { CategoryWiseTrainingGraph } from '../_components/training/category-wise
 import { CompanyWiseTrainingCount } from '../_components/training/company-wise-grpah';
 import { CompanyWiseBBGraph } from '../_components/training/company-wise-bb-graph';
 import { CompanyWiseGBGraph } from '../_components/training/company-wise-gb-graph';
+import { CumulativeTrainingView } from '../_components/training/total-trained/view';
+import { TotalTrained } from '../_components/training/total-trained/total-trained-certified-belts';
 function Page() {
   return (
     <UILayout>
@@ -16,8 +18,10 @@ function Page() {
         <React.Suspense fallback={<Loading />}>
           <div className="flex justify-between p-4">
             <div className="pt-2 text-base font-semibold">Certified Belts Details</div>
+            <CumulativeTrainingView />
           </div>
           <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-1">
+            <TotalTrained />
             <div>
               <CategoryWiseTrainingGraph />
             </div>

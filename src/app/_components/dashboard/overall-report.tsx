@@ -182,8 +182,8 @@ export const OverallReport = ({
                 }
                 dataKey="count"
                 nameKey="status"
-                innerRadius={70}
-                strokeWidth={5}
+                innerRadius={60}
+                strokeWidth={30}
               >
                 <Label
                   content={({ viewBox }) => {

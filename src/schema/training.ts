@@ -19,3 +19,13 @@ export const trainingSchema = z.object({
 export type TrainingSchema = z.infer<typeof trainingSchema>;
 
 export interface Training extends TrainingSchema, BaseDocument {}
+
+
+export const cumulativeTrainingSchema = z.object({
+  year: z.string(),
+  total_black_belt: z.number(),
+  total_green_belt: z.number(),
+})
+
+export type CumulativeTrainingSchema = z.infer<typeof cumulativeTrainingSchema>;
+export interface CumulativeTraining extends CumulativeTrainingSchema, BaseDocument {}
