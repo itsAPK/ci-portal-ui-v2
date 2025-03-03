@@ -18,12 +18,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 'latest' # Always use the latest stable Node.js version
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
-        run: npm install --force
+        run: pnpm install --force
 
       - name: Build application
-        run: npm run build
+        run: pnpm run build
 
       - name: 🚀 Notify Telegram - Build Started
         uses: appleboy/telegram-action@master
@@ -149,4 +153,3 @@ jobs:
             🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
             🔹 **Error Message:** Please check the GitHub Actions logs for details.
             🔹 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
