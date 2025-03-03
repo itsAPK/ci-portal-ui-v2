@@ -41,6 +41,9 @@ WORKDIR /app
 # Set environment
 ENV NODE_ENV production
 
+# Install pnpm in the runner stage
+RUN npm install -g pnpm
+
 # Copy built files
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
