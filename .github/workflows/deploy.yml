@@ -106,7 +106,7 @@ jobs:
             🔹 **User:** ${{ github.actor }}
             🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
             🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
-            🔹 🌍 **Live at:** [http://your-server-ip:3240](http://your-server-ip:3240) (Replace with actual IP/domain)
+            🔹 🌍 **Live at:** [http://ciportal.niranthra.online](http://ciportal.niranthra.online) (Replace with actual IP/domain)
             🔹 ✅ **Container Started Successfully!**
 
      
