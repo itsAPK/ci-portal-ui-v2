@@ -42,4 +42,4 @@ jobs:
             docker pull ghcr.io/itsapk/ci-portal-ui:latest
             docker stop ci-portal-ui || true
             docker rm ci-portal-ui || true
-            docker run -d --name ci-portal-ui -p 3241:3241 --restart unless-stopped ghcr.io/itsapk/ci-portal-ui:latest
+            docker run -d --name ci-portal-ui -p 3240:3240 --restart unless-stopped ghcr.io/itsapk/ci-portal-ui:latest
