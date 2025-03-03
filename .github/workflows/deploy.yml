@@ -14,17 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Notify Telegram Docker Build Started
+      - name: 🚀 Notify Telegram - Build Started
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-                    ${{ github.actor }} created commit:
-                    Commit message: ${{ github.event.commits[0].message }}
-                    Repository: ${{ github.repository }}
-                    Link: ${{ github.event.compare }}
-                    Deployment to GHCR started.
+            🛠 **Build Process Started**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 [Compare Changes](${{ github.event.compare }})
+            🔹 📦 **Pushing Docker Image to GHCR...** 
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login ghcr.io -u itsapk --password-stdin
@@ -35,17 +36,33 @@ jobs:
       - name: Push Docker image to GHCR
         run: docker push ghcr.io/itsapk/ci-portal-ui:latest
 
-      - name: Notify Telegram Docker Build Completed
+      - name: ✅ Notify Telegram - Build Completed
+        uses: appleboy/telegram-action@master
+        if: success()
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ✅ **Build Completed & Image Pushed**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 **Docker Image:** [View on GHCR](https://github.com/itsapk/ci-portal-ui/pkgs/container/ci-portal-ui)
+            🔹 🔄 **Proceeding to Deployment...**
+
+      - name: ❌ Notify Telegram - Build Failed
+        if: failure()
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-                    ${{ github.actor }} deployed commit:
-                    Commit message: ${{ github.event.commits[0].message }}
-                    Repository: ${{ github.repository }}
-                    Link: ${{ github.event.compare }}
-                    Deployment to GHCR completed : https://github.com/itsapk/ci-portal-ui/pkgs/container/ci-portal-ui
+            ❌ **Build Failed!**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 🔍 **Check logs:** [GitHub Actions Log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            🔹 🛠 **Fix and retry the build.**
 
   deploy:
     name: Deploy to SERVER
@@ -53,17 +70,18 @@ jobs:
     needs: build-and-push
 
     steps:
-      - name: Notify Telegram SSH into SERVER and Deploy Started
+      - name: 🚀 Notify Telegram - Deployment Started
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-                    ${{ github.actor }} deployed commit:
-                    Commit message: ${{ github.event.commits[0].message }}
-                    Repository: ${{ github.repository }}
-                    Link: ${{ github.event.compare }}
-                    Deploying to Server Started.
+            📡 **Deployment Started**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 **Server:** 🚀 Deploying to `Production`
+            🔹 ⏳ **Pulling latest Docker image...**
 
       - name: SSH into SERVER and Deploy
         uses: appleboy/ssh-action@master
@@ -72,20 +90,45 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}  
           script: |
+            echo "🔑 Logging into GHCR..."
             docker login ghcr.io -u itsapk --password ${{ secrets.ACCESS_TOKEN }}
+
+            echo "📥 Pulling latest Docker image..."
             docker pull ghcr.io/itsapk/ci-portal-ui:latest
+
+            echo "🛑 Stopping existing container (if running)..."
             docker stop ci-portal-ui || true
+
+            echo "🗑 Removing old container..."
             docker rm ci-portal-ui || true
+
+            echo "🚀 Starting new container..."
             docker run -d --name ci-portal-ui -p 3240:3240 --restart unless-stopped ghcr.io/itsapk/ci-portal-ui:latest
 
-      - name: Notify Telegram SSH into SERVER and Deploy Started
+      - name: ✅ Notify Telegram - Deployment Completed
+        uses: appleboy/telegram-action@master
+        if: success()
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🎉 **Deployment Completed Successfully**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 🌍 **Live at:** [http://your-server-ip:3240](http://your-server-ip:3240) (Replace with actual IP/domain)
+            🔹 ✅ **Container Started Successfully!**
+
+      - name: ❌ Notify Telegram - Deployment Failed
+        if: failure()
         uses: appleboy/telegram-action@master
         with:
-              to: ${{ secrets.TELEGRAM_TO }}
-              token: ${{ secrets.TELEGRAM_TOKEN }}
-              message: |
-                        ${{ github.actor }} deployed commit:
-                        Commit message: ${{ github.event.commits[0].message }}
-                        Repository: ${{ github.repository }}
-                        Link: ${{ github.event.compare }}
-                        Deploying to Server Completed.
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ❌ **Deployment Failed!**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 🔍 **Check logs:** [GitHub Actions Log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            🔹 🚨 **Immediate Attention Required!**
