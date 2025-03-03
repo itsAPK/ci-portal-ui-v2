@@ -20,7 +20,7 @@ jobs:
           node-version: 'latest' # Always use the latest stable Node.js version
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --force
 
       - name: Build application
         run: npm run build
