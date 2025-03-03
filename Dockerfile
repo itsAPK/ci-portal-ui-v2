@@ -48,8 +48,8 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 
 # Expose port
-EXPOSE 3241
-ENV PORT 3241
+EXPOSE 3240
+ENV PORT 3240
 
 # Start the application using pnpm
-CMD ["pnpm", "start", "--host", "0.0.0.0", "--port", "3241"]
+CMD ["pnpm", "start", "--host", "0.0.0.0", "--port", "3240"]
