@@ -19,6 +19,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             🛠 **Build Process Started**
             🔹 **User:** ${{ github.actor }}
@@ -42,6 +43,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             ✅ **Build Completed & Image Pushed**
             🔹 **User:** ${{ github.actor }}
@@ -56,6 +58,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             ❌ **Build Failed!**
             🔹 **User:** ${{ github.actor }}
@@ -75,6 +78,8 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+
           message: |
             📡 **Deployment Started**
             🔹 **User:** ${{ github.actor }}
@@ -111,6 +116,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             🎉 **Deployment Completed Successfully**
             🔹 **User:** ${{ github.actor }}
@@ -125,6 +131,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             ❌ **Deployment Failed!**
             🔹 **User:** ${{ github.actor }}
