@@ -14,6 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest' # Always use the latest stable Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
       - name: 🚀 Notify Telegram - Build Started
         uses: appleboy/telegram-action@master
         with:
@@ -52,6 +63,21 @@ jobs:
             🔹 **Docker Image:** [View on GHCR](https://github.com/itsapk/ci-portal-ui/pkgs/container/ci-portal-ui)
             🔹 🔄 **Proceeding to Deployment...**
 
+      - name: ❌ Notify Telegram - Build Failed
+        uses: appleboy/telegram-action@master
+        if: failure()
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: |
+            ❌ **Build Failed!**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 **Error Message:** Please check the GitHub Actions logs for details.
+            🔹 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+  
   deploy:
     name: Deploy to SERVER
     runs-on: ubuntu-latest
@@ -109,4 +135,18 @@ jobs:
             🔹 🌍 **Live at:** [http://ciportal.niranthra.online](http://ciportal.niranthra.online) 
             🔹 ✅ **Container Started Successfully!**
 
-     
+      - name: ❌ Notify Telegram - Deployment Failed
+        uses: appleboy/telegram-action@master
+        if: failure()
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: |
+            ❌ **Deployment Failed!**
+            🔹 **User:** ${{ github.actor }}
+            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
+            🔹 **Error Message:** Please check the GitHub Actions logs for details.
+            🔹 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
