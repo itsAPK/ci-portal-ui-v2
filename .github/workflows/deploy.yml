@@ -52,21 +52,6 @@ jobs:
             🔹 **Docker Image:** [View on GHCR](https://github.com/itsapk/ci-portal-ui/pkgs/container/ci-portal-ui)
             🔹 🔄 **Proceeding to Deployment...**
 
-      - name: ❌ Notify Telegram - Build Failed
-        if: failure()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: markdown
-          message: |
-            ❌ **Build Failed!**
-            🔹 **User:** ${{ github.actor }}
-            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
-            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
-            🔹 🔍 **Check logs:** [GitHub Actions Log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            🔹 🛠 **Fix and retry the build.**
-
   deploy:
     name: Deploy to SERVER
     runs-on: ubuntu-latest
@@ -79,7 +64,6 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
-
           message: |
             📡 **Deployment Started**
             🔹 **User:** ${{ github.actor }}
@@ -125,17 +109,4 @@ jobs:
             🔹 🌍 **Live at:** [http://your-server-ip:3240](http://your-server-ip:3240) (Replace with actual IP/domain)
             🔹 ✅ **Container Started Successfully!**
 
-      - name: ❌ Notify Telegram - Deployment Failed
-        if: failure()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: markdown
-          message: |
-            ❌ **Deployment Failed!**
-            🔹 **User:** ${{ github.actor }}
-            🔹 **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
-            🔹 **Commit Message:** _${{ github.event.commits[0].message }}_
-            🔹 🔍 **Check logs:** [GitHub Actions Log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            🔹 🚨 **Immediate Attention Required!**
+     
