@@ -18,16 +18,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 'latest' # Always use the latest stable Node.js version
-          cache: 'pnpm'
 
       - name: Install pnpm
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --force
+        run: pnpm install
 
       - name: Build application
-        run: pnpm run build
+        run: pnpm build
 
       - name: 🚀 Notify Telegram - Build Started
         uses: appleboy/telegram-action@master
