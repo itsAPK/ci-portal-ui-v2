@@ -14,16 +14,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Notify Telegram Docker Build Started
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+                    ${{ github.actor }} created commit:
+                    Commit message: ${{ github.event.commits[0].message }}
+                    Repository: ${{ github.repository }}
+                    Link: ${{ github.event.compare }}
+                    Deployment to GHCR started.
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login ghcr.io -u itsapk --password-stdin
 
       - name: Build Docker image
         run: docker build -t ghcr.io/itsapk/ci-portal-ui:latest .
 
-     
-
       - name: Push Docker image to GHCR
         run: docker push ghcr.io/itsapk/ci-portal-ui:latest
+
+      - name: Notify Telegram Docker Build Completed
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+                    ${{ github.actor }} deployed commit:
+                    Commit message: ${{ github.event.commits[0].message }}
+                    Repository: ${{ github.repository }}
+                    Link: ${{ github.event.compare }}
+                    Deployment to GHCR completed : https://github.com/itsapk/ci-portal-ui/pkgs/container/ci-portal-ui
 
   deploy:
     name: Deploy to SERVER
@@ -31,6 +53,18 @@ jobs:
     needs: build-and-push
 
     steps:
+      - name: Notify Telegram SSH into SERVER and Deploy Started
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+                    ${{ github.actor }} deployed commit:
+                    Commit message: ${{ github.event.commits[0].message }}
+                    Repository: ${{ github.repository }}
+                    Link: ${{ github.event.compare }}
+                    Deploying to Server Started.
+
       - name: SSH into SERVER and Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -43,3 +77,15 @@ jobs:
             docker stop ci-portal-ui || true
             docker rm ci-portal-ui || true
             docker run -d --name ci-portal-ui -p 3240:3240 --restart unless-stopped ghcr.io/itsapk/ci-portal-ui:latest
+
+      - name: Notify Telegram SSH into SERVER and Deploy Started
+        uses: appleboy/telegram-action@master
+        with:
+              to: ${{ secrets.TELEGRAM_TO }}
+              token: ${{ secrets.TELEGRAM_TOKEN }}
+              message: |
+                        ${{ github.actor }} deployed commit:
+                        Commit message: ${{ github.event.commits[0].message }}
+                        Repository: ${{ github.repository }}
+                        Link: ${{ github.event.compare }}
+                        Deploying to Server Completed.

@@ -55,4 +55,4 @@ EXPOSE 3240
 ENV PORT 3240
 
 # Start the application using pnpm
-CMD ["pnpm", "start", "--host", "0.0.0.0", "--port", "3240"]
+CMD ["pnpm", "start", "-H", "0.0.0.0", "--port", "3240"]
