@@ -85,7 +85,7 @@ export const TotalEstimatedSavings = ({
   });
   
   return (
-    <Card className="h-[350px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
+    <Card className="h-[380px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
       <CardHeader className="px-7">
         <CardTitle>Top Saving Opportunities </CardTitle>
         <CardDescription></CardDescription>

@@ -13,15 +13,18 @@ import { useRouter } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
 import { CalendarDatePicker } from '@/components/calender-date-picker';
 import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
 // import { AddOpportunity } from './add';
 
 export const RequestPlantTable = ({
   data,
   pageCount,
   refetchFn,
+  total
 }: {
   data: any[];
   pageCount: number;
+  total : number;
   refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
   const filterFields: DataTableFilterField<any>[] = [
@@ -77,7 +80,11 @@ export const RequestPlantTable = ({
           isServer
           refetchFn={refetchFn}
           filterFields={filterFields}
-        ></DataTableAdvancedToolbar>
+        >
+          <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">
+            Total Requestes: {total}
+            </Badge>
+        </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>
   );

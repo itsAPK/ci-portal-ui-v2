@@ -11,7 +11,7 @@ import {
   UsersRound,
   WalletCardsIcon,
 } from 'lucide-react';
-import { RiMoneyRupeeCircleFill,RiFileMarkedFill, RiDownload2Fill } from '@remixicon/react';
+import { RiMoneyRupeeCircleFill, RiFileMarkedFill, RiDownload2Fill } from '@remixicon/react';
 import { ContentLayout } from '@/components/content-layout';
 import api from '@/lib/api';
 import { toast } from 'sonner';
@@ -42,15 +42,16 @@ import {
 } from '@/components/ui/select';
 import { RiCloseCircleFill } from '@remixicon/react';
 import { PDFExport, savePDF } from '@progress/kendo-react-pdf';
-
+import { getCookie } from 'cookies-next';
 function Page() {
   const [date, setDate] = React.useState<DateRange>({
     from: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
     to: new Date(),
   });
-
+  const userId = getCookie('ci-portal.employee_id');
   const [selectedPlant, setSelectedPlant] = React.useState<string>();
   const [selectedCompany, setSelectedCompany] = React.useState<string>();
+  const [dashboard, setDashboard] = React.useState<string>('my-dashboard');
 
   const totalData = useQuery({
     queryKey: ['total-opportunities-dashboard'],
@@ -63,6 +64,10 @@ function Page() {
         ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
       };
+
+      if (dashboard === 'my-dashboard') {
+        match['project_leader.employee_id'] = { $eq: userId };
+      }
 
       return await api
         .post(`/opportunity/export`, {
@@ -110,10 +115,10 @@ function Page() {
                     $count: 'totalOngoing',
                   },
                 ],
-                totalOpportunites : [
+                totalOpportunites: [
                   {
-                    "$count": "total_opportunities"
-                  }
+                    $count: 'total_opportunities',
+                  },
                 ],
                 totalCompleted: [
                   {
@@ -208,6 +213,10 @@ function Page() {
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
       };
 
+      if (dashboard === 'my-dashboard') {
+        match['project_leader.employee_id'] = { $eq: userId };
+      }
+
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -272,6 +281,10 @@ function Page() {
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
       };
 
+      if (dashboard === 'my-dashboard') {
+        match['project_leader.employee_id'] = { $eq: userId };
+      }
+
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -289,7 +302,7 @@ function Page() {
               $unwind: '$monthly_savings',
             },
             {
-              $match: { ...match},
+              $match: { ...match },
             },
             {
               $project: {
@@ -322,7 +335,6 @@ function Page() {
         });
     },
   });
-
 
   const totalEmployee = useQuery({
     queryKey: ['total-employees'],
@@ -388,7 +400,7 @@ function Page() {
     },
   });
 
-    const container = useRef<HTMLDivElement>(null);
+  const container = useRef<HTMLDivElement>(null);
   const pdfExportComponent = useRef<PDFExport>(null);
   const exportPDFWithMethod = () => {
     let element = container.current || document.body;
@@ -398,7 +410,6 @@ function Page() {
       fileName: `CI-Portal-Report-${new Date().toISOString().slice(0, 10)}`,
     });
   };
-
 
   const queryClient = useQueryClient();
   console.log(totalEmployee.data);
@@ -410,19 +421,19 @@ function Page() {
           <div className="flex gap-2">
             <Select
               onValueChange={(e) => {
-                setSelectedCompany(e);
-
+                setDashboard(e);
                 setTimeout(() => {
                   totalData.refetch();
                   totalEmployee.refetch();
-                  totalMonthlySavings.refetch()
-                  totalEstimatedSavings.refetch()
+                  totalMonthlySavings.refetch();
+                  totalEstimatedSavings.refetch();
                   queryClient.refetchQueries({
                     queryKey: [
                       'total-opportunities',
                       date,
                       selectedPlant,
                       selectedCompany,
+                      dashboard,
                       'top-estimated-savings',
                       date,
                       selectedPlant,
@@ -431,11 +442,85 @@ function Page() {
                       date,
                       selectedPlant,
                       selectedCompany,
+                      dashboard,
                       'estimated-savings',
                       date,
                       selectedPlant,
                       selectedCompany,
+                      dashboard,
                       'top-employees',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'completed-vs-ongoing',
+                      selectedCompany,
+                      selectedPlant,
+                      dashboard,
+                      'employees-count-by-role',
+                      selectedPlant,
+                      selectedCompany,
+                      'total-employees',
+                      selectedPlant,
+                      selectedCompany,
+                    ],
+                  });
+                }, 1000);
+              }}
+              value={dashboard}
+            >
+              <SelectTrigger className="h-8 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                <SelectValue placeholder="Select Dashboard" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="my-dashboard">My Dashboard</SelectItem>
+                  <SelectItem value="all-dashboard">Overall Dashboard</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {dashboard !== 'my-dashboard' && (
+              <Select
+              onValueChange={(e) => {
+                setSelectedCompany(e);
+
+                setTimeout(() => {
+                  totalData.refetch();
+                  totalEmployee.refetch();
+                  totalMonthlySavings.refetch();
+                  totalEstimatedSavings.refetch();
+                  queryClient.refetchQueries({
+                    queryKey: [
+                      'total-opportunities',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      dashboard,
+                      'top-estimated-savings',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'category-wise-opportunity',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      dashboard,
+                      'estimated-savings',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      dashboard,
+                      'top-employees',
+                      date,
+                      selectedPlant,
+                      selectedCompany,
+                      'completed-vs-ongoing',
+                      selectedCompany,
+                      selectedPlant,
+                      dashboard,
+                      'employees-count-by-role',
+                      selectedPlant,
+                      selectedCompany,
+                      'total-employees',
                       selectedPlant,
                       selectedCompany,
                     ],
@@ -457,15 +542,16 @@ function Page() {
                     ))}
                 </SelectGroup>
               </SelectContent>
-            </Select>
-            <Select
+            </Select>)}
+            {dashboard !== 'my-dashboard' && (
+              <Select
               onValueChange={(e) => {
                 setSelectedPlant(e);
                 setTimeout(() => {
                   totalData.refetch();
                   totalEmployee.refetch();
-                  totalMonthlySavings.refetch()
-                  totalEstimatedSavings.refetch()
+                  totalMonthlySavings.refetch();
+                  totalEstimatedSavings.refetch();
 
                   queryClient.refetchQueries({
                     queryKey: [
@@ -473,6 +559,7 @@ function Page() {
                       date,
                       selectedPlant,
                       selectedCompany,
+                      dashboard,
                       'top-estimated-savings',
                       date,
                       selectedPlant,
@@ -481,10 +568,12 @@ function Page() {
                       date,
                       selectedPlant,
                       selectedCompany,
+                      dashboard,
                       'estimated-savings',
                       date,
                       selectedPlant,
                       selectedCompany,
+                      dashboard,
                       'top-employees',
                       date,
                       selectedPlant,
@@ -492,6 +581,7 @@ function Page() {
                       'completed-vs-ongoing',
                       selectedCompany,
                       selectedPlant,
+                      dashboard,
                       'employees-count-by-role',
                       selectedPlant,
                       selectedCompany,
@@ -517,7 +607,7 @@ function Page() {
                     ))}
                 </SelectGroup>
               </SelectContent>
-            </Select>
+            </Select>)}
             <div className="flex gap-2 px-4">
               <CalendarDatePicker
                 date={date}
@@ -526,15 +616,15 @@ function Page() {
                   setTimeout(() => {
                     totalData.refetch();
                     totalEmployee.refetch();
-                    totalMonthlySavings.refetch()
-                    totalEstimatedSavings.refetch()
-
+                    totalMonthlySavings.refetch();
+                    totalEstimatedSavings.refetch();
                     queryClient.refetchQueries({
                       queryKey: [
                         'total-opportunities',
                         date,
                         selectedPlant,
                         selectedCompany,
+                        dashboard,
                         'top-estimated-savings',
                         date,
                         selectedPlant,
@@ -543,10 +633,12 @@ function Page() {
                         date,
                         selectedPlant,
                         selectedCompany,
+                        dashboard,
                         'estimated-savings',
                         date,
                         selectedPlant,
                         selectedCompany,
+                        dashboard,
                         'top-employees',
                         date,
                         selectedPlant,
@@ -554,6 +646,13 @@ function Page() {
                         'completed-vs-ongoing',
                         selectedCompany,
                         selectedPlant,
+                        dashboard,
+                        'employees-count-by-role',
+                        selectedPlant,
+                        selectedCompany,
+                        'total-employees',
+                        selectedPlant,
+                        selectedCompany,
                       ],
                     });
                   }, 1000);
@@ -579,6 +678,7 @@ function Page() {
                           date,
                           selectedPlant,
                           selectedCompany,
+                          dashboard,
                           'top-estimated-savings',
                           date,
                           selectedPlant,
@@ -587,10 +687,12 @@ function Page() {
                           date,
                           selectedPlant,
                           selectedCompany,
+                          dashboard,
                           'estimated-savings',
                           date,
                           selectedPlant,
                           selectedCompany,
+                          dashboard,
                           'top-employees',
                           date,
                           selectedPlant,
@@ -598,6 +700,13 @@ function Page() {
                           'completed-vs-ongoing',
                           selectedCompany,
                           selectedPlant,
+                          dashboard,
+                          'employees-count-by-role',
+                          selectedPlant,
+                          selectedCompany,
+                          'total-employees',
+                          selectedPlant,
+                          selectedCompany,
                         ],
                       });
                     }, 1000);
@@ -607,16 +716,15 @@ function Page() {
                 </Button>
               )}
             </div>
-           
           </div>
         </div>
-       
-        <div className="mt-4 flex min-h-[80vh] items-center justify-center" >
+
+        <div className="mt-4 flex min-h-[80vh] items-center justify-center">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12 lg:px-0">
             <div className="col-span-12 flex justify-end pb-3 md:hidden"></div>
             <div className="col-span-12 md:col-span-8">
               <div className="flex w-full grid-cols-1 flex-col gap-4 px-4 md:grid md:grid-cols-2">
-              <CountCard
+                <CountCard
                   icon={<RiFileMarkedFill className="h-7 w-7 text-fuchsia-600" />}
                   name={'Total Projects '}
                   color="bg-fuchsia-600/10"
@@ -666,7 +774,7 @@ function Page() {
                       : 0
                   }
                 />
-              
+
                 <CountCard
                   icon={<UsersRound className="h-7 w-7 text-indigo-600" />}
                   name={'Total Employees'}
@@ -677,7 +785,6 @@ function Page() {
                       : 0
                   }
                 />
-               
               </div>
             </div>
             <div className="md:col-span-4">
@@ -685,39 +792,49 @@ function Page() {
                 dateRange={date}
                 selectedCompany={selectedCompany}
                 selectedPlant={selectedPlant}
+                dashboard={dashboard}
               />
             </div>
             <div className="col-span-6 px-4">
-            <CountCard
-                  icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
-                  name={'Total Black Belt Estimated Savings'}
-                  color="bg-red-600/10"
-                  count={
-                    `Rs ${totalEstimatedSavings.data  && totalEstimatedSavings.data.length > 0
-                      ? formatToIndianNumber(totalEstimatedSavings.data[0].total_approved_savings ?? 0)
-                      : 0}`
-                  }                />
-              </div>
-            <div className="col-span-6">
-                   <CountCard
-                  icon={<RiMoneyRupeeCircleFill className="h-7 w-7 text-green-600" />}
-                  name={'Total Black Belt Approved Savings'}
-                  color="bg-green-600/10"
-                
-                  count={
-                    `Rs ${totalMonthlySavings.data  && totalMonthlySavings.data.length > 0
-                      ? formatToIndianNumber(totalMonthlySavings.data[0].total_approved_savings ?? 0)
-                      : 0}`
-                  }
-                /></div>
-            <div className="pl-3 md:col-span-6">
-              <CompletedVsOpened selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
+              <CountCard
+                icon={<LandmarkIcon className="h-7 w-7 text-red-600" />}
+                name={'Total Black Belt Estimated Savings'}
+                color="bg-red-600/10"
+                count={`Rs ${
+                  totalEstimatedSavings.data && totalEstimatedSavings.data.length > 0
+                    ? formatToIndianNumber(
+                        totalEstimatedSavings.data[0].total_approved_savings ?? 0,
+                      )
+                    : 0
+                }`}
+              />
             </div>
-            <div className="md:col-span-6">
-              <TotalEstimatedSavings
+            <div className="col-span-6">
+              <CountCard
+                icon={<RiMoneyRupeeCircleFill className="h-7 w-7 text-green-600" />}
+                name={'Total Black Belt Approved Savings'}
+                color="bg-green-600/10"
+                count={`Rs ${
+                  totalMonthlySavings.data && totalMonthlySavings.data.length > 0
+                    ? formatToIndianNumber(totalMonthlySavings.data[0].total_approved_savings ?? 0)
+                    : 0
+                }`}
+              />
+            </div>
+            <div className="pl-3 md:col-span-6">
+              <CompletedVsOpened
+                selectedCompany={selectedCompany}
+                selectedPlant={selectedPlant}
+                dashboard={dashboard}
+              />
+            </div>
+
+            <div className="px-4 md:col-span-6">
+              <EstimatedSavingsOpportunities
                 dateRange={date}
                 selectedCompany={selectedCompany}
                 selectedPlant={selectedPlant}
+                dashboard={dashboard}
               />
             </div>
             <div className="px-4 md:col-span-12">
@@ -725,25 +842,30 @@ function Page() {
                 dateRange={date}
                 selectedPlant={selectedPlant}
                 selectedCompany={selectedCompany}
+                dashboard={dashboard}
               />
             </div>
             {/* <div className="md:col-span-6">
               <TotalEmployees selectedCompany={selectedCompany} selectedPlant={selectedPlant} />
             </div> */}
-            <div className="md:col-span-6 px-4">
-              <EstimatedSavingsOpportunities
-                dateRange={date}
-                selectedCompany={selectedCompany}
-                selectedPlant={selectedPlant}
-              />
-            </div>
-            <div className="md:col-span-6">
-              <TopEmployees
-                dateRange={date}
-                selectedCompany={selectedCompany}
-                selectedPlant={selectedPlant}
-              />
-            </div>
+            {dashboard !== 'my-dashboard' && (
+              <>
+                <div className="md:col-span-6">
+                  <TotalEstimatedSavings
+                    dateRange={date}
+                    selectedCompany={selectedCompany}
+                    selectedPlant={selectedPlant}
+                  />
+                </div>
+                <div className="md:col-span-6">
+                  <TopEmployees
+                    dateRange={date}
+                    selectedCompany={selectedCompany}
+                    selectedPlant={selectedPlant}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </ContentLayout>

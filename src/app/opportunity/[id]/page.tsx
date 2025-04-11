@@ -24,7 +24,7 @@ function Opportunity({ searchParams }: IndexPageProps) {
   const { id } = useParams();
 
   const opportunity = useQuery({
-    queryKey: ['get-opportunity'],
+    queryKey: [`get-opportunity-${id}`],
     queryFn: async (): Promise<any> => {
       return await api
         .get(`/opportunity/${id}`)
@@ -89,19 +89,19 @@ function Opportunity({ searchParams }: IndexPageProps) {
                       <Overview opportunity={opportunity.data} />
                     </TabsContent>
                     <TabsContent value="2">
-                      {opportunity.data.define_phase && <DefinePhase definePhase={opportunity.data.define_phase} />}
+                      {opportunity.data.define_phase && <DefinePhase definePhase={opportunity.data.define_phase} opportunity={opportunity.data} />}
                     </TabsContent>
                     <TabsContent value="7">
-                   {opportunity.data.ssv_tools && <SSVTools ssvTools={opportunity.data.ssv_tools} />}
+                   {opportunity.data.ssv_tools && <SSVTools ssvTools={opportunity.data.ssv_tools} opportunity={opportunity.data} />}
                     </TabsContent>
                     <TabsContent value="3">
-                      <MeasureAnalysisPhase ma={opportunity.data.measure_analysis_phase} />
+                      <MeasureAnalysisPhase opportunity={opportunity.data} ma={opportunity.data.measure_analysis_phase} />
                     </TabsContent>
                     <TabsContent value="4">
-                    {opportunity.data.improvement_phase && <ImprovementPhase improvements={opportunity.data.improvement_phase} />}
+                    {opportunity.data.improvement_phase && <ImprovementPhase improvements={opportunity.data.improvement_phase} opportunities={opportunity.data} />}
                     </TabsContent>
                     <TabsContent value="5">
-                     {opportunity.data.control_phase && <ControlPhase contol={opportunity.data.control_phase} />}
+                     {opportunity.data.control_phase && <ControlPhase contol={opportunity.data.control_phase} opportunities={opportunity.data} />}
                     </TabsContent>
                     <TabsContent value="6">
                     {opportunity.data.project_closure && <ProjectClousre projectClosure={opportunity.data.project_closure} />}

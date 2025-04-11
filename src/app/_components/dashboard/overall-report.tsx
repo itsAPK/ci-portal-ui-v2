@@ -17,7 +17,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Loading } from "@/components/ui/loading"
 import type { DateRange } from "react-day-picker"
 import { formatToIndianNumber } from "@/lib/utils"
-
+import { getCookie } from "cookies-next"
 const chartConfig = {
   total_estimated_savings: {
     label: "Estimated Savings",
@@ -56,10 +56,12 @@ export const OverallReport = ({
   dateRange,
   selectedCompany,
   selectedPlant,
+  dashboard
 }: {
   dateRange?: DateRange
   selectedCompany?: string
   selectedPlant?: string
+  dashboard: string
 }) => {
   const chartData: any = [
     {
@@ -84,10 +86,10 @@ export const OverallReport = ({
     },
   ]
 
-
+const userId = getCookie('ci-portal.employee_id');
 
   const totalOpportunities = useQuery({
-    queryKey: ["estimated-savings-by-categroy", dateRange, selectedCompany, selectedPlant],
+    queryKey: ["estimated-savings-by-categroy", dateRange, selectedCompany, selectedPlant,,dashboard],
     queryFn: async () => {
       const match: any = {
         formatted_date: {
@@ -96,6 +98,9 @@ export const OverallReport = ({
         },
         ...(selectedPlant && { "plant.name": { $regex: selectedPlant, $options: "i" } }),
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: "i" } }),
+      }
+      if (dashboard === 'my-dashboard') {
+        match['project_leader.employee_id'] = { $eq : userId };
       }
       return await api
         .post(`/opportunity/export`, {

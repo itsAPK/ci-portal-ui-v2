@@ -34,6 +34,7 @@ export function Document() {
         refetchFn={document.refetch}
         data={document.data ? document.data : []}
         pageCount={ 1}
+        total = {0}
       />
     </>
   );

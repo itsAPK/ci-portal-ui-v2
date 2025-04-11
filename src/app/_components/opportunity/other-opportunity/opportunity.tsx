@@ -219,6 +219,7 @@ export default function OtherOpportunities() {
       data={opportunities.data ? opportunities.data.data : []}
       pageCount={opportunities.data ? (opportunities.data.total_pages ?? 1) : 1}
       refetchFn={opportunities.refetch}
+      total={opportunities.data ? opportunities.data.total_items : 0}
     />
   );
 }

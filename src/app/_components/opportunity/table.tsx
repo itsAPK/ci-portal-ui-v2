@@ -21,12 +21,15 @@ import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-q
 import { getCookie } from 'cookies-next';
 import api from '@/lib/api';
 import { ExportOppurtunity } from './export';
+import { Badge } from '@/components/ui/badge';
 export const OpportunityTable = ({
   data,
   pageCount,
+  total ,
   refetchFn,
 }: {
   data: any[];
+  total : number;
   pageCount: number;
   refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
@@ -162,6 +165,7 @@ export const OpportunityTable = ({
           isServer
           refetchFn={refetchFn}
         >
+         
           <CalendarDatePicker
             date={date}
             onDateSelect={({ from, to }) => {
@@ -180,6 +184,11 @@ export const OpportunityTable = ({
             }}
             className="h-8"
           />
+           <div>
+            <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">
+              Total Opportunities: {total}
+            </Badge>
+          </div>
           {(role === 'admin' || role === 'ci_head' || role === 'ci_team') && (
             <>
               <AddOpportunity />

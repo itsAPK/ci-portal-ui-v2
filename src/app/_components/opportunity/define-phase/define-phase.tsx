@@ -5,19 +5,29 @@ import { ContentCard } from '../overview/content-card';
 import { RiBox3Fill } from '@remixicon/react';
 import { DocumentCard } from '@/components/document-card';
 import { cn } from '@/lib/utils';
-
+import { EditDefinePhase } from './edit';
+import { getCookie } from 'cookies-next';
 export const DefinePhase = ({
   definePhase,
   isReport = false,
+  opportunity,
 }: {
   definePhase: any;
   isReport?: boolean;
+  opportunity: any;
 }) => {
+  const userId = getCookie('ci-portal.user_id');
+
   return (
     <div className="py-4">
       <Card className={cn('bg-white', isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Define Phase</div>
+          {!isReport &&
+            opportunity.project_leader._id === userId &&
+            opportunity.status !== 'Opportunity Completed' && (
+              <EditDefinePhase opportunity={opportunity} />
+            )}
         </div>
         <CardContent className="overflow-y-auto p-4 pt-0">
           <div className={cn('grid grid-cols-1 gap-4 md:grid-cols-4')}>
@@ -75,13 +85,13 @@ export const DefinePhase = ({
               className="col-span-2"
               isReport={isReport}
               title={'9. Baseline'}
-              value={definePhase.baseline}
+              value={`${definePhase.baseline}  ${definePhase.baseline_uom ?? ''}`}
             />
             <ContentCard
               className="col-span-2"
               isReport={isReport}
               title={'10. Target'}
-              value={definePhase.target}
+              value={`${definePhase.target} ${definePhase.target_uom ?? ''}`}
             />
             <ContentCard
               isReport={isReport}
@@ -107,21 +117,19 @@ export const DefinePhase = ({
               value={definePhase.min_month}
               className="col-span-2"
             />{' '}
-             <ContentCard
+            <ContentCard
               isReport={isReport}
               title={'15. Response type'}
-              className='col-span-2'
+              className="col-span-2"
               value={definePhase.response_type}
             />{' '}
-              <ContentCard
+            <ContentCard
               isReport={isReport}
               title={'16. Specification'}
               className="col-span-2"
               value={definePhase.specification ?? 'Not Applicable'}
             />{' '}
-           
-          
-             <ContentCard
+            <ContentCard
               isReport={isReport}
               title={'17. Have you done ISO plot / Attribute Agreement Analysis?'}
               value={definePhase.is_iso_plot ? 'Yes' : 'No'}
@@ -139,35 +147,31 @@ export const DefinePhase = ({
               value={definePhase.conculsion}
               className="col-span-2"
             />
-             <ContentCard
+            <ContentCard
               isReport={isReport}
               title={'20.  Have you audited the process?'}
               value={definePhase.abnormalities ? 'Yes' : 'No'}
               className="col-span-2"
             />
-             <ContentCard
+            <ContentCard
               isReport={isReport}
               title={'21. Any abnormalities in the process audit?'}
               value={definePhase.abnormalities ? 'Yes' : 'No'}
               className="col-span-2"
             />
-           
             <ContentCard
               isReport={isReport}
               title={'22. Have you audited the machine and tool condition?'}
               value={definePhase.is_audited_tool_conditions ? 'Yes' : 'No'}
               className="col-span-2"
             />
-
-<ContentCard
+            <ContentCard
               isReport={isReport}
               title={'23. Any abnormalities  audited the machine and tool condition?'}
               value={definePhase.abnormalities_audited_tool_conditions ? 'Yes' : 'No'}
               className="col-span-2"
             />
-           
-           
-             <ContentCard
+            <ContentCard
               isReport={isReport}
               title={'24. Have you done p-chart?'}
               className="col-span-2"

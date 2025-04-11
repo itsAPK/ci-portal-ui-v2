@@ -18,13 +18,16 @@ import { getCookie } from 'cookies-next';
 import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 import { DeleteButton } from '@/components/delete-all-button';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 
 export const DocumentTable = ({
   data,
   pageCount,
   refetchFn,
+  total
 }: {
   data: any[];
+  total : number;
   pageCount: number;
   refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
@@ -62,8 +65,12 @@ export const DocumentTable = ({
                   toast.success('Templates Deleted Successfully');
                 }}
               />
+
             </>
           )}
+          <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">
+            Total Templates: {data.length}
+          </Badge>
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

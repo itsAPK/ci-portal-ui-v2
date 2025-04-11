@@ -1,5 +1,11 @@
 import { PencilIcon } from 'lucide-react';
-import { RiAddCircleFill, RiBox3Fill, RiDeleteBin2Fill, RiDownload2Fill, RiEyeFill } from '@remixicon/react';
+import {
+  RiAddCircleFill,
+  RiBox3Fill,
+  RiDeleteBin2Fill,
+  RiDownload2Fill,
+  RiEyeFill,
+} from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -13,12 +19,12 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Documents } from '../documents';
 import { useRouter } from 'next/navigation';
-import { ContentCard
-
- } from '../overview/content-card';
+import { ContentCard } from '../overview/content-card';
 import { cn } from '@/lib/utils';
 import { BASEURL } from '@/lib/api';
 import { formatToIndianNumber } from '../../../../lib/utils';
+import { EditControlPhase } from './edit';
+import { getCookie } from 'cookies-next';
 const data = [
   {
     source: 'Mounting height	',
@@ -42,96 +48,124 @@ const data = [
   },
 ];
 
-export const ControlPhase = ({contol,isReport = false} : {contol: any,isReport?: boolean}) => {
-  const router  = useRouter();
+export const ControlPhase = ({
+  contol,
+  opportunities,
+  isReport = false,
+}: {
+  contol: any;
+  opportunities: any;
+  isReport?: boolean;
+}) => {
+  const router = useRouter();
+  const userId = getCookie('ci-portal.user_id');
   return (
     <div className="py-4">
-      <Card className={cn('bg-white',isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
+      <Card className={cn('bg-white', isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Control Phase</div>
-          {!isReport && <Button variant="ghost-1" size={'sm'} className="gap-1" onClick={() => router.push(`${BASEURL}/files/download/${contol.document}`)}>
-            <RiDownload2Fill className="h-3 w-3" /> Download Document
-          </Button>}
+          <div className="flex gap-3">
+            {' '}
+            {!isReport && (
+              <Button
+                variant="ghost-1"
+                size={'sm'}
+                className="gap-1"
+                onClick={() => router.push(`${BASEURL}/files/download/${contol.document}`)}
+              >
+                <RiDownload2Fill className="h-3 w-3" /> Download Document
+              </Button>
+            )}
+            {!isReport &&
+              opportunities.project_leader._id === userId &&
+              opportunities.status !== 'Opportunity Completed' && (
+                <EditControlPhase opportunities={opportunities} />
+              )}
+          </div>
         </div>
         <CardContent className="overflow-y-auto p-4 pt-0">
           <Table className="w-full">
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center text-xs">Confirmed Causes </TableHead>
-                <TableHead className="text-center text-xs">Control Mechanism Implemented	</TableHead>
-                <TableHead className="text-center text-xs">Tools                </TableHead>
-           
+                <TableHead className="text-center text-xs">
+                  Control Mechanism Implemented{' '}
+                </TableHead>
+                <TableHead className="text-center text-xs">Tools </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {contol.data.map((item : any) => (
+              {contol.data.map((item: any) => (
                 <TableRow key={item.source}>
                   <TableCell className="text-center text-xs">{item.confirmed_cause}</TableCell>
                   <TableCell className="text-center text-xs">{item.mechanism}</TableCell>
                   <TableCell className="text-center text-xs">{item.contol_tools}</TableCell>
-                  
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
-      <Card className={cn('my-4 ',isReport ? 'border-none bg-white shadow-none' : 'border-gray-500/20')}>
+      <Card
+        className={cn('my-4', isReport ? 'border-none bg-white shadow-none' : 'border-gray-500/20')}
+      >
         <CardHeader>
-          <CardTitle className="text-sm">Control Response</CardTitle>
+          <CardTitle className="text-sm">Result Achived</CardTitle>
         </CardHeader>
-        <CardContent className="gap-4 text-sm grid grid-cols-4">
+        <CardContent className="grid grid-cols-4 gap-4 text-sm">
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'Baseline'}
             value={contol.control_response.baseline}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'Target'}
             value={contol.control_response.target}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'Actual'}
             value={contol.control_response.actual}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'UOM'}
             value={contol.control_response.uom}
-            icon={<RiBox3Fill className="h-4 w-4" />}/>
+            icon={<RiBox3Fill className="h-4 w-4" />}
+          />
         </CardContent>
       </Card>
-      <Card className={cn('my-4',isReport ? 'border-none bg-white shadow-none' : 'border-gray-500/20')}>
-      <CardHeader>
-        <CardTitle className="text-sm">Savings</CardTitle>
-      </CardHeader>
-        <CardContent className="gap-4 text-sm grid grid-cols-3">
+      <Card
+        className={cn('my-4', isReport ? 'border-none bg-white shadow-none' : 'border-gray-500/20')}
+      >
+        <CardHeader>
+          <CardTitle className="text-sm">Savings</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-3 gap-4 text-sm">
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'Estimated'}
             value={`Rs ${formatToIndianNumber(contol.control_cost.estimated)}`}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'Actual'}
             value={`Rs ${formatToIndianNumber(contol.control_cost.actual)}`}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
           <ContentCard
-          isReport={isReport}
+            isReport={isReport}
             title={'UOM'}
             value={contol.control_cost.uom}
             icon={<RiBox3Fill className="h-4 w-4" />}
           />
         </CardContent>
       </Card>
-    
     </div>
   );
 };

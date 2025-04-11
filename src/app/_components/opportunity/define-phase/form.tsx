@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { DefinePhaseSchema, definePhaseSchema } from '@/schema/opportunity';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Select } from '@/components/ui/select';
 
 export interface DefinePhaseFormProps {
   onSubmit: (data: DefinePhaseSchema) => void;
@@ -37,6 +38,7 @@ export const DefinePhaseForm = ({
   isoPlotFile,
   pChartFile,
   conentractionChartFile,
+  mode,
   processFlowDiagram,
   departmentKPI,
   lastSixMonthsTrend,
@@ -49,9 +51,23 @@ export const DefinePhaseForm = ({
   });
   console.log(form.formState.errors);
   const [file, setFile] = useState<File[] | null>([]);
-  const [is_iso_plot, is_p_chart_done, is_conecentration,abnormalities_audited_tool_conditions,abnormalities] = useWatch({
+  const [
+    is_iso_plot,
+    is_p_chart_done,
+    is_conecentration,
+    abnormalities_audited_tool_conditions,
+    abnormalities,
+    response_type,
+  ] = useWatch({
     control: form.control,
-    name: ['is_iso_plot', 'is_p_chart_done', 'is_conecentration','abnormalities_audited_tool_conditions','abnormalities'],
+    name: [
+      'is_iso_plot',
+      'is_p_chart_done',
+      'is_conecentration',
+      'abnormalities_audited_tool_conditions',
+      'abnormalities',
+      'response_type',
+    ],
   });
   return (
     <FormWrapper form={form} onSubmit={form.handleSubmit(onSubmit)}>
@@ -64,7 +80,7 @@ export const DefinePhaseForm = ({
               control={form.control}
               label="1. Part number/Machine/Customer/Supplier selected for study"
             />
-            
+
             <FormFieldInput
               type="text"
               name="part_having_problem"
@@ -90,7 +106,7 @@ export const DefinePhaseForm = ({
               control={form.control}
               label="5. Suspected last manufacturing stage where the problem is generated"
             />
-             <FormFieldInput
+            <FormFieldInput
               type="text"
               name="process_stage"
               control={form.control}
@@ -107,10 +123,46 @@ export const DefinePhaseForm = ({
               name="no_streams"
               label="8. Number of Streams within each Machine"
             />
-           
+
             <div className="grid grid-cols-2 gap-4">
-              <FormFieldInput control={form.control} type="text" name="baseline" label="9. Baseline" />
+              <div className="grid grid-cols-2 gap-4">
+                <FormFieldInput
+                  control={form.control}
+                  type="text"
+                  name="baseline"
+                  label="9. Baseline"
+                />
+                <div className="pt-6">
+                  <SelectField
+                    control={form.control}
+                    name="baseline_uom"
+                    label=""
+                    placeholder="UOM"
+                    options={[
+                      { value: 'PPM', label: 'PPM' },
+                      { value: '%', label: '%' },
+                      { value: 'Nos', label: 'Nos' },
+                    ]}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
               <FormFieldInput control={form.control} type="text" name="target" label="10. Target" />
+
+                <div className="pt-6">
+                  <SelectField
+                    control={form.control}
+                    name="target_uom"
+                    label=""
+                    placeholder="UOM"
+                    options={[
+                      { value: 'PPM', label: 'PPM' },
+                      { value: '%', label: '%' },
+                      { value: 'Nos', label: 'Nos' },
+                    ]}
+                  />
+                </div>
+              </div>
               <FormFieldInput
                 control={form.control}
                 type="text"
@@ -144,14 +196,15 @@ export const DefinePhaseForm = ({
                   { value: 'Attribute', label: 'Attribute' },
                 ]}
               />
-             
+
               <FormFieldInput
                 type="text"
                 name="specification"
                 label="16. Specification"
                 className="col-span-1"
+                disabled={response_type === 'Attribute'}
               />
-               <SelectField
+              <SelectField
                 control={form.control}
                 name="is_iso_plot"
                 label="17. Have you done ISO plot / Attribute Agreement Analysis?"
@@ -185,31 +238,34 @@ export const DefinePhaseForm = ({
                   { value: 'No', label: 'No' },
                 ]}
               />
-               <SelectField
+              <SelectField
                 control={form.control}
                 name="abnormalities"
                 label="21. Any abnormality in the process audit?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
-                ]}/>
-                
-                <SelectField
+                ]}
+              />
+
+              <SelectField
                 control={form.control}
                 name="is_audited_tool_conditions"
                 label="22. Have you audited the machine and tool condition?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
-                ]}/>
-                <SelectField
+                ]}
+              />
+              <SelectField
                 control={form.control}
                 name="abnormalities_audited_tool_conditions"
-                label="23. Any abnormalities audited the machine and tool condition?"
+                label="23. ⁠Any abnormalities in the machine and tool condition audit?"
                 options={[
                   { value: 'Yes', label: 'Yes' },
                   { value: 'No', label: 'No' },
-                ]}/>
+                ]}
+              />
               <SelectField
                 control={form.control}
                 name="is_p_chart_done"
@@ -219,11 +275,10 @@ export const DefinePhaseForm = ({
                   { value: 'No', label: 'No' },
                 ]}
               />
-              
             </div>
           </div>
         </div>
-        <div className="col-span-4 grid grid-cols-3 gap-4 py-3">
+       { mode ==='create' && <div className="col-span-4 grid grid-cols-3 gap-4 py-3">
           <div className="flex flex-col gap-2">
             <Label className="-mb-2 px-2">Department KPI </Label>
             <FileUploader
@@ -500,109 +555,105 @@ export const DefinePhaseForm = ({
               </FileUploader>
             </div>
           )}
-         {
-           abnormalities === 'Yes' && (
+          {abnormalities === 'Yes' && (
             <div className="flex flex-col gap-2">
-               <Label className="-mb-2 px-2">Quick Win of Abnormalities </Label>
-               <FileUploader
-                 value={quickWinForAbnormalities ? quickWinForAbnormalities[0] : []}
-                 onValueChange={async (file: any) => {
-                   if (quickWinForAbnormalities) {
-                     quickWinForAbnormalities[1](file);
-                   }
-                 }}
-                 dropzoneOptions={{
-                   maxFiles: 1,
-                   maxSize: 1024 * 1024 * 1,
-                   multiple: false,
-                   accept: {
-                     'application/pdf': ['.pdf'],
-                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
-                       '.docx',
-                     ],
-                     'image/png': ['.png'],
-                     'image/jpg': ['.jpg'],
-                     'image/jpeg': ['.jpeg'],
-                   },
-                 }}
-                 className="relative rounded-lg bg-white p-2"
-               >
-                 <FileInput className="outline-dashed outline-1 outline-white">
-                   <div className="flex w-full flex-col pb-2 pt-3">
-                     <FileUploadText
-                       label={'Browse File'}
-                       description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
-                     />
-                   </div>
-                 </FileInput>
-                 <FileUploaderContent>
-                   {quickWinForAbnormalities &&
-                     quickWinForAbnormalities[0] &&
-                     quickWinForAbnormalities[0].length > 0 &&
-                     quickWinForAbnormalities[0].map((file, i) => (
-                       <FileUploaderItem key={i} index={i}>
-                         <Paperclip className="h-4 w-4 stroke-current" />
-                         <span>{file.name}</span>
-                       </FileUploaderItem>
-                     ))}
-                 </FileUploaderContent>
-               </FileUploader>
-             </div>
-           )
-         }
-         {
-           abnormalities_audited_tool_conditions === 'Yes' && (
+              <Label className="-mb-2 px-2">Quick Win of Abnormalities </Label>
+              <FileUploader
+                value={quickWinForAbnormalities ? quickWinForAbnormalities[0] : []}
+                onValueChange={async (file: any) => {
+                  if (quickWinForAbnormalities) {
+                    quickWinForAbnormalities[1](file);
+                  }
+                }}
+                dropzoneOptions={{
+                  maxFiles: 1,
+                  maxSize: 1024 * 1024 * 1,
+                  multiple: false,
+                  accept: {
+                    'application/pdf': ['.pdf'],
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                      '.docx',
+                    ],
+                    'image/png': ['.png'],
+                    'image/jpg': ['.jpg'],
+                    'image/jpeg': ['.jpeg'],
+                  },
+                }}
+                className="relative rounded-lg bg-white p-2"
+              >
+                <FileInput className="outline-dashed outline-1 outline-white">
+                  <div className="flex w-full flex-col pb-2 pt-3">
+                    <FileUploadText
+                      label={'Browse File'}
+                      description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                    />
+                  </div>
+                </FileInput>
+                <FileUploaderContent>
+                  {quickWinForAbnormalities &&
+                    quickWinForAbnormalities[0] &&
+                    quickWinForAbnormalities[0].length > 0 &&
+                    quickWinForAbnormalities[0].map((file, i) => (
+                      <FileUploaderItem key={i} index={i}>
+                        <Paperclip className="h-4 w-4 stroke-current" />
+                        <span>{file.name}</span>
+                      </FileUploaderItem>
+                    ))}
+                </FileUploaderContent>
+              </FileUploader>
+            </div>
+          )}
+          {abnormalities_audited_tool_conditions === 'Yes' && (
             <div className="flex flex-col gap-2">
-               <Label className="-mb-2 px-2">Quick Win of Audited Machine & Tool Conditions </Label>
-               <FileUploader
-                 value={quickWinForToolConditions ? quickWinForToolConditions[0] : []}
-                 onValueChange={async (file: any) => {
-                   if (quickWinForToolConditions) {
-                     quickWinForToolConditions[1](file);
-                   }
-                 }}
-                 dropzoneOptions={{
-                   maxFiles: 1,
-                   maxSize: 1024 * 1024 * 1,
-                   multiple: false,
-                   accept: {
-                     'application/pdf': ['.pdf'],
-                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
-                       '.docx',
-                     ],
-                     'image/png': ['.png'],
-                     'image/jpg': ['.jpg'],
-                     'image/jpeg': ['.jpeg'],
-                   },
-                 }}
-                 className="relative rounded-lg bg-white p-2"
-               >
-                 <FileInput className="outline-dashed outline-1 outline-white">
-                   <div className="flex w-full flex-col pb-2 pt-3">
-                     <FileUploadText
-                       label={'Browse File'}
-                       description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
-                     />
-                   </div>
-                 </FileInput>
-                 <FileUploaderContent>
-                   {quickWinForToolConditions &&
-                     quickWinForToolConditions[0] &&
-                     quickWinForToolConditions[0].length > 0 &&
-                     quickWinForToolConditions[0].map((file, i) => (
-                       <FileUploaderItem key={i} index={i}>
-                         <Paperclip className="h-4 w-4 stroke-current" />
-                         <span>{file.name}</span>
-                       </FileUploaderItem>
-                     ))}
-                 </FileUploaderContent>
-               </FileUploader>
-             </div>
-           )
-         }
-        </div>
+              <Label className="-mb-2 px-2">Quick Win of Audited Machine & Tool Conditions </Label>
+              <FileUploader
+                value={quickWinForToolConditions ? quickWinForToolConditions[0] : []}
+                onValueChange={async (file: any) => {
+                  if (quickWinForToolConditions) {
+                    quickWinForToolConditions[1](file);
+                  }
+                }}
+                dropzoneOptions={{
+                  maxFiles: 1,
+                  maxSize: 1024 * 1024 * 1,
+                  multiple: false,
+                  accept: {
+                    'application/pdf': ['.pdf'],
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+                      '.docx',
+                    ],
+                    'image/png': ['.png'],
+                    'image/jpg': ['.jpg'],
+                    'image/jpeg': ['.jpeg'],
+                  },
+                }}
+                className="relative rounded-lg bg-white p-2"
+              >
+                <FileInput className="outline-dashed outline-1 outline-white">
+                  <div className="flex w-full flex-col pb-2 pt-3">
+                    <FileUploadText
+                      label={'Browse File'}
+                      description="Max file size is 1MB,  Suitable files are  .jpg, .png, .jpeg"
+                    />
+                  </div>
+                </FileInput>
+                <FileUploaderContent>
+                  {quickWinForToolConditions &&
+                    quickWinForToolConditions[0] &&
+                    quickWinForToolConditions[0].length > 0 &&
+                    quickWinForToolConditions[0].map((file, i) => (
+                      <FileUploaderItem key={i} index={i}>
+                        <Paperclip className="h-4 w-4 stroke-current" />
+                        <span>{file.name}</span>
+                      </FileUploaderItem>
+                    ))}
+                </FileUploaderContent>
+              </FileUploader>
+            </div>
+          )}
+        </div>}
       </div>
       <div className="flex justify-end">
         <Button type="submit" className="btn-primary" disabled={form.formState.isSubmitting}>

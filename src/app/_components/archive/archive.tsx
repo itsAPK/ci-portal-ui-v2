@@ -161,6 +161,7 @@ export function Archive() {
     </div> 
     <TotalCumulative/>
       <ArchiveTable
+      total={archive.data ? archive.data.total_items : 0}
         refetchFn={archive.refetch}
         data={archive.data ? archive.data.data : []}
         pageCount={archive.data ? (archive.data.total_pages ?? 1) : 1}

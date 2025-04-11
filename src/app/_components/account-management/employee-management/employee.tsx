@@ -202,6 +202,7 @@ export default function Employee() {
                 data={employee.data ? employee.data.data : []}
                 pageCount={employee.data ? (employee.data.total_pages ?? 1) : 1}
                 refetch={employee.refetch}
+                total={employee.data ? employee.data.total_items : 0}
               />
             </div>
           </CardContent>

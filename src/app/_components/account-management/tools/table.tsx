@@ -16,13 +16,15 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { Tools } from '@/schema/tools';
 import { DeleteButton } from '@/components/delete-all-button';
 import { toast } from 'sonner';
-
+import { Badge } from '@/components/ui/badge';
 export const ToolsTable = ({
   data,
   pageCount,
+  total,
   refetch,
 }: {
   data: Tools[];
+  total : number;
   pageCount: number;
   refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
@@ -85,6 +87,9 @@ export const ToolsTable = ({
               />
             </>
           )}
+          <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">
+            Total Tools: {total}
+          </Badge>
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

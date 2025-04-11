@@ -105,6 +105,8 @@ export default function Tools() {
                 data={tools.data ? tools.data.data : []}
                 pageCount={tools.data ? (tools.data.total_pages ?? 1) : 1}
                 refetch={tools.refetch}
+                total={tools.data ? tools.data.total_items : 0}
+
               />
             </div>
           </CardContent>

@@ -19,13 +19,16 @@ import { RefetchOptions, QueryObserverResult } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { DeleteButton } from '@/components/delete-all-button';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 
 export const ArchiveTable = ({
   data,
   pageCount,
   refetchFn,
+  total
 }: {
   data: any[];
+  total : number;
   pageCount: number;
   refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
@@ -125,6 +128,9 @@ export const ArchiveTable = ({
               />
             </>
           )}
+          <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">
+            Total Archives: {total}
+          </Badge>
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

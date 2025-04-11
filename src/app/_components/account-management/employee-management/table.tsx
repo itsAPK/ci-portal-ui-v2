@@ -23,14 +23,17 @@ import api from '@/lib/api';
 import { toast } from 'sonner';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { DeleteButton } from '@/components/delete-all-button';
+import { Badge } from '@/components/ui/badge';
 
 export const EmployeeTable = ({
   data,
   pageCount,
   refetch,
+  total
 }: {
   data: Employee[];
   pageCount: number;
+  total : number;
   refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
   const filterFields: DataTableFilterField<Employee>[] = [
@@ -169,6 +172,9 @@ export const EmployeeTable = ({
           {role && ['admin', 'ci_head', 'ci_team', 'hod', 'lof'].includes(role.toString()) && (
             <ExportEmployee />
           )}
+          <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">  
+            Total Employees: {total}
+          </Badge>
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

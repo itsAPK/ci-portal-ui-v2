@@ -27,12 +27,12 @@ import {
   FileUploadText,
 } from '@/components/ui/file-upload';
 
-export const SSVTools = ({ opportunities }: { opportunities: any }) => {
+export const EditSSVTools = ({ opportunities }: { opportunities: any }) => {
   const [open, setOpen] = useState(false);
   const role = getCookie('ci-portal.role');
   const plant = getCookie('ci-portal.plant');
   const userId = getCookie('ci-portal.user_id');
-  const [ssvTools, setSSVTools] = useState<any>([]);
+  const [ssvTools, setSSVTools] = useState<any>(opportunities.ssv_tools ? opportunities.ssv_tools.data : []);
   const [isFromOpen, setIsFromOpen] = useState(false);
   const [file, setFile] = useState<File[] | null>([]);
   const queryClient = useQueryClient();
@@ -48,7 +48,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
   };
 
   const addSSVTools = useMutation({
-    mutationKey: ['add-ssv-tools'],
+    mutationKey: ['update-ssv-tools'],
     mutationFn: async () => {
       if (ssvTools.length === 0) {
         throw new Error('Please add SSV Tools');
@@ -57,27 +57,13 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
     
 
       const data = await api
-        .post(`/opportunity/ssv-tool/${opportunities._id.$oid}`, ssvTools)
+        .patch(`/opportunity/ssv-tool/${opportunities._id}`, ssvTools)
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
           return res.data;
         });
 
-     if(file && file.length>0) {  
-      const formData = new FormData();
-      formData.append('file', file[0]);
-      await api
-        .post(`/opportunity/ssv-tool/upload/${opportunities._id.$oid}`, formData)
-        .then((res) => {
-          return res.data;
-        })
-        .then((res) => {
-          toast.success('Document uploaded successfully', {
-            icon: <CheckCircle className="h-4 w-4" />,
-          });
-          return res.data;
-        });}
-
+    
       return data;
     },
     onError: (error: any) => {
@@ -98,7 +84,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
         icon: <CheckCircle className="h-4 w-4" />,
       });
       queryClient.refetchQueries({
-        queryKey: ['get-opportunities'],
+        queryKey: [`get-opportunity-${opportunities._id}`],
       });
     },
   });
@@ -106,14 +92,14 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="link" size={'sm'} className="gap-2">
+        <Button variant="ghost-1" size={'sm'} className="gap-2">
           <RiToolsFill className="h-4 w-4" />
-          SSV's & Tools Selection
+        Edit SSV's & Tools Selection
         </Button>
       </DialogTrigger>
       <DialogContent className="min-w-xl min-h-[300px] max-w-[1000px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>SSV's & Tools</DialogTitle>
+          <DialogTitle>Edit SSV's & Tools</DialogTitle>
         </DialogHeader>
 
         {!isFromOpen && (
@@ -150,15 +136,15 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
                     <TableCell className="text-center text-xs">{item.suspected_source}</TableCell>
                     <TableCell className="text-center text-xs flex flex-wrap gap-2 justify-center">{item.tools.map((i: any) => <Badge variant={'ghost'} key={i}>{i}</Badge>)}</TableCell>
                     <TableCell className="text-center text-xs">{item.type_of_ssv}</TableCell>
-                    <TableCell className="flex gap-1">
-                      {userId === opportunities.project_leader._id.$oid && (
+                    <TableCell className="flex gap-1 -mt-3 ">
+                      {userId === opportunities.project_leader._id && (
                         <>
                           <Button
                             variant="destructive-ghost"
                             size={'sm'}
                             className="flex h-6 gap-2"
                             onClick={() =>
-                              setSSVTools(ssvTools.filter((i: any) => i.id !== item.id))
+                              setSSVTools(ssvTools.filter((i: any) => i.suspected_source !== item.suspected_source))
                             }
                           >
                             <RiDeleteBin2Fill className="h-3 w-3" /> Remove
@@ -166,6 +152,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
                         </>
                       )}
                     </TableCell>
+                 
                   </TableRow>
                 ))
               ) : (
@@ -179,49 +166,7 @@ export const SSVTools = ({ opportunities }: { opportunities: any }) => {
           </Table>
         </div>
         <div>
-          <div className="col-span-4 border-b py-3">
-            <FileUploader
-              value={file}
-              onValueChange={async (file: any) => {
-                setFile(file);
-              }}
-              dropzoneOptions={{
-                maxFiles: 1,
-                maxSize: 1024 * 1024 * 5,
-                multiple: false,
-                accept: {
-                  'application/pdf': ['.pdf'],
-                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
-                    '.docx',
-                  ],
-                  'image/png': ['.png'],
-                  'image/jpg': ['.jpg'],
-                  'image/jpeg': ['.jpeg'],
-                },
-              }}
-              className="relative rounded-lg bg-white p-2"
-            >
-              <FileInput className="outline-dashed outline-1 outline-white">
-                <div className="flex w-full flex-col">
-                  <FileUploadText
-                    label={'Browse File'}
-                    description="Max file size is 5MB,  Suitable files are .pdf, .xlsx, .docx, .jpg, .png, .jpeg"
-                  />
-                </div>
-              </FileInput>
-              <FileUploaderContent>
-                {file &&
-                  file.length > 0 &&
-                  file.map((file, i) => (
-                    <FileUploaderItem key={i} index={i}>
-                      <Paperclip className="h-4 w-4 stroke-current" />
-                      <span>{file.name}</span>
-                    </FileUploaderItem>
-                  ))}
-              </FileUploaderContent>
-            </FileUploader>
-          </div>
+       
           <div className="flex justify-end pt-5">
             <Button
               variant="ghost-1"

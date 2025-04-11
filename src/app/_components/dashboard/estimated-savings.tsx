@@ -23,7 +23,7 @@ import {
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { DateRange } from 'react-day-picker';
-
+import { getCookie } from 'cookies-next';
 interface OriginalData {
   _id: string;
   total_opportunities: number;
@@ -88,13 +88,16 @@ export function EstimatedSavingsOpportunities({
   dateRange,
   selectedCompany,
   selectedPlant,
+  dashboard
 }: {
   dateRange?: DateRange;
   selectedCompany?: string;
   selectedPlant?: string;
+  dashboard: string
 }) {
+  const userId = getCookie('ci-portal.employee_id');
   const estimatedSavings = useQuery({
-    queryKey: ['estimated-savings', dateRange, selectedCompany, selectedPlant],
+    queryKey: ['estimated-savings', dateRange, selectedCompany, selectedPlant,,dashboard],
     queryFn: async () => {
       const match: any = {
         formatted_date: {
@@ -104,6 +107,9 @@ export function EstimatedSavingsOpportunities({
         ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
       };
+      if (dashboard === 'my-dashboard') {
+        match['project_leader.employee_id'] = { $eq : userId };
+      }
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -139,7 +145,7 @@ export function EstimatedSavingsOpportunities({
 
   console.log(estimatedSavings.data);
   return (
-    <Card className="border-primary/50">
+    <Card className="border-primary/50 ">
       <CardHeader className="pb-0">
         <CardTitle>Opprtunities By Estimated Savings</CardTitle>
       </CardHeader>

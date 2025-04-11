@@ -7,7 +7,7 @@ import { Shell } from '@/components/ui/shell';
 
 import { DataTableFilterField } from '@/types';
 import { DataTableAdvancedToolbar } from '@/components/data-table/toolbar';
-
+import { Badge } from '@/components/ui/badge';
 import { useSearchParams, usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { DateRange } from 'react-day-picker';
@@ -21,12 +21,15 @@ import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-q
 import { getCookie } from 'cookies-next';
 import api from '@/lib/api';
 import { ExportOppurtunity } from '../export';
+import Opportunities from '../opportunity';
 export const OpportunityTable = ({
   data,
   pageCount,
   refetchFn,
+  total
 }: {
   data: any[];
+  total : number;
   pageCount: number;
   refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
@@ -129,6 +132,9 @@ export const OpportunityTable = ({
               <ExportOppurtunity />
             </>
           )}
+            <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">  
+            Total Opportunities: {total}
+          </Badge>
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>

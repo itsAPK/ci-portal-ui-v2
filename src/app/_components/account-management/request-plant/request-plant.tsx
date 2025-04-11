@@ -1,7 +1,7 @@
 import { ContentLayout } from '@/components/content-layout';
 import { DataTableSkeleton } from '@/components/data-table/skeleton';
 import UILayout from '@/components/ui-layout';
-import { opportunities, tools , requestPlant} from '@/lib/data';
+import { opportunities, tools, requestPlant } from '@/lib/data';
 import React from 'react';
 import { RequestPlantTable } from './table';
 import { Card, CardContent } from '@/components/ui/card';
@@ -34,11 +34,11 @@ export default function RequestPlant() {
           ? (() => {
               const parsed = parseFilterInput(params.get('employee_name') as string);
               return parsed
-                ?   buildFilter({
-                  column: 'employee.name',
-                  operator: parsed.operator,
-                  value: parsed.value,
-                })
+                ? buildFilter({
+                    column: 'employee.name',
+                    operator: parsed.operator,
+                    value: parsed.value,
+                  })
                 : undefined;
             })()
           : undefined,
@@ -54,7 +54,7 @@ export default function RequestPlant() {
                 : undefined;
             })()
           : undefined,
-          params.get('requested_plant')
+        params.get('requested_plant')
           ? (() => {
               const parsed = parseFilterInput(params.get('requested_plant') as string);
               return parsed
@@ -66,7 +66,7 @@ export default function RequestPlant() {
                 : undefined;
             })()
           : undefined,
-          params.get('status')
+        params.get('status')
           ? (() => {
               const parsed = parseFilterInput(params.get('status') as string);
               return parsed
@@ -130,7 +130,12 @@ export default function RequestPlant() {
           </div>
           <CardContent className="overflow-y-auto p-4 pt-0">
             <div className="w-full">
-              <RequestPlantTable refetchFn={requestPlant.refetch} data={requestPlant.data ? requestPlant.data.data : []} pageCount={requestPlant.data ? requestPlant.data.page_count : 1} />
+              <RequestPlantTable
+              total ={requestPlant.data ? requestPlant.data.total_items : 0}
+                refetchFn={requestPlant.refetch}
+                data={requestPlant.data ? requestPlant.data.data : []}
+                pageCount={requestPlant.data ? requestPlant.data.page_count : 1}
+              />
             </div>
           </CardContent>
         </Card>

@@ -205,6 +205,7 @@ export function Training() {
                 data={training.data ? training.data.data : []}
                 pageCount={training.data ? (training.data.total_pages ?? 1) : 1}
                 refetchFn={training.refetch}
+                total={training.data ? training.data.total_items : 0}
               />
             </div>
         

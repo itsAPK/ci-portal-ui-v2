@@ -1,21 +1,11 @@
 'use client';
-import { ContentLayout } from '@/components/content-layout';
-import { DataTableSkeleton } from '@/components/data-table/skeleton';
-import UILayout from '@/components/ui-layout';
-import { opportunities, tools } from '@/lib/data';
 import React from 'react';
 import { OpportunityTable } from './table';
-import { Card, CardContent } from '@/components/ui/card';
 import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { parseFilterInput, buildFilter, parseSort } from '@/lib/filter-parser';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BussinessUnit } from '../portal-management/bussiness-unit/bussiness-unit';
-import { Company } from '../portal-management/company/company';
-import { Department } from '../portal-management/department/department';
-import { Plant } from '../portal-management/plant/plant';
-
+import { OpportunityByStatus } from './opportunity-by-status';
 export default function Opportunities() {
   const params = useSearchParams();
 
@@ -72,7 +62,7 @@ export default function Opportunities() {
                 : undefined;
             })()
           : undefined,
-      
+
         params.get('project_type')
           ? (() => {
               const parsed = parseFilterInput(params.get('project_type') as string);
@@ -171,17 +161,14 @@ export default function Opportunities() {
           : undefined,
       ].filter(Boolean);
 
-      const filters = [...expressions,   { category: 'Black Belt' },];
+      const filters = [...expressions, { category: 'Black Belt' }];
       if (params.get('from') && params.get('to')) {
-        filters.push(
-          {
-            formatted_date: {
-              $gte: new Date(params.get('from') as string),
-              $lte: new Date(params.get('to') as string),
-            },
+        filters.push({
+          formatted_date: {
+            $gte: new Date(params.get('from') as string),
+            $lte: new Date(params.get('to') as string),
           },
-       
-        );
+        });
       }
       let data: any = {
         filter: [
@@ -223,10 +210,15 @@ export default function Opportunities() {
   });
 
   return (
-    <OpportunityTable
-      data={opportunities.data ? opportunities.data.data : []}
-      pageCount={opportunities.data ? (opportunities.data.total_pages ?? 1) : 1}
-      refetchFn={opportunities.refetch}
-    />
+    <>
+      <OpportunityByStatus />
+      <OpportunityTable
+        data={opportunities.data ? opportunities.data.data : []}
+        pageCount={opportunities.data ? (opportunities.data.total_pages ?? 1) : 1}
+        refetchFn={opportunities.refetch}
+        total={opportunities.data ? opportunities.data.total_items : 0}
+
+      />
+    </>
   );
 }

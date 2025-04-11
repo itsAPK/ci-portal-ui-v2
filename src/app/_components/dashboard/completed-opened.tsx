@@ -20,6 +20,7 @@ import {
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { Loading } from '@/components/ui/loading';
+import { getCookie } from 'cookies-next';
 interface MonthlyData {
   month: string;
   ongoing: number;
@@ -66,17 +67,23 @@ const chartConfig = {
 export function CompletedVsOpened({
   selectedCompany,
   selectedPlant,
+  dashboard
 }: {
   selectedCompany?: string;
   selectedPlant?: string;
+  dashboard: string
 }) {
+  const userId = getCookie('ci-portal.employee_id');
   const totalData = useQuery({
-    queryKey: ['completed-vs-ongoing', selectedCompany, selectedPlant],
+    queryKey: ['completed-vs-ongoing', selectedCompany, selectedPlant,,dashboard],
     queryFn: async () => {
       const match: any = {
         ...(selectedPlant && { 'plant.name': { $regex: selectedPlant, $options: 'i' } }), // Regex for plant.name
         ...(selectedCompany && { company: { $regex: selectedCompany, $options: 'i' } }),
       };
+      if (dashboard === 'my-dashboard') {
+        match['project_leader.employee_id'] = { $eq : userId };
+      }
       return await api
         .post(`/opportunity/export`, {
           filter: [
@@ -147,7 +154,7 @@ export function CompletedVsOpened({
 
   console.log(totalData.data);
   return (
-    <Card className="h-[350px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
+    <Card className="h-[380px] overflow-y-auto rounded-xl border-primary/50 shadow-none">
       <CardHeader>
         <CardTitle>Total Project Completed vs Ongoing</CardTitle>
       </CardHeader>

@@ -82,6 +82,8 @@ export const definePhaseSchema = z.object({
   abnormalities : z.any(),
   is_audited_tool_conditions : z.any(),
   abnormalities_audited_tool_conditions : z.any(),
+  target_uom : z.string(),
+  baseline_uom : z.string(),
 });
 
 export type DefinePhaseSchema = z.infer<typeof definePhaseSchema>;

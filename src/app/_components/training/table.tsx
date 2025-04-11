@@ -29,12 +29,15 @@ import { toast } from 'sonner';
 import { FileUploadDialog } from '@/components/file-upload-dialog';
 import { getCookie } from 'cookies-next';
 import { DeleteButton } from '@/components/delete-all-button';
+import { Badge } from '@/components/ui/badge';
 export const TrainingTable = ({
   data,
   pageCount,
   refetchFn,
+  total
 }: {
   data: any[];
+  total : number;
   pageCount: number;
   refetchFn: (options?: RefetchOptions) => Promise<QueryObserverResult<any, Error>>;
 }) => {
@@ -197,9 +200,15 @@ export const TrainingTable = ({
               <DeleteButton title="Delete Certified Belts" deleteUrl="/training/erase-all" onDeleteSuccess={onDeleteSuccess} />
             </>
           )}
+          <div>
+            <Badge variant={'ghost'} className="text-xs h-8 rounded-full font-bold">
+              Total Certified Belts: {total}
+            </Badge>
+          </div>
           {
             ['admin', 'ci_team', 'ci_head','hod','lof'].includes(role) && <ExportTraining />
           }
+
         </DataTableAdvancedToolbar>
       </DataTable>
     </Shell>
