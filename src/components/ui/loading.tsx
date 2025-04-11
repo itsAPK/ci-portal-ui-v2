@@ -5,6 +5,7 @@ import { useLoading, ThreeDots } from '@agney/react-loading';
 export const Loading = () => {
   const { containerProps, indicatorEl } = useLoading({
     loading: true,
+    //@ts-ignore
     indicator: <ThreeDots width="50" className="text-primary" />,
   });
     return(

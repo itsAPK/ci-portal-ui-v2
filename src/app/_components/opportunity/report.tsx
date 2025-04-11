@@ -127,18 +127,18 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
                   <DefinePhase opportunity={opportunity} definePhase={opportunity.data.define_phase} isReport />
                 )}
                 {selectedItems.includes('SSV Tools') && opportunity.data.ssv_tools && (
-                  <SSVTools opportunity={opportunity} d ssvTools={opportunity.data.ssv_tools} isReport />
+                  <SSVTools opportunity={opportunity}  ssvTools={opportunity.data.ssv_tools} isReport />
                 )}
                 {selectedItems.includes('Measure Analysis Phase') &&
                   opportunity.data.measure_analysis_phase && (
-                    <MeasureAnalysisPhase opportunity={opportunity} d ma={opportunity.data.measure_analysis_phase} isReport />
+                    <MeasureAnalysisPhase opportunity={opportunity}  ma={opportunity.data.measure_analysis_phase} isReport />
                   )}
                 {selectedItems.includes('Improvement Phase') &&
                   opportunity.data.improvement_phase && (
-                    <ImprovementPhase opportunity={opportunity} d improvements={opportunity.data.improvement_phase} isReport />
+                    <ImprovementPhase opportunities={opportunity}  improvements={opportunity.data.improvement_phase} isReport />
                   )}
                 {selectedItems.includes('Control Phase') && opportunity.data.control_phase && (
-                  <ControlPhase opportunity={opportunity} d contol={opportunity.data.control_phase} isReport />
+                  <ControlPhase opportunities={opportunity}  contol={opportunity.data.control_phase} isReport />
                 )}
                 {selectedItems.includes('Project Closure') && opportunity.data.project_closure && (
                   <ProjectClousre projectClosure={opportunity.data.project_closure} isReport />
