@@ -124,21 +124,21 @@ export const Report = ({ opportunity }: { opportunity: any }) => {
                   <Overview opportunity={opportunity.data} isReport />
                 )}
                 {selectedItems.includes('Define Phase') && opportunity.data.define_phase && (
-                  <DefinePhase definePhase={opportunity.data.define_phase} isReport />
+                  <DefinePhase opportunity={opportunity} definePhase={opportunity.data.define_phase} isReport />
                 )}
                 {selectedItems.includes('SSV Tools') && opportunity.data.ssv_tools && (
-                  <SSVTools ssvTools={opportunity.data.ssv_tools} isReport />
+                  <SSVTools opportunity={opportunity} d ssvTools={opportunity.data.ssv_tools} isReport />
                 )}
                 {selectedItems.includes('Measure Analysis Phase') &&
                   opportunity.data.measure_analysis_phase && (
-                    <MeasureAnalysisPhase ma={opportunity.data.measure_analysis_phase} isReport />
+                    <MeasureAnalysisPhase opportunity={opportunity} d ma={opportunity.data.measure_analysis_phase} isReport />
                   )}
                 {selectedItems.includes('Improvement Phase') &&
                   opportunity.data.improvement_phase && (
-                    <ImprovementPhase improvements={opportunity.data.improvement_phase} isReport />
+                    <ImprovementPhase opportunity={opportunity} d improvements={opportunity.data.improvement_phase} isReport />
                   )}
                 {selectedItems.includes('Control Phase') && opportunity.data.control_phase && (
-                  <ControlPhase contol={opportunity.data.control_phase} isReport />
+                  <ControlPhase opportunity={opportunity} d contol={opportunity.data.control_phase} isReport />
                 )}
                 {selectedItems.includes('Project Closure') && opportunity.data.project_closure && (
                   <ProjectClousre projectClosure={opportunity.data.project_closure} isReport />
