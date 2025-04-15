@@ -55,7 +55,7 @@ export const OpportunityByStatus = () => {
       </CardHeader>
       <CardContent className="overflow-x-auto">
         {!beltsQuery.isLoading ? (
-          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+          <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <AreaChart
               accessibilityLayer
               data={
@@ -67,8 +67,8 @@ export const OpportunityByStatus = () => {
                   : []
               }
               margin={{
-                left: 12,
-                right: 12,
+                left: 20,
+                right: 22,
               }}
             >
               <defs>
