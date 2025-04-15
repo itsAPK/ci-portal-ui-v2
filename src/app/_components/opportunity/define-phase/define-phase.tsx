@@ -23,11 +23,11 @@ export const DefinePhase = ({
       <Card className={cn('bg-white', isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
         <div className="flex justify-between p-4">
           <div className="pt-2 text-base font-semibold">Define Phase</div>
-          {!isReport &&
+          {/* {!isReport &&
             opportunity.project_leader._id === userId &&
             opportunity.status !== 'Opportunity Completed' && (
               <EditDefinePhase opportunity={opportunity} />
-            )}
+            )} */}
         </div>
         <CardContent className="overflow-y-auto p-4 pt-0">
           <div className={cn('grid grid-cols-1 gap-4 md:grid-cols-4')}>

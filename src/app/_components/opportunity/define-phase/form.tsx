@@ -38,7 +38,7 @@ export const DefinePhaseForm = ({
   isoPlotFile,
   pChartFile,
   conentractionChartFile,
-  mode,
+  mode = 'create',
   processFlowDiagram,
   departmentKPI,
   lastSixMonthsTrend,

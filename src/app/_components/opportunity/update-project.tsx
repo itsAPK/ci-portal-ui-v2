@@ -31,9 +31,9 @@ export const UpdateProject = ({ opportunity }: { opportunity: any }) => {
     mutationFn: async (data: OpportunitySchema) => {
       return await api
         .patch(`/opportunity/${opportunity._id.$oid}`, {
-          ...data,
-          estimated_savings: data.estimated_savings
-            ? data.estimated_savings.replace(/,/g, '')
+            savings_type : data.savings_type,
+            estimated_savings: data.estimated_savings
+            ? Number(data.estimated_savings.replace(/,/g, ''))
             : null,
           status: 'Details Updated',
         })
