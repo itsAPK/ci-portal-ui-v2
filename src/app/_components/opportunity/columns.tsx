@@ -194,10 +194,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   </Button>
                 </DropdownMenuItem>
                 {role === 'admin' &&
-                  ((row.original.category === 'Black Belt' &&
-                    (row.original.status === 'Open for Assigning' ||
-                      row.original.status === 'Project Assigned')) ||
-                    row.original.category !== 'Black Belt') && (
+                  ((row.original.category === 'Black Belt') && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <EditOpportunity opportunity={row.original} />
                     </DropdownMenuItem>
@@ -209,16 +206,18 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   </DropdownMenuItem>
                 )}
 
-                {role !== 'employee' &&
-                  (role === 'admin' || (row.original.plant && plant === row.original.plant.name)) &&
+              
+                {(role === 'admin' ||
+                  row.original.plant?.ci_head?._id?.$oid === userId ||
+                  row.original.plant?.ci_team?._id?.$oid === userId) &&
                   row.original.status === 'Open for Assigning' && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <SelfAssignOpportunity opportunityId={row.original._id.$oid} />
                     </DropdownMenuItem>
                   )}
-                {role !== 'employee' &&
-                  role !== 'project_leader' &&
-                  (role === 'admin' || (row.original.plant && plant === row.original.plant.name)) &&
+                {(role === 'admin' ||
+                  row.original.plant?.ci_head?._id?.$oid === userId ||
+                  row.original.plant?.ci_team?._id?.$oid === userId) &&
                   row.original.status === 'Open for Assigning' && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <AssignProjectLeader opportunity={row.original} />
