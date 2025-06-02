@@ -2,7 +2,6 @@ import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {
   FileUploader,
   FileInput,
@@ -13,24 +12,16 @@ import {
 import { Label } from '@/components/ui/label';
 import api from '@/lib/api';
 import { categories } from '@/lib/data';
-import { calculateImpactScore, cn, opportunityCategories } from '@/lib/utils';
+import { cn, opportunityCategories } from '@/lib/utils';
 import { opportunitySchema, OpportunitySchema } from '@/schema/opportunity';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueries } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { AlertTriangle, Loader2, Paperclip } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { IndianNumberInput } from '@/components/indian-number-input';
 import { DatePickerWrapper } from '@/components/date-picker-wrapper';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { AutoComplete } from '@/components/ui/autocomplete';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CaretSortIcon } from '@radix-ui/react-icons';

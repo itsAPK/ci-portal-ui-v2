@@ -88,16 +88,16 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="link" size={'sm'} className="gap-2">
-          <PencilIcon className="h-4 w-4" /> <span className='-mt-[1px] '>Edit</span>
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Edit Opportunity</DialogTitle>
-        </DialogHeader>
-        <OpportunityForm
+        <DialogTrigger asChild>
+          <Button variant="link" size={'sm'} className="gap-2">
+            <PencilIcon className="h-4 w-4" /> <span className='-mt-[1px] '>Edit</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Update Opportunity</DialogTitle>
+          </DialogHeader>
+             <OpportunityForm
           onSubmit={handleSubmit}
           file={file}
           setFile={setFile}
@@ -109,7 +109,8 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
           mode = {'update'}
           defaultValues={processValues({...opportunity, plant : opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant})}
         />
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
   );
 };
+ 
