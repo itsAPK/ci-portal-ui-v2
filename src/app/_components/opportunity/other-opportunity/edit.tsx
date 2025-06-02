@@ -27,8 +27,8 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
   const queryClient = useQueryClient();
   const [impactScore, setImpactScore] = useState<number>(opportunity.project_score);
   const [projectLeader, setProjectLeader] = useState<any>(opportunity.project_leader._id.$oid);
-  const [file, setFile] = useState<File[] | null>([]);
-  const [a3File, setA3File] = useState<File[] | null>([]);
+  const [file, setFile] = useState<File[] | null>(null);
+  const [a3File, setA3File] = useState<File[] | null>(null);
   const addOpportunity = useMutation({
     mutationKey: ['edit-otjer-opportunity'],
     mutationFn: async (data: OpportunitySchema) => {
