@@ -38,6 +38,8 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
           estimated_savings: Number(data.estimated_savings?.replace(/,/g, '')),
           project_score: impactScore.toFixed(3),
           project_impact: impactScore < 50 ? 'Low' : impactScore < 80 ? 'Medium' : 'High',
+          start_date :new Date(data.start_date),
+          end_date : new Date(data.end_date),
         })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
