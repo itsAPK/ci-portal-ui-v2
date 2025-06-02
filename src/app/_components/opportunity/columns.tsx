@@ -198,7 +198,8 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <EditOpportunity opportunity={row.original} />
                     </DropdownMenuItem>
-                  )}
+                  ))}
+                
 
                 {role === 'admin' && (
                   <DropdownMenuItem className="flex gap-2" asChild>

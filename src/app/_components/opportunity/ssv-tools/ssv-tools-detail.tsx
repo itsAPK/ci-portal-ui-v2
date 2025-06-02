@@ -29,6 +29,7 @@ export const SSVTools = ({
 }) => {
   const router = useRouter();
   const userId = getCookie('ci-portal.user_id');
+  const role = getCookie('ci-portal.role');
   return (
     <div className="py-4">
       <Card className={cn('bg-white', isReport ? 'border-none shadow-none' : 'border-gray-500/20')}>
@@ -46,7 +47,7 @@ export const SSVTools = ({
               </Button>
             )}
             {!isReport &&
-              opportunity.project_leader._id === userId &&
+              opportunity.project_leader._id === userId && 
               opportunity.status !== 'Opportunity Completed' && (
                 <EditSSVTools opportunities={opportunity} />
               )}
