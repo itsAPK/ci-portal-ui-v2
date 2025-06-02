@@ -172,7 +172,13 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                     <EyeIcon className="h-4 w-4" /> View
                   </Button>
                 </DropdownMenuItem>
-              
+                {
+                  role === 'admin' && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <EditOpportunity opportunity={row.original} />
+                    </DropdownMenuItem>
+                  )
+                }
                 {role === 'admin' && (
                   <DropdownMenuItem className="flex gap-2" asChild>
                     <DeleteOpportunity id={row.original._id.$oid} />
@@ -183,13 +189,7 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                     <AddTeamMembers opportunity={row.original} />
                   </DropdownMenuItem>
                 )}
-                {
-                  role === 'admin' && (
-                    <DropdownMenuItem className="flex gap-2" asChild>
-                      <EditOpportunity opportunity={row.original} />
-                    </DropdownMenuItem>
-                  )
-                }
+              
 
                 <DropdownMenuItem className="flex gap-2" asChild>
                   <ActionPlan opportunities={row.original} />
