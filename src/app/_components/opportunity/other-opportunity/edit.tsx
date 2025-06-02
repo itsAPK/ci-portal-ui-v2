@@ -19,7 +19,7 @@ import { processValues } from '@/lib/utils';
 import { OpportunityForm } from './form';
 import { OpportunitySchema } from '@/schema/opportunity';
 
-export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
+export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -32,9 +32,6 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
   const addOpportunity = useMutation({
     mutationKey: ['edit-otjer-opportunity'],
     mutationFn: async (data: OpportunitySchema) => {
-    
-    
-
       const res = await api
         .patch(`/opportunity/${opportunity._id.$oid}`, {
           ...data,
@@ -57,12 +54,7 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
             if (!res.data.success) throw new Error(res.data.message);
             return res.data;
           });
-      } 
-
-     
-      
-
-      
+      }
 
       return res;
     },
@@ -75,7 +67,7 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
       toast.success('Opportunity Updated successfully', {
         icon: <AlertTriangle className="h-4 w-4" />,
       });
-     setOpen(false);
+      setOpen(false);
       queryClient.refetchQueries({
         queryKey: ['get-other-opportunities'],
       });
@@ -88,16 +80,16 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="link" size={'sm'} className="gap-2">
-            <PencilIcon className="h-4 w-4" /> <span className='-mt-[1px] '>Edit</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Update Opportunity</DialogTitle>
-          </DialogHeader>
-             <OpportunityForm
+      <DialogTrigger asChild>
+        <Button variant="link" size={'sm'} className="gap-2">
+          <PencilIcon className="h-4 w-4" /> <span className="-mt-[1px]">Edit</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Update Opportunity</DialogTitle>
+        </DialogHeader>
+        <OpportunityForm
           onSubmit={handleSubmit}
           file={file}
           setFile={setFile}
@@ -106,11 +98,19 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
           setProjectLeader={setProjectLeader}
           setA3File={setA3File}
           a3File={a3File}
-          mode = {'update'}
-          defaultValues={processValues({...opportunity, plant : opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant})}
+          mode={'update'}
+          defaultValues={processValues({
+            ...opportunity,
+            plant: opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant,
+            end_date: opportunity.end_date
+              ? new Date(opportunity.end_date.$date).toDateString()
+              : null,
+            start_date: opportunity.start_date
+              ? new Date(opportunity.start_date.$date).toDateString()
+              : null,
+          })}
         />
-        </DialogContent>
-      </Dialog>
+      </DialogContent>
+    </Dialog>
   );
 };
- 
