@@ -64,7 +64,6 @@ export const OpportunityForm = ({
   const form = useForm<OpportunitySchema>({
     defaultValues: {
       ...defaultValues,
-      category: 'Black Belt',
     },
     resolver: zodResolver(opportunitySchema),
   });
