@@ -417,7 +417,7 @@ export const OpportunityForm = ({
                 </PopoverContent>
               </Popover>
             </div>
-            {mode == 'create' && (
+            {mode === 'create' && (
               <div className="col-span-2 flex flex-col gap-2">
                 <Label className="-mb-2 px-2">Upload Opportunity File </Label>
                 <FileUploader
@@ -465,7 +465,7 @@ export const OpportunityForm = ({
                 </FileUploader>
               </div>
             )}
-            {category === 'Green Belt' && mode == 'create' && (
+            {category === 'Green Belt' && mode === 'create' && (
               <div className="col-span-2 flex flex-col gap-2">
                 <Label className="-mb-2 px-2">Upload A3 Signed Project Charter </Label>
                 <FileUploader
