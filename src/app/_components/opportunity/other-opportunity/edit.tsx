@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { processValues } from '@/lib/utils';
 
 import { OpportunityForm } from './form';
 import { OpportunitySchema } from '@/schema/opportunity';
@@ -94,7 +95,7 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
       </DialogTrigger>
       <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Opportunity</DialogTitle>
+          <DialogTitle>Edit Opportunity</DialogTitle>
         </DialogHeader>
         <OpportunityForm
           onSubmit={handleSubmit}
@@ -106,6 +107,7 @@ export const EditOpportunity = ({opportunity}: {opportunity: any}) => {
           setA3File={setA3File}
           a3File={a3File}
           mode = {'update'}
+          defaultValues={processValues({...opportunity, plant : opportunity.plant ? opportunity.plant._id.$oid : opportunity.plant})}
         />
       </DialogContent>
     </Dialog>
