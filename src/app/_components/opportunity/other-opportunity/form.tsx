@@ -101,7 +101,6 @@ export const OpportunityForm = ({
     onSuccess: () => {},
   });
 
-
   const [company, department, plant, bussinessUnit] = useQueries({
     queries: [
       {
@@ -214,7 +213,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="company"
               label="Company"
-              disabled={mode === 'update' }
+              disabled={mode === 'update'}
               options={
                 company.data
                   ? company.data.map((i: any) => ({
@@ -229,7 +228,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="bussiness_unit"
               label="Division"
-              disabled={mode === 'update' }
+              disabled={mode === 'update'}
               options={
                 bussinessUnit.data
                   ? bussinessUnit.data.map((i: any) => ({
@@ -243,7 +242,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="plant"
               label="Plant"
-              disabled={mode === 'update' }
+              disabled={mode === 'update'}
               options={
                 plant.data
                   ? plant.data.map((i: any) => ({
@@ -257,7 +256,7 @@ export const OpportunityForm = ({
               control={form.control}
               name="department"
               label="Department"
-              disabled={mode === 'update' }
+              disabled={mode === 'update'}
               options={
                 department.data
                   ? department.data.map((i: any) => ({
@@ -381,43 +380,44 @@ export const OpportunityForm = ({
               />
             </div>
             <div className="col-span-2 flex flex-col gap-2">
-                <Label className="-mb-1 px-2">Project Leader</Label>
-                 <Popover modal>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              role="combobox"
-              className={cn(
-                'flex h-12 items-center rounded-md border border-primary bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-[#099bab] focus-visible:ring-1 focus-visible:ring-[#099bab] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-              )}
-            >
-              {projectLeader ? projectLeader.label : ''}
-              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="h-full w-full bg-white">
-            <AutoComplete
-              options={
-                employee.data
-                  ? employee.data.map((i: any) => ({
-                      value: String(i._id.$oid),
-                      label: `${i.employee_id} | ${i.name} (${i.designation && i.designation.split('-')[0]} - ${i.department})`,
-                    }))
-                  : []
-              }
-              onSearch={async (e) => setTimeout(async () =>await employee.mutateAsync(e),1000)}
-              value={projectLeader}
-              emptyMessage="No Employee Found."
-              isLoading={employee.isPending}
-              onValueChange={(e : any) => {
-                setProjectLeader(e);
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-             
+              <Label className="-mb-1 px-2">Project Leader</Label>
+              <Popover modal>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    role="combobox"
+                    className={cn(
+                      'flex h-12 items-center rounded-md border border-primary bg-white px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-[#099bab] focus-visible:ring-1 focus-visible:ring-[#099bab] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                    )}
+                  >
+                    {projectLeader ? projectLeader.label : ''}
+                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="h-full w-full bg-white">
+                  <AutoComplete
+                    options={
+                      employee.data
+                        ? employee.data.map((i: any) => ({
+                            value: String(i._id.$oid),
+                            label: `${i.employee_id} | ${i.name} (${i.designation && i.designation.split('-')[0]} - ${i.department})`,
+                          }))
+                        : []
+                    }
+                    onSearch={async (e) =>
+                      setTimeout(async () => await employee.mutateAsync(e), 1000)
+                    }
+                    value={projectLeader}
+                    emptyMessage="No Employee Found."
+                    isLoading={employee.isPending}
+                    onValueChange={(e: any) => {
+                      setProjectLeader(e);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
-            {
+            {mode == 'create' && (
               <div className="col-span-2 flex flex-col gap-2">
                 <Label className="-mb-2 px-2">Upload Opportunity File </Label>
                 <FileUploader
@@ -434,7 +434,9 @@ export const OpportunityForm = ({
                       'image/jpg': ['.jpg'],
                       'image/jpeg': ['.jpeg'],
                       'application/pdf': ['.pdf'],
-                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
+                        '.xlsx',
+                      ],
                       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
                         '.docx',
                       ],
@@ -462,8 +464,8 @@ export const OpportunityForm = ({
                   </FileUploaderContent>
                 </FileUploader>
               </div>
-            }
-              { category === 'Green Belt' && (
+            )}
+            {category === 'Green Belt' && mode == 'create' && (
               <div className="col-span-2 flex flex-col gap-2">
                 <Label className="-mb-2 px-2">Upload A3 Signed Project Charter </Label>
                 <FileUploader
@@ -480,7 +482,9 @@ export const OpportunityForm = ({
                       'image/jpg': ['.jpg'],
                       'image/jpeg': ['.jpeg'],
                       'application/pdf': ['.pdf'],
-                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
+                        '.xlsx',
+                      ],
                       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
                         '.docx',
                       ],
@@ -507,8 +511,8 @@ export const OpportunityForm = ({
                       ))}
                   </FileUploaderContent>
                 </FileUploader>
-              </div>)
-            }
+              </div>
+            )}
           </div>
           <div className="flex justify-end pt-5">
             <Button type="submit" size="lg" className="w-[200px] gap-3">
