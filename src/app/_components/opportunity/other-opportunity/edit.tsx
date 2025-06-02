@@ -26,7 +26,10 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
   const params = useSearchParams();
   const queryClient = useQueryClient();
   const [impactScore, setImpactScore] = useState<number>(opportunity.project_score);
-  const [projectLeader, setProjectLeader] = useState<any>(opportunity.project_leader._id.$oid);
+  const [projectLeader, setProjectLeader] = useState<any>({
+    value: String(opportunity.project_leader._id.$oid),
+    label: `${opportunity.project_leader.employee_id} | ${opportunity.project_leader.name} (${opportunity.project_leader.designation && opportunity.project_leader.designation.split('-')[0]} - ${opportunity.project_leader.department})`,
+  });
   const [file, setFile] = useState<File[] | null>(null);
   const [a3File, setA3File] = useState<File[] | null>(null);
   const addOpportunity = useMutation({
@@ -38,8 +41,8 @@ export const EditOpportunity = ({ opportunity }: { opportunity: any }) => {
           estimated_savings: Number(data.estimated_savings?.replace(/,/g, '')),
           project_score: impactScore.toFixed(3),
           project_impact: impactScore < 50 ? 'Low' : impactScore < 80 ? 'Medium' : 'High',
-          start_date :new Date(data.start_date),
-          end_date : new Date(data.end_date),
+          start_date: new Date(data.start_date),
+          end_date: new Date(data.end_date),
         })
         .then((res) => {
           if (!res.data.success) throw new Error(res.data.message);
