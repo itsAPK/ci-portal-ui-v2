@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { DeleteOpportunity } from '../delete';
 import { getCookie } from 'cookies-next';
-import { EditOpportunity } from '../edit';
+import { EditOpportunity } from './edit';
 import { ActionPlan } from '../action-plan/action-plan';
 import { formatToIndianNumber } from '@/lib/utils';
 import { MonthlySavings } from '../monthly-savings/monthly-savings';
