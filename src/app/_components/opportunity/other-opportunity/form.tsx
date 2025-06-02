@@ -1,3 +1,4 @@
+'use client'
 import { FormWrapper } from '@/components/form-wrapper';
 import { FormFieldInput } from '@/components/input-field';
 import { SelectField } from '@/components/select-field-wrapper';
