@@ -321,19 +321,17 @@ export const OpportunityForm = ({
               control={form.control}
               name="start_date"
               label="Start Date"
-              disabled={mode === 'update'}
             />
             <DatePickerWrapper
               control={form.control}
               name="end_date"
               label="Completed"
-              disabled={mode === 'update'}
             />
 
             <FormFieldInput
               control={form.control}
               name="statement"
-              disabled={mode === 'update'}
+            
               label="Problem Statement"
               className="col-span-1"
             />
@@ -341,7 +339,7 @@ export const OpportunityForm = ({
             <SelectField
               control={form.control}
               name="expected_savings"
-              disabled={mode === 'update'}
+            
               label="Expected Savings (in Lakh)"
               options={opportunityCategories.expected_savings.map((i: any) => ({
                 value: i.name,
