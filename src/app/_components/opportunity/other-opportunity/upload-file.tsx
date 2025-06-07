@@ -142,7 +142,7 @@ export const UploadFile = ({ opportunity_id }: { opportunity_id: string }) => {
             </FileUploaderContent>
           </FileUploader>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end w-full">
           <Button onClick={handleSubmit} className="w-full">
             Submit
           </Button>
