@@ -31,9 +31,7 @@ export const AddOpportunity = () => {
   const addOpportunity = useMutation({
     mutationKey: ['add-opportunity'],
     mutationFn: async (data: OpportunitySchema) => {
-      if (data.category !== 'Black Belt' && (!file || file.length === 0)) {
-        throw new Error('Please upload a document.');
-      }
+    
 
       if (data.category === 'Green Belt' && (!a3File || a3File.length === 0)) {
         throw new Error('Please upload a A3 signed project charter.');
