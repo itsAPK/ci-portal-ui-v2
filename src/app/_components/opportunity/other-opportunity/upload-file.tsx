@@ -94,7 +94,7 @@ export const UploadFile = ({ opportunity_id }: { opportunity_id: string }) => {
           <UploadIcon className="mr-2 h-4 w-4" /> <span className="-mt-[1px]">Upload File</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-xl h-[90vh] max-w-[800px] overflow-y-auto">
+      <DialogContent className="max-w-lg overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Upload File</DialogTitle>
         </DialogHeader>
@@ -142,7 +142,7 @@ export const UploadFile = ({ opportunity_id }: { opportunity_id: string }) => {
             </FileUploaderContent>
           </FileUploader>
         </div>
-        <div>
+        <div className="flex justify-end">
           <Button onClick={handleSubmit} className="w-full">
             Submit
           </Button>
