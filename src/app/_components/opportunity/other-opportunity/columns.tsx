@@ -16,6 +16,7 @@ import { ActionPlan } from '../action-plan/action-plan';
 import { formatToIndianNumber } from '@/lib/utils';
 import { MonthlySavings } from '../monthly-savings/monthly-savings';
 import { AddTeamMembers } from '../team-members/add-team-members';
+import { UploadFile } from './upload-file';
 
 export const opportunityColumns = (): ColumnDef<any>[] => {
   return [
@@ -176,6 +177,13 @@ export const opportunityColumns = (): ColumnDef<any>[] => {
                   role === 'admin' && (
                     <DropdownMenuItem className="flex gap-2" asChild>
                       <EditOpportunity opportunity={row.original}  />
+                    </DropdownMenuItem>
+                  )
+                }
+                 {
+                  role === 'admin' && (
+                    <DropdownMenuItem className="flex gap-2" asChild>
+                      <UploadFile opportunity_id={row.original._id.$oid} />
                     </DropdownMenuItem>
                   )
                 }
